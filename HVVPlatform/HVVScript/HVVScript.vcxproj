@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e73da591-3539-4ed8-a5d3-04da60649ccb}</ProjectGuid>
+    <RootNamespace>HVVScript</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8\include;$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Debug;$(SolutionDir)v8fullset\v8\lib\Debug;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>setlocal
+set OUT_LIB_PATH=$(SolutionDir)out_lib\lib\$(Configuration)\
+set OUT_INCLUDE_PATH=$(SolutionDir)out_lib\include\
+if not exist "%OUT_LIB_PATH%" md "%OUT_LIB_PATH%"
+if not exist "%OUT_INCLUDE_PATH%" md "%OUT_INCLUDE_PATH%"
+
+copy /Y "$(OutDIr)HVVScript.dll" "%OUT_LIB_PATH%HVVScript.dll"
+copy /Y "$(OutDIr)HVVScript.lib" "%OUT_LIB_PATH%HVVScript.lib"
+copy /Y "$(OutDIr)object.lib" "%OUT_LIB_PATH%object.lib"
+copy /Y "$(OutDIr)primitive_object.lib" "%OUT_LIB_PATH%primitive_object.lib"
+copy /Y "$(SolutionDir)HVVScript\macro.h" "%OUT_INCLUDE_PATH%macro.h"
+copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
+copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
+copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
+copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
+copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
+copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
+
+endlocal</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8\include;$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)primitive_object;$(SolutionDir)object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Release;$(SolutionDir)v8fullset\v8\lib\Release;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>setlocal
+set OUT_LIB_PATH=$(SolutionDir)out_lib\lib\$(Configuration)\
+set OUT_INCLUDE_PATH=$(SolutionDir)out_lib\include\
+if not exist "%OUT_LIB_PATH%" md "%OUT_LIB_PATH%"
+if not exist "%OUT_INCLUDE_PATH%" md "%OUT_INCLUDE_PATH%"
+
+copy /Y "$(OutDIr)HVVScript.dll" "%OUT_LIB_PATH%HVVScript.dll"
+copy /Y "$(OutDIr)HVVScript.lib" "%OUT_LIB_PATH%HVVScript.lib"
+copy /Y "$(OutDIr)object.lib" "%OUT_LIB_PATH%object.lib"
+copy /Y "$(OutDIr)primitive_object.lib" "%OUT_LIB_PATH%primitive_object.lib"
+copy /Y "$(SolutionDir)HVVScript\macro.h" "%OUT_INCLUDE_PATH%macro.h"
+copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
+copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
+copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
+copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
+copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
+copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
+
+endlocal</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="compile.cpp" />
+    <ClCompile Include="converter.cpp" />
+    <ClCompile Include="interpreter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="converter.h" />
+    <ClInclude Include="exception.h" />
+    <ClInclude Include="interpreter.h" />
+    <ClInclude Include="macro.h" />
+    <ClInclude Include="pimpl.h" />
+    <ClInclude Include="pimpl_define.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
