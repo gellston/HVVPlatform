@@ -26,6 +26,7 @@
 #include "pimpl_define.h"
 #include "object.h"
 #include "converter.h"
+#include "exception.h"
 
 using namespace hv;
 using namespace v1;
@@ -57,7 +58,12 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_is_thread_running(true),
 							_is_script_running(false),
 							_interpreter_thread(&interpreter::_loop, this),
-							_is_content(false) {
+							_is_content(false),
+						    _has_error(false),
+							_error_message(""),
+							_error_start_column(-1),
+						    _error_end_column(-1),
+							_error_rows(-1){
 
 
 
@@ -149,6 +155,18 @@ void interpreter::_script_end_wait() {
 	});
 }
 
+void interpreter::_clear_error_message() {
+	this->_has_error = false;
+	this->_error_message = "";
+}
+void interpreter::_set_error_info(std::string message, int start_col, int end_col, int row) {
+	this->_has_error = true;
+	this->_error_message = message;
+	this->_error_start_column = start_col;
+	this->_error_end_column = end_col;
+	this->_error_rows = row;
+}
+
 
 void interpreter::_loop() {
 
@@ -169,6 +187,8 @@ void interpreter::_loop() {
 		if (this->_is_thread_running == false)
 			return;
 
+		// exception info clear;
+		this->_clear_error_message();
 
 		/// <summary>
 		///  Class 함수 등록
@@ -182,7 +202,7 @@ void interpreter::_loop() {
 
 		v8::TryCatch try_catch(isolate->_instance);
 
-		bool _hasError = false;
+
 
 		try {
 			if (this->_is_content == false) {
@@ -193,17 +213,18 @@ void interpreter::_loop() {
 			}
 		}
 		catch (std::exception e) {
-			std::cout << e.what() << std::endl;
-			_hasError = true;
-
+			this->_set_error_info(e.what(), -1, -1, -1);
 		}
 
 
 		if (try_catch.HasCaught())
 		{
-			_hasError = true;
 			std::string const msg = v8pp::from_v8<std::string>(isolate->_instance, try_catch.Exception()->ToString(isolate->_instance->GetCurrentContext()).ToLocalChecked());
-			std::cout << msg << std::endl;
+			int lineNumber = try_catch.Message()->GetLineNumber(isolate->_instance->GetCurrentContext()).FromJust();
+			int startColumn = try_catch.Message()->GetStartColumn(isolate->_instance->GetCurrentContext()).FromJust();
+			int endColumn = try_catch.Message()->GetEndColumn(isolate->_instance->GetCurrentContext()).FromJust();
+
+			this->_set_error_info(msg, startColumn, endColumn, lineNumber);
 		}
 
 	
@@ -279,6 +300,9 @@ bool interpreter::run_script(std::string content) {
 	/// </summary>
 	this->_script_end_wait();
 
+	if (this->_has_error == true)
+		throw hv::v1::script_error(this->_error_message, this->_error_start_column, this->_error_end_column, this->_error_rows);
+
 	return true;
 }
 bool interpreter::run_file(std::string path) {
@@ -301,6 +325,9 @@ bool interpreter::run_file(std::string path) {
 	/// Script end check
 	/// </summary>
 	this->_script_end_wait();
+
+	if (this->_has_error == true)
+		throw hv::v1::script_error(this->_error_message, this->_error_start_column, this->_error_end_column, this->_error_rows);
 
 	return true;
 }

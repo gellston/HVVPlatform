@@ -69,6 +69,9 @@ namespace hv::v1{
 		void _script_end_signal();
 		void _script_end_wait();
 
+		void _clear_error_message();
+		void _set_error_info(std::string message, int start_col, int end_col, int row);
+
 
 
 		/// <summary>
@@ -83,6 +86,8 @@ namespace hv::v1{
 		std::mutex _mtx_event_global_hash;
 
 		bool _is_script_running;
+		
+		
 
 		std::string _script_file_path;
 		std::string _script_content;
@@ -91,7 +96,12 @@ namespace hv::v1{
 
 		std::list<std::string> _global_names;
 
-		
+	
+		bool _has_error;
+		int _error_start_column;
+		int _error_end_column;
+		int _error_rows;
+		std::string _error_message;
 		void trace(std::string input);
 		
 
@@ -111,6 +121,8 @@ namespace hv::v1{
 		std::map<std::string, std::shared_ptr<object>> * global_objects();
 
 		bool register_converter(std::string type , converter* converter);
+
+		 
 
 
 		/// <summary>

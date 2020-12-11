@@ -24,6 +24,9 @@
     <ClCompile Include="compile.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="exception.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="converter.h">

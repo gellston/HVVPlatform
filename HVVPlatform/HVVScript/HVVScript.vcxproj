@@ -195,6 +195,7 @@ endlocal</Command>
   <ItemGroup>
     <ClCompile Include="compile.cpp" />
     <ClCompile Include="converter.cpp" />
+    <ClCompile Include="exception.cpp" />
     <ClCompile Include="interpreter.cpp" />
   </ItemGroup>
   <ItemGroup>
