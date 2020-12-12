@@ -28,6 +28,9 @@
 #include "converter.h"
 #include "exception.h"
 
+
+
+
 using namespace hv;
 using namespace v1;
 
@@ -102,6 +105,26 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		auto native_string = new string(key, data);
 
 		return native_string;
+	}));
+
+	this->register_converter("array", new converter([&](std::shared_ptr<pimpl_local_var> local_variable) -> object* {
+		std::string key = local_variable->key();
+
+		if (hv::v1::is_array(local_variable) == false) return nullptr;
+
+		try {
+			auto data = hv::v1::convert_to_array(local_variable);
+			auto native_array = new hv::v1::array_number(key, data.data(), data.size());
+			return native_array;
+		}
+		catch (std::exception e) {
+
+			return nullptr;
+		}
+		
+
+
+		return nullptr;
 	}));
 }
 
@@ -245,6 +268,7 @@ void interpreter::_loop() {
 
 				std::string key = v8pp::from_v8<std::string>(isolate->_instance, key_local->ToString(isolate->_instance));
 				std::string type = v8pp::from_v8<std::string>(isolate->_instance, val_local->TypeOf(isolate->_instance));
+				if (val_local->IsArray() == true && !val_local.IsEmpty()) type = "array";
 				
 				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
 

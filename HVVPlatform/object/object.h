@@ -19,7 +19,7 @@ namespace hv::v1 {
 		object() = delete;
 	public:
 
-		~object();
+		virtual ~object();
 		object(std::string name, std::string type);
 		std::string name();
 		std::string type();

@@ -7,6 +7,9 @@
 
 #include "object.h"
 
+#include <vector>
+#include <memory>
+
 namespace hv::v1 {
 
 	class boolean;
@@ -54,6 +57,27 @@ namespace hv::v1 {
 		std::string data();
 		void data(std::string data);
 		std::string to_string() override;
+	};
+
+
+	class HVAPI_EXPORT array_number : public object {
+	private:
+		
+		std::shared_ptr<double> __data;
+		int _size;
+
+		array_number() = delete;
+	public:
+
+		array_number(std::string name, double * data, int size);
+		array_number(std::string name, std::shared_ptr<double> data, int size);
+		~array_number();
+		std::shared_ptr<double> data();
+		void data(double* data, int size);
+		void data(std::shared_ptr<double> data, int size);
+		int size();
+
+		std::string to_string()  override;
 	};
 }
 

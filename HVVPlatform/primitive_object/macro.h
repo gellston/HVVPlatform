@@ -8,10 +8,10 @@
 
 #if HVVAPI
 #define HVAPI_EXPORT __declspec(dllexport)
-//#define HVAPI_TEMPLATE_EXPORT
+#define HVAPI_TEMPLATE_EXPORT
 #else
 #define HVAPI_EXPORT __declspec(dllimport)
-//#define HVAPI_TEMPLATE_EXPORT extern
+#define HVAPI_TEMPLATE_EXPORT extern
 #endif
 
 

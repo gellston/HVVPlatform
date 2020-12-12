@@ -19,6 +19,10 @@ namespace hv::v1 {
 
 	HVAPI_EXPORT std::string convert_to_string(std::shared_ptr<pimpl_local_var> local_var);
 	HVAPI_EXPORT bool is_string(std::shared_ptr<pimpl_local_var> local_var);
+
+
+	HVAPI_EXPORT std::vector<double> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
+	HVAPI_EXPORT bool is_array(std::shared_ptr<pimpl_local_var> local_var);
 }
 
 
