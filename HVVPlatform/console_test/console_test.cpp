@@ -40,12 +40,15 @@ int main()
 
 
     while (true) {
-
+        system("cls");
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
             
-            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script.js");
+            std::string current_script_path = current_path;
+            current_script_path += "\\";
+            current_script_path += "script.js";
+            interpreter.run_file(current_script_path);
 
             auto global_objects = interpreter.global_objects();
 
@@ -54,7 +57,7 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
-            
+            std::cout << "takt time : " << duration << std::endl;
             std::cout << "=============================================" << std::endl;
             for (auto element : *global_objects)
             {
@@ -87,6 +90,7 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
+        Sleep(1000);
     }
 
 }
