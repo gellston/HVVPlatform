@@ -3,8 +3,13 @@
 #include "pimpl.h"
 #include "pimpl_define.h"
 
+
+#include "string_cvt.h"
+
 using namespace hv;
 using namespace v1;
+
+
 
 
 
@@ -26,7 +31,6 @@ bool hv::v1::convert_to_boolean(std::shared_ptr<pimpl_local_var> local_var)
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 	auto isolate = pimpl_solid_ptr->_isolate;
 	v8::HandleScope scope(isolate);
-	
 	auto v8boolValue = (*(pimpl_solid_ptr->_local))->ToBoolean(isolate);
 	return v8pp::from_v8<bool>(isolate, v8boolValue);
 }
@@ -58,7 +62,9 @@ std::string hv::v1::convert_to_string(std::shared_ptr<pimpl_local_var> local_var
 	auto isolate = pimpl_solid_ptr->_isolate;
 	v8::HandleScope scope(isolate);
 	auto v8StringValue = (*(pimpl_solid_ptr->_local))->ToString(isolate);
-	return v8pp::from_v8<std::string>(isolate, v8StringValue);
+	auto u8string = v8pp::from_v8<std::string>(isolate, v8StringValue);
+	auto std_string = u8string_to_string(u8string);
+	return  std_string;
 }
 bool hv::v1::is_string(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);

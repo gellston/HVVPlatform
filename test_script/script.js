@@ -1,21 +1,10 @@
 
-
-// ÇÑ±Û ÁÖ¼® °¡´É  
-
-
-var test = false;
-var test2 = true;
-var test3 = 4.5;
-var test3 = 1;
-var test6 = "test!!!";
+// í•œê¸€ì£¼ì„
 
 
-var test7 = new Array(100);
-test7.fill(0);
-
-
-/// ¿¡·¯ Å×½ºÆ® 
-
-
-
-
+var variable3 = "í•œê¸€ ìŠ¤íŠ¸ë§"
+var variable4 = "english"
+var array = [1,2,3,4];
+var í•œê¸€ë³€ìˆ˜ = 0;
+í•œê¸€ë³€ìˆ˜ ++;
+í•œê¸€ë³€ìˆ˜ += 1;

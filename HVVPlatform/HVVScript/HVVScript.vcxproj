@@ -205,6 +205,7 @@ endlocal</Command>
     <ClInclude Include="macro.h" />
     <ClInclude Include="pimpl.h" />
     <ClInclude Include="pimpl_define.h" />
+    <ClInclude Include="string_cvt.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

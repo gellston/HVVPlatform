@@ -26,6 +26,7 @@
 #include "object.h"
 #include "converter.h"
 #include "exception.h"
+#include "string_cvt.h"
 
 
 using namespace hv;
@@ -55,9 +56,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 						    _error_end_column(-1),
 							_error_rows(-1){
 
-
 	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
-
 
 	/// <summary>
 	/// Converter Lambda defionition
@@ -78,7 +77,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 		if (hv::v1::is_number(local_variable) == false) return nullptr;
 
-		bool data = hv::v1::convert_to_number(local_variable);
+		double data = hv::v1::convert_to_number(local_variable);
 		auto native_number = new number(key, data);
 
 		return native_number;
@@ -183,16 +182,6 @@ void interpreter::_loop() {
 
 	while (this->_is_thread_running) {
 
-		// start signal wait;
-		this->_script_start_wait();
-
-		if (this->_is_thread_running == false)
-			return;
-
-		// exception info clear;
-		this->_clear_error_message();
-
-
 		v8pp::context parent_context;
 
 		
@@ -203,6 +192,14 @@ void interpreter::_loop() {
 
 		v8::HandleScope handleScope(isolate->_instance);
 
+		// start signal wait;
+		this->_script_start_wait();
+
+		if (this->_is_thread_running == false)
+			return;
+
+		// exception info clear;
+		this->_clear_error_message();
 
 		/// <summary>
 		///  Class 함수 등록
@@ -213,6 +210,7 @@ void interpreter::_loop() {
 		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
 		auto key = v8pp::to_v8(isolate->_instance, "script");
 		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
+
 	
 
 		v8::TryCatch try_catch(isolate->_instance);
@@ -267,8 +265,11 @@ void interpreter::_loop() {
 				auto key_local = global_names->Get(i);
 				auto val_local = globals->Get(key_local);
 
-				std::string key = v8pp::from_v8<std::string>(isolate->_instance, key_local->ToString(isolate->_instance));
+				// C++20에 추가될 u8string이 추가될 경우 변경되어야됨.
+				std::string u8_key = v8pp::from_v8<std::string>(isolate->_instance, key_local->ToString(isolate->_instance));
 				std::string type = v8pp::from_v8<std::string>(isolate->_instance, val_local->TypeOf(isolate->_instance));
+
+				std::string key = u8string_to_string(u8_key);
 
 				if (val_local->IsNullOrUndefined())
 					continue;
@@ -323,7 +324,6 @@ bool interpreter::run_script(std::string content) {
 
 	this->_script_start_signal();
 
-	
 
 	/// <summary>
 	/// Script end check
@@ -348,7 +348,6 @@ bool interpreter::run_file(std::string path) {
 
 
 	this->_script_start_signal();
-
 
 
 	/// <summary>

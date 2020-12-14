@@ -2,6 +2,7 @@
 //
 //
 
+#include <locale.h>
 
 #include <Windows.h>
 
@@ -28,6 +29,7 @@ std::string current_directory()
 
 int main()
 {
+
     auto current_path = current_directory();
     
     hv::v1::interpreter::init_v8_startup_data(current_path + "\\");
@@ -38,7 +40,6 @@ int main()
     
     hv::v1::interpreter interpreter;
 
-
     while (true) {
         system("cls");
 
@@ -48,7 +49,8 @@ int main()
             std::string current_script_path = current_path;
             current_script_path += "\\";
             current_script_path += "script.js";
-            interpreter.run_file(current_script_path);
+
+            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script.js");
 
             auto global_objects = interpreter.global_objects();
 
@@ -57,6 +59,7 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
+            
             std::cout << "takt time : " << duration << std::endl;
             std::cout << "=============================================" << std::endl;
             for (auto element : *global_objects)
@@ -90,7 +93,7 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        Sleep(1000);
+        Sleep(300);
     }
 
 }
