@@ -2,20 +2,17 @@
 
 // 한글 주석 가능  
 
-let local_variable = "local variable test";
-var global_variable = "global variable test";
 
-var string_variable = "string variable test";
-var number_variable1 = 1;
-var number_variable2 = 1.5;
-
-var array_test1 = new Array(100);
-array_test1.fill(5);
+var test = false;
+var test2 = true;
+var test3 = 4.5;
+var test3 = 1;
+var test6 = "test!!!";
 
 
-var array_test2 = [1, 2, 3, 4, 5];
-var array_test3 = new Array(5);
-array_test3.fill(" ");
+var test7 = new Array(100);
+test7.fill(0);
+
 
 /// 에러 테스트 
 

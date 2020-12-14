@@ -22,9 +22,9 @@ hv::v1::object::object(std::string _name, std::string _type) {
 	this->_type = _type;
 }
 
-hv::v1::object::~object() {
-
-}
+//hv::v1::object::~object() {
+//
+//}
 
 std::string hv::v1::object::name() {
 	return this->_name;

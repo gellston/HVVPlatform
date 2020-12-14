@@ -34,18 +34,17 @@ int main()
     hv::v1::interpreter::init_v8_platform();
     hv::v1::interpreter::init_v8_engine();
     hv::v1::interpreter::set_v8_flag("--use_strict");
-    hv::v1::interpreter::set_v8_flag("--max-old-space-size=8192");
-    
+    hv::v1::interpreter::set_v8_flag("--max_old_space_size=8192");
     
     hv::v1::interpreter interpreter;
 
 
     while (true) {
-        system("cls");
+
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
-
+            
             interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script.js");
 
             auto global_objects = interpreter.global_objects();
@@ -55,11 +54,7 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
-            std::cout << "takt : " << duration << std::endl;
-
             
-            
-
             std::cout << "=============================================" << std::endl;
             for (auto element : *global_objects)
             {
@@ -72,7 +67,7 @@ int main()
                     auto element_native = element.second;
                     auto casted_element = std::static_pointer_cast<hv::v1::array_number>(element_native);
                     auto pure_data = casted_element->data().get();
-                    for (int index = 0; index < casted_element->size(); index++) {
+                    for (unsigned int index = 0; index < casted_element->size(); index++) {
                         std::cout << pure_data[index] << ",";
                     }
                     std::cout << "]" << std::endl;
@@ -92,10 +87,6 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-
-        Sleep(1000);
     }
 
-
-    
 }

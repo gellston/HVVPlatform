@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 
+
 namespace hv::v1 {
 
 	class boolean;
@@ -23,7 +24,7 @@ namespace hv::v1 {
 	public:
 
 		boolean(std::string name, bool data);
-		~boolean();
+		~boolean() override { }
 		bool data();
 		void data(bool data);
 		std::string to_string() override;
@@ -38,7 +39,7 @@ namespace hv::v1 {
 	public:
 
 		number(std::string name, double data);
-		~number();
+		~number() override { }
 		double data();
 		void data(double data);
 		std::string to_string() override;
@@ -53,7 +54,7 @@ namespace hv::v1 {
 	public:
 
 		string(std::string name, std::string data);
-		~string();
+		~string() override { }
 		std::string data();
 		void data(std::string data);
 		std::string to_string() override;
@@ -64,18 +65,18 @@ namespace hv::v1 {
 	private:
 		
 		std::shared_ptr<double> __data;
-		int _size;
+		unsigned int _size;
 
 		array_number() = delete;
 	public:
 
-		array_number(std::string name, double * data, int size);
-		array_number(std::string name, std::shared_ptr<double> data, int size);
-		~array_number();
+		array_number(std::string name, double * data, unsigned int size);
+		array_number(std::string name, std::shared_ptr<double> data, unsigned int size);
+		~array_number() override { }
 		std::shared_ptr<double> data();
-		void data(double* data, int size);
-		void data(std::shared_ptr<double> data, int size);
-		int size();
+		void data(double* data, unsigned int size);
+		void data(std::shared_ptr<double> data, unsigned int size);
+		unsigned int size();
 
 		std::string to_string()  override;
 	};

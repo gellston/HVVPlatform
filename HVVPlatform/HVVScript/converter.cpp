@@ -25,13 +25,15 @@ bool hv::v1::convert_to_boolean(std::shared_ptr<pimpl_local_var> local_var)
 {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 	auto isolate = pimpl_solid_ptr->_isolate;
+	v8::HandleScope scope(isolate);
 	
-	return v8pp::from_v8<bool>(isolate, pimpl_solid_ptr->_local->ToBoolean(isolate));
+	auto v8boolValue = (*(pimpl_solid_ptr->_local))->ToBoolean(isolate);
+	return v8pp::from_v8<bool>(isolate, v8boolValue);
 }
 bool hv::v1::is_boolean(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 
-	return pimpl_solid_ptr->_local->IsBoolean();
+	return (*(pimpl_solid_ptr->_local))->IsBoolean();
 }
 
 
@@ -39,13 +41,14 @@ bool hv::v1::is_boolean(std::shared_ptr<pimpl_local_var> local_var) {
 double hv::v1::convert_to_number(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 	auto isolate = pimpl_solid_ptr->_isolate;
-
-	return v8pp::from_v8<double>(isolate, pimpl_solid_ptr->_local->ToNumber(isolate));
+	v8::HandleScope scope(isolate);
+	auto v8NumberValue = (*(pimpl_solid_ptr->_local))->ToNumber(isolate);
+	return v8pp::from_v8<double>(isolate, v8NumberValue);
 }
 bool hv::v1::is_number(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 
-	return pimpl_solid_ptr->_local->IsNumber();
+	return (*(pimpl_solid_ptr->_local))->IsNumber();
 }
 
 
@@ -53,13 +56,14 @@ bool hv::v1::is_number(std::shared_ptr<pimpl_local_var> local_var) {
 std::string hv::v1::convert_to_string(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 	auto isolate = pimpl_solid_ptr->_isolate;
-
-	return v8pp::from_v8<std::string>(isolate, pimpl_solid_ptr->_local->ToString(isolate));
+	v8::HandleScope scope(isolate);
+	auto v8StringValue = (*(pimpl_solid_ptr->_local))->ToString(isolate);
+	return v8pp::from_v8<std::string>(isolate, v8StringValue);
 }
 bool hv::v1::is_string(std::shared_ptr<pimpl_local_var> local_var) {
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 
-	return pimpl_solid_ptr->_local->IsString();
+	return (*(pimpl_solid_ptr->_local))->IsString();
 }
 
 
@@ -70,7 +74,9 @@ std::vector<double> hv::v1::convert_to_array(std::shared_ptr<pimpl_local_var> lo
 	auto isolate = pimpl_solid_ptr->_isolate;
 
 	try {
-		auto array = v8pp::from_v8<std::vector<double>>(isolate, pimpl_solid_ptr->_local->ToObject(isolate));
+		v8::HandleScope scope(isolate);
+		auto v8ObjectValue = (*(pimpl_solid_ptr->_local))->ToObject(isolate);
+		auto array = v8pp::from_v8<std::vector<double>>(isolate, v8ObjectValue);
 		return array;
 	}
 	catch (std::exception e) {
@@ -81,6 +87,6 @@ std::vector<double> hv::v1::convert_to_array(std::shared_ptr<pimpl_local_var> lo
 bool hv::v1::is_array(std::shared_ptr<pimpl_local_var> local_var) {
 
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
-	bool check = pimpl_solid_ptr->_local->IsArray() && !pimpl_solid_ptr->_local.IsEmpty();
+	bool check = (*(pimpl_solid_ptr->_local))->IsArray() && !(*(pimpl_solid_ptr->_local)).IsEmpty();
 	return check;
 }

@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 
+
 /// <summary>
 /// boolean
 /// </summary>
@@ -16,10 +17,6 @@
 
 hv::v1::boolean::boolean(std::string name, bool data) : object(name, "boolean") {
 	this->_data = data;
-}
-
-hv::v1::boolean::~boolean() {
-
 }
 
 bool hv::v1::boolean::data() {
@@ -50,10 +47,6 @@ hv::v1::number::number(std::string name, double data) : object(name, "number") {
 }
 
 
-hv::v1::number::~number() {
-
-}
-
 double hv::v1::number::data() {
 	return this->_data;
 }
@@ -71,10 +64,6 @@ std::string hv::v1::number::to_string() {
 
 hv::v1::string::string(std::string name, std::string data) :object(name, "string") {
 	this->_data = data;
-}
-
-hv::v1::string::~string() {
-
 }
 
 std::string hv::v1::string::data() {
@@ -99,7 +88,7 @@ std::string hv::v1::string::to_string() {
 
 
 
-hv::v1::array_number::array_number(std::string name, double * data, int size) :
+hv::v1::array_number::array_number(std::string name, double * data, unsigned int size) :
 																				_size(0),
 																				__data(nullptr),
 																				object(name, "array_number") {
@@ -122,7 +111,7 @@ hv::v1::array_number::array_number(std::string name, double * data, int size) :
 
 }
 
-hv::v1::array_number::array_number(std::string name, std::shared_ptr<double> data, int size) : 
+hv::v1::array_number::array_number(std::string name, std::shared_ptr<double> data, unsigned int size) : 
 																							   _size(0),
 																							   __data(nullptr),
 																							   object(name, "array_number") {
@@ -140,20 +129,17 @@ hv::v1::array_number::array_number(std::string name, std::shared_ptr<double> dat
 }
 
 
-hv::v1::array_number::~array_number() {
-
-}
 
 std::shared_ptr<double> hv::v1::array_number::data() {
 
 	return this->__data;
 }
 
-int hv::v1::array_number::size() {
+unsigned int hv::v1::array_number::size() {
 	return this->_size;
 }
 
-void hv::v1::array_number::data(double * data, int size) {
+void hv::v1::array_number::data(double * data, unsigned int size) {
 
 	if (size < 0 || size == 0)
 		throw std::runtime_error("Invalid size");
@@ -174,7 +160,7 @@ void hv::v1::array_number::data(double * data, int size) {
 
 }
 
-void hv::v1::array_number::data(std::shared_ptr<double> data, int size) {
+void hv::v1::array_number::data(std::shared_ptr<double> data, unsigned int size) {
 	if (size < 0 || size == 0)
 		throw std::runtime_error("Invalid size");
 

@@ -18,13 +18,6 @@
 
 namespace hv::v1{
 
-
-	/// <summary>
-	/// pimpl section
-	/// </summary>
-
-
-
 	class HVAPI_EXPORT interpreter {
 
 	private:

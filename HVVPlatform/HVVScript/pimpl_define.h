@@ -23,6 +23,7 @@
 #include "primitive_object.h"
 
 
+
 namespace hv::v1 {
 
 	template <typename TYPE> std::shared_ptr<TYPE> extract_pimpl(std::shared_ptr<pimpl> & pointer) {
@@ -39,14 +40,14 @@ namespace hv::v1 {
 	class pimpl_object_hash : public pimpl{
 	public:
 		pimpl_object_hash() {}
-		~pimpl_object_hash(){}
+		~pimpl_object_hash() override { }
 		std::map<std::string, std::shared_ptr<object>> _instance;
 	};
 
 	class pimpl_v8_isolate : public pimpl {
 	public:
 		pimpl_v8_isolate() : _instance(nullptr) {  }
-		~pimpl_v8_isolate() {}
+		~pimpl_v8_isolate() override { }
 		v8::Isolate* _instance;
 	};
 
@@ -54,46 +55,22 @@ namespace hv::v1 {
 
 	public:
 		pimpl_v8_platform() : _instance(nullptr) { }
-		~pimpl_v8_platform() {}
+		~pimpl_v8_platform() override { }
 		std::unique_ptr<v8::Platform> _instance;
 	};
 
 	class pimpl_local_var_solid : public pimpl_local_var {
 	public:
-		pimpl_local_var_solid() : _isolate(nullptr) {}
-		~pimpl_local_var_solid() {}
-		v8::Local<v8::Value> _local;
+		pimpl_local_var_solid() : _isolate(nullptr),
+								  _local(nullptr) {}
+
+		~pimpl_local_var_solid() override { }
+		v8::Local<v8::Value> * _local;
 		v8::Isolate* _isolate;
 		std::string _key;
 
-		//virtual std::shared_ptr<object> data() override {
-		//	
-		//
 
-		//	if (_isolate == nullptr) return nullptr;
-
-		//	if (_local->IsBoolean()) {
-		//		bool v8_data = v8pp::from_v8<bool>(_isolate, _local->ToBoolean(_isolate));
-		//		std::shared_ptr<object> data((object*) new boolean(this->_key, v8_data));
-		//		return data;
-		//	}
-		//	else if (_local->IsNumber()) {
-		//		double v8_data = v8pp::from_v8<double>(_isolate, _local->ToNumber(_isolate));
-		//		std::shared_ptr<object> data((object*) new number(this->_key, v8_data));
-		//		return data;
-		//	}
-		//	else if (_local->IsString()) {
-		//		std::string v8_data = v8pp::from_v8<std::string>(_isolate, _local->ToString(_isolate));
-		//		std::shared_ptr<object> data((object*) new string(this->_key, v8_data));
-		//		return data;
-		//	}
-		//	else {
-		//		return nullptr;
-		//	}
-		//}
-
-
-		void set(v8::Local<v8::Value> local, v8::Isolate * isolate, std::string key) {
+		void set(v8::Local<v8::Value> * local, v8::Isolate * isolate, std::string key) {
 			this->_local = local;
 			this->_isolate = isolate;
 			this->_key = key;

@@ -13,17 +13,14 @@ namespace hv::v1 {
 
 	public:
 		pimpl(){}
-		~pimpl() {}
+		virtual ~pimpl() {}
 	};
 
 
 	class HVAPI_EXPORT pimpl_local_var {
 	public:
 		pimpl_local_var() {}
-		~pimpl_local_var() {}
-
-
-		/*virtual std::shared_ptr<object> data() = 0;*/
+		virtual ~pimpl_local_var() {}
 		virtual std::string key() = 0;
 	};
 }

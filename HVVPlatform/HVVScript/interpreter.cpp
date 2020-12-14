@@ -1,7 +1,7 @@
 #include "interpreter.h"
 
 
-
+#include <v8.h>
 #include <v8pp/function.hpp>
 #include <v8pp/object.hpp>
 #include <v8pp/context.hpp>
@@ -15,11 +15,10 @@
 #include <libplatform/libplatform.h>
 
 
-
+#include <iostream>
 #include <chrono>
 #include <map>
 #include <memory>
-#include <iostream>
 
 
 
@@ -27,8 +26,6 @@
 #include "object.h"
 #include "converter.h"
 #include "exception.h"
-
-
 
 
 using namespace hv;
@@ -40,19 +37,9 @@ interpreter::~interpreter() {
 
 	this->_is_thread_running = false;
 
+	this->_script_start_signal();
 
-	// Start lock 해제 
-	{
-		std::scoped_lock<std::mutex> lock(this->_mtx_event_start_script);
-		this->_is_script_running = true;
-	}
-
-	this->_event_start_script.notify_one();
-	// Start lock 해제 
-
-
-	if (this->_interpreter_thread.joinable())
-		this->_interpreter_thread.join();
+	this->_interpreter_thread.join();
 
 }
 
@@ -60,7 +47,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_global_object_hash(std::make_shared<pimpl_object_hash>()),
 							_is_thread_running(true),
 							_is_script_running(false),
-							_interpreter_thread(&interpreter::_loop, this),
+							_interpreter_thread(),
 							_is_content(false),
 						    _has_error(false),
 							_error_message(""),
@@ -69,6 +56,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_error_rows(-1){
 
 
+	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
 
 
 	/// <summary>
@@ -114,7 +102,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 		try {
 			auto data = hv::v1::convert_to_array(local_variable);
-			auto native_array = new hv::v1::array_number(key, data.data(), data.size());
+			auto native_array = new hv::v1::array_number(key, data.data(), static_cast<unsigned int>(data.size()));
 			return native_array;
 		}
 		catch (std::exception e) {
@@ -195,15 +183,6 @@ void interpreter::_loop() {
 
 	while (this->_is_thread_running) {
 
-		v8pp::context parent_context;
-
-		
-		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
-		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
-
-		isolate->_instance = parent_context.isolate();
-		v8::HandleScope handleScope1(isolate->_instance);
-
 		// start signal wait;
 		this->_script_start_wait();
 
@@ -213,26 +192,41 @@ void interpreter::_loop() {
 		// exception info clear;
 		this->_clear_error_message();
 
+
+		v8pp::context parent_context;
+
+		
+		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
+		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+
+		isolate->_instance = parent_context.isolate();
+
+		v8::HandleScope handleScope(isolate->_instance);
+
+
 		/// <summary>
 		///  Class 함수 등록
 		/// </summary>
 		typedef v8pp::class_<interpreter> wrap_class_interpreter;
 		wrap_class_interpreter interpreter_instance(isolate->_instance);
 		interpreter_instance.set("trace", &interpreter::trace);
-		v8::Local<v8::Value> val = wrap_class_interpreter::reference_external(isolate->_instance, this);
-		isolate->_instance->GetCurrentContext()->Global()->Set(v8pp::to_v8(isolate->_instance, "script"), val);
+		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
+		auto key = v8pp::to_v8(isolate->_instance, "script");
+		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
 	
 
 		v8::TryCatch try_catch(isolate->_instance);
 
 
-
+	
 		try {
 			if (this->_is_content == false) {
-				auto result = parent_context.run_file(this->_script_file_path);
+				v8::HandleScope handleScope(isolate->_instance);
+				auto script_result = parent_context.run_file(this->_script_file_path);
 			}
 			else {
-				auto result = parent_context.run_script(this->_script_content);
+				v8::HandleScope handleScope(isolate->_instance);
+				auto script_result = parent_context.run_script(this->_script_content);
 			}
 		}
 		catch (std::exception e) {
@@ -240,21 +234,25 @@ void interpreter::_loop() {
 		}
 
 
+		/// <summary>
+		/// Context after run script
+		/// </summary>
+		auto currentContext = isolate->_instance->GetCurrentContext();
+
+
 		if (try_catch.HasCaught())
 		{
-			std::string const msg = v8pp::from_v8<std::string>(isolate->_instance, try_catch.Exception()->ToString(isolate->_instance->GetCurrentContext()).ToLocalChecked());
-			int lineNumber = try_catch.Message()->GetLineNumber(isolate->_instance->GetCurrentContext()).FromJust();
-			int startColumn = try_catch.Message()->GetStartColumn(isolate->_instance->GetCurrentContext()).FromJust();
-			int endColumn = try_catch.Message()->GetEndColumn(isolate->_instance->GetCurrentContext()).FromJust();
+			v8::HandleScope handleScope(isolate->_instance);
+			std::string const msg = v8pp::from_v8<std::string>(isolate->_instance, try_catch.Exception()->ToString(currentContext).ToLocalChecked());
+			int lineNumber = try_catch.Message()->GetLineNumber(currentContext).FromJust();
+			int startColumn = try_catch.Message()->GetStartColumn(currentContext).FromJust();
+			int endColumn = try_catch.Message()->GetEndColumn(currentContext).FromJust();
 
 			this->_set_error_info(msg, startColumn, endColumn, lineNumber);
 		}
 
-	
-		
-		auto globals = isolate->_instance->GetCurrentContext()->Global();
-		auto global_names = globals->GetOwnPropertyNames(isolate->_instance->GetCurrentContext()).ToLocalChecked();
-
+		auto globals = currentContext->Global();
+		auto global_names = globals->GetOwnPropertyNames(currentContext).ToLocalChecked();
 
 		// global hash lock
 		{
@@ -263,30 +261,38 @@ void interpreter::_loop() {
 			this->_global_names.clear();
 
 			for (unsigned int i = 0; i < global_names->Length(); i++) {
+
+				v8::HandleScope handleScope(isolate->_instance);
+
 				auto key_local = global_names->Get(i);
 				auto val_local = globals->Get(key_local);
 
 				std::string key = v8pp::from_v8<std::string>(isolate->_instance, key_local->ToString(isolate->_instance));
 				std::string type = v8pp::from_v8<std::string>(isolate->_instance, val_local->TypeOf(isolate->_instance));
-				if (val_local->IsArray() == true && !val_local.IsEmpty()) type = "array";
-				
-				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
+
+				if (val_local->IsNullOrUndefined())
+					continue;
+
+				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) 
+					type = "array";
+				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) 
+					continue;
 
 				std::shared_ptr<pimpl_local_var_solid> local_var_solid = std::make_shared<pimpl_local_var_solid>();
 				auto local_var = std::static_pointer_cast<pimpl_local_var>(local_var_solid);
 
-				local_var_solid->set(val_local, isolate->_instance, key);
+				local_var_solid->set(&val_local, isolate->_instance, key);
 
 				auto converter = this->_converter_lambda[type];
 				object* result = (*converter)(local_var);
-				if (result) {
+				if (result != nullptr) {
 					this->_global_names.push_back(key);
 					std::shared_ptr<object> smart_ptr = std::shared_ptr<object>(result);
 					global_hash->_instance[key] = smart_ptr;
 				}
 			}
 		}
-		
+
 
 		/// <summary>
 		/// Script end signal
