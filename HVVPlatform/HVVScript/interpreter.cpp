@@ -101,15 +101,14 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 		try {
 			auto data = hv::v1::convert_to_array(local_variable);
-			auto native_array = new hv::v1::array_number(key, data.data(), static_cast<unsigned int>(data.size()));
+			if (std::holds_alternative<std::monostate>(data)) return nullptr;
+			auto native_array = new hv::v1::array(key, data);
 			return native_array;
 		}
 		catch (std::exception e) {
 
 			return nullptr;
 		}
-		
-
 
 		return nullptr;
 	}));
@@ -182,16 +181,6 @@ void interpreter::_loop() {
 
 	while (this->_is_thread_running) {
 
-		v8pp::context parent_context;
-
-		
-		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
-		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
-
-		isolate->_instance = parent_context.isolate();
-
-		v8::HandleScope handleScope(isolate->_instance);
-
 		// start signal wait;
 		this->_script_start_wait();
 
@@ -201,6 +190,15 @@ void interpreter::_loop() {
 		// exception info clear;
 		this->_clear_error_message();
 
+		v8pp::context parent_context;
+
+		
+		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
+		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+
+		isolate->_instance = parent_context.isolate();
+
+		v8::HandleScope handleScope(isolate->_instance);
 		/// <summary>
 		///  Class 함수 등록
 		/// </summary>
@@ -266,16 +264,23 @@ void interpreter::_loop() {
 				auto val_local = globals->Get(key_local);
 
 				// C++20에 추가될 u8string이 추가될 경우 변경되어야됨.
-				std::string u8_key = v8pp::from_v8<std::string>(isolate->_instance, key_local->ToString(isolate->_instance));
-				std::string type = v8pp::from_v8<std::string>(isolate->_instance, val_local->TypeOf(isolate->_instance));
 
-				std::string key = u8string_to_string(u8_key);
+				auto v8KeyValue = key_local->ToString(isolate->_instance);
+				auto v8TypeValue = val_local->TypeOf(isolate->_instance);
+
+				std::string u8_key = v8pp::from_v8<std::string>(isolate->_instance, v8KeyValue);
+				std::string u8_type = v8pp::from_v8<std::string>(isolate->_instance, v8TypeValue);
+
+				std::string key = string_to_u8string(u8_key);
+				std::string type = string_to_u8string(u8_type);
+				//std::string type = u8string_to_string(u8_type);
 
 				if (val_local->IsNullOrUndefined())
 					continue;
 
 				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) 
 					type = "array";
+
 				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) 
 					continue;
 
@@ -293,7 +298,6 @@ void interpreter::_loop() {
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Script end signal
@@ -384,6 +388,7 @@ void interpreter::init_v8_platform() {
 }
 
 bool interpreter::init_v8_engine() {
+	
 	return v8::V8::Initialize();
 }
 

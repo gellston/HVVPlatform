@@ -11,7 +11,7 @@ script_error::script_error(const std::string message, int start_column, int end_
 																									_start_column(start_column),
 																									_end_column(end_column),
 																									_line(line){
-	
+
 }
 
 int script_error::line() {

@@ -181,11 +181,6 @@ public:
 	using ctor_function = std::function<object_pointer_type (v8::FunctionCallbackInfo<v8::Value> const& args)>;
 	using dtor_function = std::function<void (v8::Isolate* isolate, object_pointer_type const& obj)>;
 
-	explicit class_(v8::Isolate* isolate, detail::type_info const& existing)
-		: class_info_(detail::classes::find<Traits>(isolate, existing))
-	{
-	}
-
 public:
 	explicit class_(v8::Isolate* isolate, dtor_function destroy = &factory<T, Traits>::destroy)
 		: class_info_(detail::classes::add<Traits>(isolate, detail::type_id<T>(),
@@ -194,12 +189,6 @@ public:
 				destroy(isolate, Traits::template static_pointer_cast<T>(obj));
 			}))
 	{
-	}
-
-	/// Find existing class_ to extend bindings
-	static class_ extend(v8::Isolate* isolate)
-	{
-		return class_(isolate, detail::type_id<T>());
 	}
 
 	/// Set class constructor signature

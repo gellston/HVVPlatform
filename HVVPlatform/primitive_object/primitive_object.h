@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #ifndef  HV_PRIMITIVE_OBJECT
 #define HV_PRIMITIVE_OBJECT
 
@@ -9,13 +7,16 @@
 
 #include <vector>
 #include <memory>
-
+#include <variant>
 
 namespace hv::v1 {
+
+	using array_type = std::variant<std::monostate, std::vector<std::string>, std::vector<double>>;
 
 	class boolean;
 	class number;
 	class string;
+	class array;
 
 	class HVAPI_EXPORT boolean : public object {
 	private:
@@ -61,27 +62,26 @@ namespace hv::v1 {
 	};
 
 
-	class HVAPI_EXPORT array_number : public object {
+	class HVAPI_EXPORT array : public object {
 	private:
 		
-		std::shared_ptr<double> __data;
+		array_type __data;
+		std::string _data_type;
 		unsigned int _size;
+		array() = delete;
 
-		array_number() = delete;
 	public:
 
-		array_number(std::string name, double * data, unsigned int size);
-		array_number(std::string name, std::shared_ptr<double> data, unsigned int size);
-		~array_number() override { }
-		std::shared_ptr<double> data();
-		void data(double* data, unsigned int size);
-		void data(std::shared_ptr<double> data, unsigned int size);
-		unsigned int size();
+		array(std::string name, double * data, unsigned int size);
+		array(std::string name, array_type & data);
+		~array() override { }
 
+		array_type & data();
+		void data(double* data, unsigned int size);
+		unsigned int size();
+		std::string data_type();
 		std::string to_string()  override;
 	};
 }
-
-
 
 #endif // ! HV_PRIMITIVE_OBJECT

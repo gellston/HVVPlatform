@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #ifndef HV_PIMPL
 #define HV_PIMPL
 

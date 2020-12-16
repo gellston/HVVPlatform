@@ -74,25 +74,63 @@ bool hv::v1::is_string(std::shared_ptr<pimpl_local_var> local_var) {
 
 
 
-std::vector<double> hv::v1::convert_to_array(std::shared_ptr<pimpl_local_var> local_var) {
 
-	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
-	auto isolate = pimpl_solid_ptr->_isolate;
-
-	try {
-		v8::HandleScope scope(isolate);
-		auto v8ObjectValue = (*(pimpl_solid_ptr->_local))->ToObject(isolate);
-		auto array = v8pp::from_v8<std::vector<double>>(isolate, v8ObjectValue);
-		return array;
-	}
-	catch (std::exception e) {
-		throw e;
-	}
-
-}
+// array to native array converter template defition
 bool hv::v1::is_array(std::shared_ptr<pimpl_local_var> local_var) {
 
 	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
 	bool check = (*(pimpl_solid_ptr->_local))->IsArray() && !(*(pimpl_solid_ptr->_local)).IsEmpty();
 	return check;
 }
+
+// double
+
+ret_array_type hv::v1::convert_to_array(std::shared_ptr<pimpl_local_var> local_var) {
+	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
+	auto isolate = pimpl_solid_ptr->_isolate;
+	ret_array_type value = std::monostate{};
+
+
+	try {
+		v8::HandleScope scope(isolate);
+		auto v8ObjectValue = (*(pimpl_solid_ptr->_local))->ToObject(isolate);
+		
+
+		/*std::vector<std::function<bool()>> checker;
+		checker.push_back([&]()-> bool {
+			try {
+				value = v8pp::from_v8<std::vector<double>>(isolate, v8ObjectValue);
+			}
+			catch (std::exception e) {
+				return false;
+			}
+			return true;
+		});
+
+		checker.push_back([&]()-> bool {
+			try {
+				auto string_value = v8pp::from_v8<std::vector<std::string>>(isolate, v8ObjectValue);
+				for (int index = 0; index < string_value.size(); index++)
+					string_value[index] = u8string_to_string(string_value[index]);
+				value = string_value;
+			}
+			catch (std::exception e) {
+				return false;
+			}
+			return true;
+		});
+
+		for (auto call : checker) {
+			if (call() == true) return value;
+		}*/
+	}
+	catch (std::exception e) {
+		throw e;
+	}
+
+
+	return value;
+}
+
+
+

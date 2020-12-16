@@ -42,7 +42,7 @@ int main()
 
     while (true) {
         system("cls");
-
+        
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
             
@@ -67,22 +67,12 @@ int main()
                 std::cout << "Key : " << element.first << std::endl;
                 std::cout << "Type : " << element.second->type() << std::endl;
                 std::cout << "Data : " << element.second->to_string() << std::endl;
-                std::cout << "Is Array check : " << (element.second->type().compare("array_number") == 0) << std::endl;
-                if (element.second->type().compare("array_number") == 0) {
-                    std::cout << "array data = [";
-                    auto element_native = element.second;
-                    auto casted_element = std::static_pointer_cast<hv::v1::array_number>(element_native);
-                    auto pure_data = casted_element->data().get();
-                    for (unsigned int index = 0; index < casted_element->size(); index++) {
-                        std::cout << pure_data[index] << ",";
-                    }
-                    std::cout << "]" << std::endl;
-                }
+                std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
+                
                 std::cout << "---------------------------------------------" << std::endl;
             }
             std::cout << "=============================================" << std::endl;
-            
-            
+
         }
         catch (hv::v1::script_error error) {
             std::cout << "=============================================" << std::endl;
@@ -95,5 +85,4 @@ int main()
         }
         Sleep(300);
     }
-
 }
