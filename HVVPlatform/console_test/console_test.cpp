@@ -11,7 +11,6 @@
 #include <chrono>
 
 
-
 #include <interpreter.h>
 #include <exception.h>
 #include <primitive_object.h>
@@ -22,7 +21,6 @@ std::string current_directory()
     char buffer[MAX_PATH];
     GetModuleFileNameA(NULL, buffer, MAX_PATH);
     std::string::size_type pos = std::string(buffer).find_last_of("\\/");
-
     return std::string(buffer).substr(0, pos);
 }
 
@@ -41,8 +39,9 @@ int main()
     hv::v1::interpreter interpreter;
 
     while (true) {
-        system("cls");
-        
+
+        //system("cls");
+
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
             
@@ -59,20 +58,19 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
+            //std::cout << "takt time : " << duration << std::endl;
+            //std::cout << "=============================================" << std::endl;
+            //for (auto element : *global_objects)
+            //{
+            //    std::cout << "Key : " << element.first << std::endl;
+            //    std::cout << "Type : " << element.second->type() << std::endl;
+            //    std::cout << "Data : " << element.second->to_string() << std::endl;
+            //    std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
+            //    
+            //    std::cout << "---------------------------------------------" << std::endl;
+            //}
+            //std::cout << "=============================================" << std::endl;
             
-            std::cout << "takt time : " << duration << std::endl;
-            std::cout << "=============================================" << std::endl;
-            for (auto element : *global_objects)
-            {
-                std::cout << "Key : " << element.first << std::endl;
-                std::cout << "Type : " << element.second->type() << std::endl;
-                std::cout << "Data : " << element.second->to_string() << std::endl;
-                std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
-                
-                std::cout << "---------------------------------------------" << std::endl;
-            }
-            std::cout << "=============================================" << std::endl;
-
         }
         catch (hv::v1::script_error error) {
             std::cout << "=============================================" << std::endl;
@@ -83,6 +81,6 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        Sleep(300);
+        //Sleep(300);
     }
 }

@@ -100,14 +100,19 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		if (hv::v1::is_array(local_variable) == false) return nullptr;
 
 		try {
-			auto data = hv::v1::convert_to_array(local_variable);
-			if (std::holds_alternative<std::monostate>(data)) return nullptr;
-			auto native_array = new hv::v1::array(key, data);
-			return native_array;
+			auto data = hv::v1::convert_to_array<std::vector<std::string>>(local_variable);
+			auto array = new hv::v1::array<std::vector<std::string>>(key, data);
+			return array;
 		}
 		catch (std::exception e) {
+		}
 
-			return nullptr;
+		try {
+			auto data = hv::v1::convert_to_array<std::vector<double>>(local_variable);
+			auto array = new hv::v1::array<std::vector<double>>(key, data);
+			return array;
+		}
+		catch (std::exception e) {
 		}
 
 		return nullptr;
@@ -190,15 +195,15 @@ void interpreter::_loop() {
 		// exception info clear;
 		this->_clear_error_message();
 
-		v8pp::context parent_context;
 
-		
 		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
 		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
 
+		v8pp::context parent_context;
 		isolate->_instance = parent_context.isolate();
 
 		v8::HandleScope handleScope(isolate->_instance);
+
 		/// <summary>
 		///  Class 함수 등록
 		/// </summary>
@@ -209,19 +214,14 @@ void interpreter::_loop() {
 		auto key = v8pp::to_v8(isolate->_instance, "script");
 		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
 
-	
 
 		v8::TryCatch try_catch(isolate->_instance);
-
-
 	
 		try {
 			if (this->_is_content == false) {
-				v8::HandleScope handleScope(isolate->_instance);
 				auto script_result = parent_context.run_file(this->_script_file_path);
 			}
 			else {
-				v8::HandleScope handleScope(isolate->_instance);
 				auto script_result = parent_context.run_script(this->_script_content);
 			}
 		}
@@ -238,7 +238,6 @@ void interpreter::_loop() {
 
 		if (try_catch.HasCaught())
 		{
-			v8::HandleScope handleScope(isolate->_instance);
 			std::string const msg = v8pp::from_v8<std::string>(isolate->_instance, try_catch.Exception()->ToString(currentContext).ToLocalChecked());
 			int lineNumber = try_catch.Message()->GetLineNumber(currentContext).FromJust();
 			int startColumn = try_catch.Message()->GetStartColumn(currentContext).FromJust();
@@ -258,8 +257,6 @@ void interpreter::_loop() {
 
 			for (unsigned int i = 0; i < global_names->Length(); i++) {
 
-				v8::HandleScope handleScope(isolate->_instance);
-
 				auto key_local = global_names->Get(i);
 				auto val_local = globals->Get(key_local);
 
@@ -273,7 +270,6 @@ void interpreter::_loop() {
 
 				std::string key = string_to_u8string(u8_key);
 				std::string type = string_to_u8string(u8_type);
-				//std::string type = u8string_to_string(u8_type);
 
 				if (val_local->IsNullOrUndefined())
 					continue;
@@ -298,6 +294,10 @@ void interpreter::_loop() {
 				}
 			}
 		}
+		/// <summary>
+		/// Clear v8pp context explicitly 
+		/// </summary>
+		v8pp::cleanup(isolate->_instance);
 
 		/// <summary>
 		/// Script end signal

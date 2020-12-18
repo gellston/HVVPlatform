@@ -87,98 +87,71 @@ std::string hv::v1::string::to_string() {
 
 
 
-hv::v1::array::array(std::string name, double * data, unsigned int size) :
-																			_size(0),
-																			__data(std::monostate{}),
-																			object(name, "array"),
-																			_data_type("number"){
+// double array
 
-	if (size < 0 || size == 0)
-		throw std::runtime_error("Invalid size");
-
-	if (data == nullptr)
-		throw std::runtime_error("Invalid pointer");
-
-	this->_size = size;
-	std::vector<double> vec_data;
-	vec_data.resize(_size);
-	memcpy(vec_data.data(), data, sizeof(double) * size);
-	this->__data = vec_data;
-}
-
-hv::v1::array::array(std::string name, hv::v1::array_type& data) :
-																	_size(0),
-																	__data(std::monostate{}),
-																	object(name, "array"){
+hv::v1::array<std::vector<double>>::array(std::string name, std::vector<double> & data) : object(name, "array"){
 	
-	if (std::holds_alternative<std::vector<std::string>>(data)) {
-		auto string_vector = std::get<std::vector<std::string>>(data);
-		unsigned int size = static_cast<unsigned int>(string_vector.size());
-		this->__data = string_vector;
-		this->_size = size;
-		_data_type = "string";
-	}
-	else if (std::holds_alternative<std::vector<double>>(data)) {
-		auto double_vector = std::get<std::vector<double>>(data);
-		unsigned int size = static_cast<unsigned int>(double_vector.size());
-		this->__data = double_vector;
-		this->_size = size;
-		_data_type = "number";
-	}
-	else {
-		throw std::runtime_error("Invalid pointer");
-	}
+	this->__data = data;
+	_data_type = "number";
+
 }
 
 
-hv::v1::array_type & hv::v1::array::data() {
+std::vector<double> & hv::v1::array<std::vector<double>>::data() {
 	return this->__data;
 }
 
-unsigned int hv::v1::array::size() {
-	return this->_size;
+unsigned int hv::v1::array<std::vector<double>>::size() {
+	return static_cast<unsigned int>(this->__data.size());
 }
 
-void hv::v1::array::data(double * data, unsigned int size) {
-
-	if (size < 0 || size == 0)
-		throw std::runtime_error("Invalid size");
-
-	if (data == nullptr)
-		throw std::runtime_error("Invalid pointer");
-
-	if (this->_size != size) {
-		this->_size = size;
-
-		std::vector<double> data;
-		data.resize(size);
-		this->__data = data;
-	}
-	auto member_data = std::get<std::vector<double>>(this->__data);
-	auto pointer = member_data.data();
-
-	memcpy(pointer, data, size);
-
-	_data_type = "number";
-}
-
-std::string hv::v1::array::to_string() {
+std::string hv::v1::array<std::vector<double>>::to_string() {
 	std::string temp = "";
 	temp += "array = [ \n";
-	for (unsigned int index = 0; index < this->_size; index++) {
-		if (!this->_data_type.compare("number")) {
-			auto __double_array = std::get<std::vector<double>>(this->__data);
-			temp += std::to_string(__double_array[index]) += ",";
-		}
-		else if (!this->_data_type.compare("string")) {
-			auto __string_vector = std::get<std::vector<std::string>>(this->__data);
-			temp += __string_vector[index] += ",";
-		}
+	for (unsigned int index = 0; index < this->__data.size(); index++) {
+		temp += std::to_string(this->__data[index]) += ",";
 	}
 	temp += "]\n";
 	return temp;
 }
 
-std::string hv::v1::array::data_type() {
+std::string hv::v1::array<std::vector<double>>::data_type() {
+	return this->_data_type;
+}
+
+
+
+
+
+
+// std::string array
+
+hv::v1::array<std::vector<std::string>>::array(std::string name, std::vector<std::string>& data) : object(name, "array") {
+
+	this->__data = data;
+	_data_type = "string";
+
+}
+
+
+std::vector<std::string>& hv::v1::array<std::vector<std::string>>::data() {
+	return this->__data;
+}
+
+unsigned int hv::v1::array<std::vector<std::string>>::size() {
+	return static_cast<unsigned int>(this->__data.size());
+}
+
+std::string hv::v1::array<std::vector<std::string>>::to_string() {
+	std::string temp = "";
+	temp += "array = [ \n";
+	for (unsigned int index = 0; index < this->__data.size(); index++) {
+		temp += this->__data[index] += ",";
+	}
+	temp += "]\n";
+	return temp;
+}
+
+std::string hv::v1::array<std::vector<std::string>>::data_type() {
 	return this->_data_type;
 }

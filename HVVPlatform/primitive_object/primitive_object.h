@@ -16,7 +16,24 @@ namespace hv::v1 {
 	class boolean;
 	class number;
 	class string;
-	class array;
+
+	template<class T> class array: public object {
+	private:
+
+		std::vector<double> __data;
+		std::string _data_type;
+		array() = delete;
+
+	public:
+
+		array(std::string name, std::vector<T>& data);
+		~array() override { }
+
+		std::vector<T>& data();
+		unsigned int size();
+		std::string data_type();
+		std::string to_string()  override;
+	};
 
 	class HVAPI_EXPORT boolean : public object {
 	private:
@@ -62,22 +79,41 @@ namespace hv::v1 {
 	};
 
 
-	class HVAPI_EXPORT array : public object {
+	
+
+	
+	template<> class HVAPI_EXPORT array<std::vector<double>> : public object {
 	private:
 		
-		array_type __data;
+		std::vector<double> __data;
 		std::string _data_type;
-		unsigned int _size;
 		array() = delete;
 
 	public:
 
-		array(std::string name, double * data, unsigned int size);
-		array(std::string name, array_type & data);
+		array(std::string name, std::vector<double> & data);
 		~array() override { }
 
-		array_type & data();
-		void data(double* data, unsigned int size);
+		std::vector<double> & data();
+		unsigned int size();
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+
+	template<> class HVAPI_EXPORT array<std::vector<std::string>> : public object {
+	private:
+
+		std::vector<std::string> __data;
+		std::string _data_type;
+		array() = delete;
+
+	public:
+
+		array(std::string name, std::vector<std::string> & data);
+		~array() override { }
+
+		std::vector<std::string>& data();
 		unsigned int size();
 		std::string data_type();
 		std::string to_string()  override;
