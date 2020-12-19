@@ -31,6 +31,7 @@ namespace hv::v1 {
 	template <typename T> T convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::vector<double> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::vector<std::string> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
+	template <> HVAPI_EXPORT std::vector<bool> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	//HVAPI_EXPORT ret_array_type convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 
 }

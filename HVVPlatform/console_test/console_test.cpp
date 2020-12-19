@@ -1,11 +1,9 @@
 ﻿// console_test.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
 //
 //
-
-#include <locale.h>
-
 #include <Windows.h>
 
+#include <locale.h>
 #include <iostream>
 #include <filesystem>
 #include <chrono>
@@ -38,18 +36,19 @@ int main()
     
     hv::v1::interpreter interpreter;
 
+
     while (true) {
 
-        //system("cls");
+        system("cls");
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
-            
+
             std::string current_script_path = current_path;
             current_script_path += "\\";
             current_script_path += "script.js";
 
-            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script.js");
+            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script1.js");
 
             auto global_objects = interpreter.global_objects();
 
@@ -58,19 +57,19 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
-            //std::cout << "takt time : " << duration << std::endl;
-            //std::cout << "=============================================" << std::endl;
-            //for (auto element : *global_objects)
-            //{
-            //    std::cout << "Key : " << element.first << std::endl;
-            //    std::cout << "Type : " << element.second->type() << std::endl;
-            //    std::cout << "Data : " << element.second->to_string() << std::endl;
-            //    std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
-            //    
-            //    std::cout << "---------------------------------------------" << std::endl;
-            //}
-            //std::cout << "=============================================" << std::endl;
-            
+            std::cout << "takt time : " << duration << std::endl;
+            std::cout << "=============================================" << std::endl;
+            for (auto element : *global_objects)
+            {
+                std::cout << "Key : " << element.first << std::endl;
+                std::cout << "Type : " << element.second->type() << std::endl;
+                std::cout << "Data : " << element.second->to_string() << std::endl;
+                std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
+
+                std::cout << "---------------------------------------------" << std::endl;
+            }
+            std::cout << "=============================================" << std::endl;
+
         }
         catch (hv::v1::script_error error) {
             std::cout << "=============================================" << std::endl;
@@ -81,6 +80,7 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        //Sleep(300);
+        Sleep(300);
     }
+    
 }

@@ -96,7 +96,6 @@ hv::v1::array<std::vector<double>>::array(std::string name, std::vector<double> 
 
 }
 
-
 std::vector<double> & hv::v1::array<std::vector<double>>::data() {
 	return this->__data;
 }
@@ -133,7 +132,6 @@ hv::v1::array<std::vector<std::string>>::array(std::string name, std::vector<std
 
 }
 
-
 std::vector<std::string>& hv::v1::array<std::vector<std::string>>::data() {
 	return this->__data;
 }
@@ -153,5 +151,40 @@ std::string hv::v1::array<std::vector<std::string>>::to_string() {
 }
 
 std::string hv::v1::array<std::vector<std::string>>::data_type() {
+	return this->_data_type;
+}
+
+
+
+
+
+// std::string array
+
+hv::v1::array<std::vector<bool>>::array(std::string name, std::vector<bool>& data) : object(name, "array") {
+
+	this->__data = data;
+	_data_type = "boolean";
+
+}
+
+std::vector<bool>& hv::v1::array<std::vector<bool>>::data() {
+	return this->__data;
+}
+
+unsigned int hv::v1::array<std::vector<bool>>::size() {
+	return static_cast<unsigned int>(this->__data.size());
+}
+
+std::string hv::v1::array<std::vector<bool>>::to_string() {
+	std::string temp = "";
+	temp += "array = [ \n";
+	for (unsigned int index = 0; index < this->__data.size(); index++) {
+		temp += std::to_string(this->__data[index]) += ",";
+	}
+	temp += "]\n";
+	return temp;
+}
+
+std::string hv::v1::array<std::vector<bool>>::data_type() {
 	return this->_data_type;
 }

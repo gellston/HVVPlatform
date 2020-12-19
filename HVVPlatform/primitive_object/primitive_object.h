@@ -11,7 +11,7 @@
 
 namespace hv::v1 {
 
-	using array_type = std::variant<std::monostate, std::vector<std::string>, std::vector<double>>;
+	//using array_type = std::variant<std::monostate, std::vector<std::string>, std::vector<double>>;
 
 	class boolean;
 	class number;
@@ -20,7 +20,7 @@ namespace hv::v1 {
 	template<class T> class array: public object {
 	private:
 
-		std::vector<double> __data;
+		std::vector<T> __data;
 		std::string _data_type;
 		array() = delete;
 
@@ -114,6 +114,25 @@ namespace hv::v1 {
 		~array() override { }
 
 		std::vector<std::string>& data();
+		unsigned int size();
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+
+	template<> class HVAPI_EXPORT array<std::vector<bool>> : public object {
+	private:
+
+		std::vector<bool> __data;
+		std::string _data_type;
+		array() = delete;
+
+	public:
+
+		array(std::string name, std::vector<bool>& data);
+		~array() override { }
+
+		std::vector<bool>& data();
 		unsigned int size();
 		std::string data_type();
 		std::string to_string()  override;

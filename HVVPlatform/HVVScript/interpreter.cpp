@@ -115,6 +115,14 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		catch (std::exception e) {
 		}
 
+		try {
+			auto data = hv::v1::convert_to_array<std::vector<bool>>(local_variable);
+			auto array = new hv::v1::array<std::vector<bool>>(key, data);
+			return array;
+		}
+		catch (std::exception e) {
+		}
+
 		return nullptr;
 	}));
 }

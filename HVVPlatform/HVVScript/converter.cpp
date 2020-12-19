@@ -105,3 +105,17 @@ template<> std::vector<std::string> hv::v1::convert_to_array(std::shared_ptr<pim
 		throw e;
 	}
 }
+
+template<> std::vector<bool> hv::v1::convert_to_array(std::shared_ptr<pimpl_local_var> local_var) {
+	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
+	auto isolate = pimpl_solid_ptr->_isolate;
+	auto local_variable = pimpl_solid_ptr->_local;
+
+	try {
+		auto v8ObjectValue = (*local_variable)->ToObject(isolate);
+		return v8pp::from_v8<std::vector<bool>>(isolate, v8ObjectValue);
+	}
+	catch (std::exception e) {
+		throw e;
+	}
+}
