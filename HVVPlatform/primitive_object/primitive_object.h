@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <memory>
-#include <variant>
+#include <map>
 
 namespace hv::v1 {
 
@@ -31,6 +31,26 @@ namespace hv::v1 {
 
 		std::vector<T>& data();
 		unsigned int size();
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+	template<class T> class map : public object {
+	private:
+
+		std::map<std::string, T> __data;
+		std::string _data_type;
+		map() = delete;
+
+	public:
+
+		map(std::string name, std::map<std::string, T> & data);
+		~map() override { }
+
+		std::map<std::string, T> & data();
+		unsigned int size();
+		bool exist(std::string);
+		T find(std::string);
 		std::string data_type();
 		std::string to_string()  override;
 	};
@@ -82,7 +102,7 @@ namespace hv::v1 {
 	
 
 	
-	template<> class HVAPI_EXPORT array<std::vector<double>> : public object {
+	template<> class HVAPI_EXPORT array<double> : public object {
 	private:
 		
 		std::vector<double> __data;
@@ -101,7 +121,7 @@ namespace hv::v1 {
 	};
 
 
-	template<> class HVAPI_EXPORT array<std::vector<std::string>> : public object {
+	template<> class HVAPI_EXPORT array<std::string> : public object {
 	private:
 
 		std::vector<std::string> __data;
@@ -120,7 +140,7 @@ namespace hv::v1 {
 	};
 
 
-	template<> class HVAPI_EXPORT array<std::vector<bool>> : public object {
+	template<> class HVAPI_EXPORT array<bool> : public object {
 	private:
 
 		std::vector<bool> __data;
@@ -134,6 +154,66 @@ namespace hv::v1 {
 
 		std::vector<bool>& data();
 		unsigned int size();
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+	template<> class HVAPI_EXPORT map<double> : public object {
+	private:
+
+		std::map<std::string, double> __data;
+		std::string _data_type;
+		map() = delete;
+
+	public:
+
+		map(std::string name, std::map<std::string, double>& data);
+		~map() override { }
+
+		std::map<std::string, double>& data();
+		unsigned int size();
+		bool exist(std::string);
+		double find(std::string);
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+	template<> class HVAPI_EXPORT map<std::string> : public object {
+	private:
+
+		std::map<std::string, std::string> __data;
+		std::string _data_type;
+		map() = delete;
+
+	public:
+
+		map(std::string name, std::map<std::string, std::string>& data);
+		~map() override { }
+
+		std::map<std::string, std::string>& data();
+		unsigned int size();
+		bool exist(std::string);
+		std::string find(std::string);
+		std::string data_type();
+		std::string to_string()  override;
+	};
+
+	template<> class HVAPI_EXPORT map<bool> : public object {
+	private:
+
+		std::map<std::string, bool> __data;
+		std::string _data_type;
+		map() = delete;
+
+	public:
+
+		map(std::string name, std::map<std::string, bool>& data);
+		~map() override { }
+
+		std::map<std::string, bool>& data();
+		unsigned int size();
+		bool exist(std::string);
+		bool find(std::string);
 		std::string data_type();
 		std::string to_string()  override;
 	};

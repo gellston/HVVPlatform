@@ -8,6 +8,7 @@
 #include <functional>
 #include <string>
 #include <variant>
+#include <map>
 
 #include "pimpl.h"
 
@@ -27,13 +28,17 @@ namespace hv::v1 {
 	
 
 	HVAPI_EXPORT bool is_array(std::shared_ptr<pimpl_local_var> local_var);
-
-	template <typename T> T convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
+	template <typename T> std::vector<T> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::vector<double> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::vector<std::string> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::vector<bool> convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
-	//HVAPI_EXPORT ret_array_type convert_to_array(std::shared_ptr<pimpl_local_var> local_var);
 
+
+	HVAPI_EXPORT bool is_map(std::shared_ptr<pimpl_local_var> local_var);
+	template <typename T> std::map<std::string , T> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
+	template <> HVAPI_EXPORT std::map<std::string, double> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
+	template <> HVAPI_EXPORT std::map<std::string, std::string> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
+	template <> HVAPI_EXPORT std::map<std::string, bool> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
 }
 
 

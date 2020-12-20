@@ -99,30 +99,64 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 		if (hv::v1::is_array(local_variable) == false) return nullptr;
 
+		// Array
 		try {
-			auto data = hv::v1::convert_to_array<std::vector<std::string>>(local_variable);
-			auto array = new hv::v1::array<std::vector<std::string>>(key, data);
+			auto data = hv::v1::convert_to_array<std::string>(local_variable);
+			auto array = new hv::v1::array<std::string>(key, data);
 			return array;
 		}
 		catch (std::exception e) {
 		}
 
 		try {
-			auto data = hv::v1::convert_to_array<std::vector<double>>(local_variable);
-			auto array = new hv::v1::array<std::vector<double>>(key, data);
+			auto data = hv::v1::convert_to_array<double>(local_variable);
+			auto array = new hv::v1::array<double>(key, data);
 			return array;
 		}
 		catch (std::exception e) {
 		}
 
 		try {
-			auto data = hv::v1::convert_to_array<std::vector<bool>>(local_variable);
-			auto array = new hv::v1::array<std::vector<bool>>(key, data);
+			auto data = hv::v1::convert_to_array<bool>(local_variable);
+			auto array = new hv::v1::array<bool>(key, data);
 			return array;
 		}
 		catch (std::exception e) {
 		}
 
+
+		return nullptr;
+	}));
+
+	this->register_converter("map", new converter([&](std::shared_ptr<pimpl_local_var> local_variable) -> object* {
+		std::string key = local_variable->key();
+
+		if (hv::v1::is_map(local_variable) == false) return nullptr;
+
+		// Map
+		try {
+			auto data = hv::v1::convert_to_map<double>(local_variable);
+			auto map = new hv::v1::map<double>(key, data);
+			return map;
+		}
+		catch (std::exception e) {
+		}
+
+		try {
+			auto data = hv::v1::convert_to_map<std::string>(local_variable);
+			auto map = new hv::v1::map<std::string>(key, data);
+			return map;
+		}
+		catch (std::exception e) {
+		}
+
+		try {
+			auto data = hv::v1::convert_to_map<bool>(local_variable);
+			auto map = new hv::v1::map<bool>(key, data);
+			return map;
+		}
+		catch (std::exception e) {
+		}
 		return nullptr;
 	}));
 }
@@ -194,15 +228,6 @@ void interpreter::_loop() {
 
 	while (this->_is_thread_running) {
 
-		// start signal wait;
-		this->_script_start_wait();
-
-		if (this->_is_thread_running == false)
-			return;
-
-		// exception info clear;
-		this->_clear_error_message();
-
 
 		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
 		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
@@ -221,6 +246,17 @@ void interpreter::_loop() {
 		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
 		auto key = v8pp::to_v8(isolate->_instance, "script");
 		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
+
+
+		// 오브젝트 등록을 위해 여기서 멈춰있어야함. 
+		// start signal wait;
+		this->_script_start_wait();
+
+		if (this->_is_thread_running == false)
+			return;
+
+		// exception info clear;
+		this->_clear_error_message();
 
 
 		v8::TryCatch try_catch(isolate->_instance);
@@ -282,11 +318,10 @@ void interpreter::_loop() {
 				if (val_local->IsNullOrUndefined())
 					continue;
 
-				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) 
-					type = "array";
+				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "array";
+				if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "map";
 
-				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) 
-					continue;
+				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
 
 				std::shared_ptr<pimpl_local_var_solid> local_var_solid = std::make_shared<pimpl_local_var_solid>();
 				auto local_var = std::static_pointer_cast<pimpl_local_var>(local_var_solid);

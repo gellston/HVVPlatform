@@ -86,25 +86,25 @@ std::string hv::v1::string::to_string() {
 
 
 
-
+// array
 // double array
 
-hv::v1::array<std::vector<double>>::array(std::string name, std::vector<double> & data) : object(name, "array"){
+hv::v1::array<double>::array(std::string name, std::vector<double> & data) : object(name, "array"){
 	
 	this->__data = data;
 	_data_type = "number";
 
 }
 
-std::vector<double> & hv::v1::array<std::vector<double>>::data() {
+std::vector<double> & hv::v1::array<double>::data() {
 	return this->__data;
 }
 
-unsigned int hv::v1::array<std::vector<double>>::size() {
+unsigned int hv::v1::array<double>::size() {
 	return static_cast<unsigned int>(this->__data.size());
 }
 
-std::string hv::v1::array<std::vector<double>>::to_string() {
+std::string hv::v1::array<double>::to_string() {
 	std::string temp = "";
 	temp += "array = [ \n";
 	for (unsigned int index = 0; index < this->__data.size(); index++) {
@@ -114,7 +114,7 @@ std::string hv::v1::array<std::vector<double>>::to_string() {
 	return temp;
 }
 
-std::string hv::v1::array<std::vector<double>>::data_type() {
+std::string hv::v1::array<double>::data_type() {
 	return this->_data_type;
 }
 
@@ -125,22 +125,22 @@ std::string hv::v1::array<std::vector<double>>::data_type() {
 
 // std::string array
 
-hv::v1::array<std::vector<std::string>>::array(std::string name, std::vector<std::string>& data) : object(name, "array") {
+hv::v1::array<std::string>::array(std::string name, std::vector<std::string>& data) : object(name, "array") {
 
 	this->__data = data;
 	_data_type = "string";
 
 }
 
-std::vector<std::string>& hv::v1::array<std::vector<std::string>>::data() {
+std::vector<std::string>& hv::v1::array<std::string>::data() {
 	return this->__data;
 }
 
-unsigned int hv::v1::array<std::vector<std::string>>::size() {
+unsigned int hv::v1::array<std::string>::size() {
 	return static_cast<unsigned int>(this->__data.size());
 }
 
-std::string hv::v1::array<std::vector<std::string>>::to_string() {
+std::string hv::v1::array<std::string>::to_string() {
 	std::string temp = "";
 	temp += "array = [ \n";
 	for (unsigned int index = 0; index < this->__data.size(); index++) {
@@ -150,7 +150,7 @@ std::string hv::v1::array<std::vector<std::string>>::to_string() {
 	return temp;
 }
 
-std::string hv::v1::array<std::vector<std::string>>::data_type() {
+std::string hv::v1::array<std::string>::data_type() {
 	return this->_data_type;
 }
 
@@ -160,22 +160,22 @@ std::string hv::v1::array<std::vector<std::string>>::data_type() {
 
 // std::string array
 
-hv::v1::array<std::vector<bool>>::array(std::string name, std::vector<bool>& data) : object(name, "array") {
+hv::v1::array<bool>::array(std::string name, std::vector<bool>& data) : object(name, "array") {
 
 	this->__data = data;
 	_data_type = "boolean";
 
 }
 
-std::vector<bool>& hv::v1::array<std::vector<bool>>::data() {
+std::vector<bool>& hv::v1::array<bool>::data() {
 	return this->__data;
 }
 
-unsigned int hv::v1::array<std::vector<bool>>::size() {
+unsigned int hv::v1::array<bool>::size() {
 	return static_cast<unsigned int>(this->__data.size());
 }
 
-std::string hv::v1::array<std::vector<bool>>::to_string() {
+std::string hv::v1::array<bool>::to_string() {
 	std::string temp = "";
 	temp += "array = [ \n";
 	for (unsigned int index = 0; index < this->__data.size(); index++) {
@@ -185,6 +185,172 @@ std::string hv::v1::array<std::vector<bool>>::to_string() {
 	return temp;
 }
 
-std::string hv::v1::array<std::vector<bool>>::data_type() {
+std::string hv::v1::array<bool>::data_type() {
 	return this->_data_type;
+}
+
+
+
+
+// map
+// double
+hv::v1::map<double>::map(std::string name, std::map<std::string, double>& data) : object(name, "map") {
+
+	this->__data = data;
+	_data_type = "number";
+
+}
+
+std::map<std::string, double>&  hv::v1::map<double>::data() {
+
+	return this->__data;
+}
+
+unsigned int hv::v1::map<double>::size() {
+
+	return static_cast<unsigned int>(this->__data.size());
+}
+
+bool hv::v1::map<double>::exist(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		return false;
+
+	return true;
+}
+
+double hv::v1::map<double>::find(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		throw std::runtime_error("Key is not exists");
+
+	return this->__data[key];
+}
+
+std::string hv::v1::map<double>::data_type() {
+	return this->_data_type;
+}
+
+std::string hv::v1::map<double>::to_string() {
+
+	std::string temp = "";
+	temp += "map = [ \n";
+	for (auto element : this->__data) {
+		temp += element.first;
+		temp += " : ";
+		temp += std::to_string(element.second);
+		temp += "\n";
+	}
+	temp += "]\n";
+	return temp;
+
+}
+
+
+
+
+
+// std::string
+hv::v1::map<std::string>::map(std::string name, std::map<std::string, std::string>& data) : object(name, "map") {
+
+	this->__data = data;
+	_data_type = "string";
+
+}
+
+std::map<std::string, std::string>& hv::v1::map<std::string>::data() {
+
+	return this->__data;
+}
+
+unsigned int hv::v1::map<std::string>::size() {
+
+	return static_cast<unsigned int>(this->__data.size());
+}
+
+bool hv::v1::map<std::string>::exist(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		return false;
+
+	return true;
+}
+
+std::string hv::v1::map<std::string>::find(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		throw std::runtime_error("Key is not exists");
+
+	return this->__data[key];
+}
+
+std::string hv::v1::map<std::string>::data_type() {
+	return this->_data_type;
+}
+
+std::string hv::v1::map<std::string>::to_string() {
+
+	std::string temp = "";
+	temp += "map = [ \n";
+	for (auto element : this->__data) {
+		temp += element.first;
+		temp += " : ";
+		temp += element.second;
+		temp += "\n";
+	}
+	temp += "]\n";
+	return temp;
+
+}
+
+
+
+
+
+
+// bool
+hv::v1::map<bool>::map(std::string name, std::map<std::string, bool>& data) : object(name, "map") {
+
+	this->__data = data;
+	_data_type = "boolean";
+
+}
+
+std::map<std::string, bool>& hv::v1::map<bool>::data() {
+
+	return this->__data;
+}
+
+unsigned int hv::v1::map<bool>::size() {
+
+	return static_cast<unsigned int>(this->__data.size());
+}
+
+bool hv::v1::map<bool>::exist(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		return false;
+
+	return true;
+}
+
+bool hv::v1::map<bool>::find(std::string key) {
+	if (this->__data.find(key) == this->__data.end())
+		throw std::runtime_error("Key is not exists");
+
+	return this->__data[key];
+}
+
+std::string hv::v1::map<bool>::data_type() {
+	return this->_data_type;
+}
+
+std::string hv::v1::map<bool>::to_string() {
+
+	std::string temp = "";
+	temp += "map = [ \n";
+	for (auto element : this->__data) {
+		temp += element.first;
+		temp += " : ";
+		temp += element.second;
+		temp += "\n";
+	}
+	temp += "]\n";
+	return temp;
+
 }
