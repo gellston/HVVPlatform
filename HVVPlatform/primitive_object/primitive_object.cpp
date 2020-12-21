@@ -18,6 +18,9 @@ hv::v1::boolean::boolean(std::string name, bool data) : object(name, "boolean") 
 	this->_data = data;
 }
 
+hv::v1::boolean::boolean(bool data) : boolean("anonymous", data) {
+}
+
 bool hv::v1::boolean::data() {
 	return this->_data;
 }
@@ -45,6 +48,8 @@ hv::v1::number::number(std::string name, double data) : object(name, "number") {
 	this->_data = data;
 }
 
+hv::v1::number::number(double data) : number("anonymous", data) {
+}
 
 double hv::v1::number::data() {
 	return this->_data;
@@ -63,6 +68,9 @@ std::string hv::v1::number::to_string() {
 
 hv::v1::string::string(std::string name, std::string data) :object(name, "string") {
 	this->_data = data;
+}
+
+hv::v1::string::string(std::string data) : string("anonymous", data) {
 }
 
 std::string hv::v1::string::data() {
@@ -94,6 +102,9 @@ hv::v1::array<double>::array(std::string name, std::vector<double> & data) : obj
 	this->__data = data;
 	_data_type = "number";
 
+}
+
+hv::v1::array<double>::array(std::vector<double>& data) : array("anonymous", data) {
 }
 
 std::vector<double> & hv::v1::array<double>::data() {
@@ -132,6 +143,11 @@ hv::v1::array<std::string>::array(std::string name, std::vector<std::string>& da
 
 }
 
+hv::v1::array<std::string>::array(std::vector<std::string>& data) : array("anonymous", data) {
+
+}
+
+
 std::vector<std::string>& hv::v1::array<std::string>::data() {
 	return this->__data;
 }
@@ -167,6 +183,10 @@ hv::v1::array<bool>::array(std::string name, std::vector<bool>& data) : object(n
 
 }
 
+hv::v1::array<bool>::array(std::vector<bool>& data) : array("anonymous", data) {
+
+}
+
 std::vector<bool>& hv::v1::array<bool>::data() {
 	return this->__data;
 }
@@ -198,6 +218,10 @@ hv::v1::map<double>::map(std::string name, std::map<std::string, double>& data) 
 
 	this->__data = data;
 	_data_type = "number";
+
+}
+
+hv::v1::map<double>::map(std::map<std::string, double>& data) : map("anonymous", data) {
 
 }
 
@@ -256,6 +280,11 @@ hv::v1::map<std::string>::map(std::string name, std::map<std::string, std::strin
 
 }
 
+hv::v1::map<std::string>::map(std::map<std::string, std::string>& data) : map("anonymous", data) {
+
+}
+
+
 std::map<std::string, std::string>& hv::v1::map<std::string>::data() {
 
 	return this->__data;
@@ -309,6 +338,10 @@ hv::v1::map<bool>::map(std::string name, std::map<std::string, bool>& data) : ob
 
 	this->__data = data;
 	_data_type = "boolean";
+
+}
+
+hv::v1::map<bool>::map(std::map<std::string, bool>& data) : map("anonymous", data) {
 
 }
 

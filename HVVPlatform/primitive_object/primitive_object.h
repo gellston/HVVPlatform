@@ -4,7 +4,6 @@
 #define HV_PRIMITIVE_OBJECT
 
 #include "object.h"
-
 #include <vector>
 #include <memory>
 #include <map>
@@ -27,6 +26,7 @@ namespace hv::v1 {
 	public:
 
 		array(std::string name, std::vector<T>& data);
+		array(std::vector<T>& data);
 		~array() override { }
 
 		std::vector<T>& data();
@@ -45,6 +45,7 @@ namespace hv::v1 {
 	public:
 
 		map(std::string name, std::map<std::string, T> & data);
+		map(std::map<std::string, T>& data);
 		~map() override { }
 
 		std::map<std::string, T> & data();
@@ -62,6 +63,7 @@ namespace hv::v1 {
 	public:
 
 		boolean(std::string name, bool data);
+		boolean(bool data);
 		~boolean() override { }
 		bool data();
 		void data(bool data);
@@ -77,6 +79,7 @@ namespace hv::v1 {
 	public:
 
 		number(std::string name, double data);
+		number(double data);
 		~number() override { }
 		double data();
 		void data(double data);
@@ -92,6 +95,7 @@ namespace hv::v1 {
 	public:
 
 		string(std::string name, std::string data);
+		string(std::string data);
 		~string() override { }
 		std::string data();
 		void data(std::string data);
@@ -112,6 +116,7 @@ namespace hv::v1 {
 	public:
 
 		array(std::string name, std::vector<double> & data);
+		array(std::vector<double>& data);
 		~array() override { }
 
 		std::vector<double> & data();
@@ -131,6 +136,7 @@ namespace hv::v1 {
 	public:
 
 		array(std::string name, std::vector<std::string> & data);
+		array(std::vector<std::string>& data);
 		~array() override { }
 
 		std::vector<std::string>& data();
@@ -150,6 +156,7 @@ namespace hv::v1 {
 	public:
 
 		array(std::string name, std::vector<bool>& data);
+		array(std::vector<bool>& data);
 		~array() override { }
 
 		std::vector<bool>& data();
@@ -168,6 +175,7 @@ namespace hv::v1 {
 	public:
 
 		map(std::string name, std::map<std::string, double>& data);
+		map(std::map<std::string, double>& data);
 		~map() override { }
 
 		std::map<std::string, double>& data();
@@ -188,6 +196,7 @@ namespace hv::v1 {
 	public:
 
 		map(std::string name, std::map<std::string, std::string>& data);
+		map(std::map<std::string, std::string>& data);
 		~map() override { }
 
 		std::map<std::string, std::string>& data();
@@ -208,6 +217,7 @@ namespace hv::v1 {
 	public:
 
 		map(std::string name, std::map<std::string, bool>& data);
+		map(std::map<std::string, bool>& data);
 		~map() override { }
 
 		std::map<std::string, bool>& data();
