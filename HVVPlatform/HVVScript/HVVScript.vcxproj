@@ -116,13 +116,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8\include;$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Debug;$(SolutionDir)v8fullset\v8\lib\Debug;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Debug;$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
@@ -159,7 +159,7 @@ endlocal</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8\include;$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)primitive_object;$(SolutionDir)object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)primitive_object;$(SolutionDir)object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -167,7 +167,7 @@ endlocal</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Release;$(SolutionDir)v8fullset\v8\lib\Release;$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Release;$(OutDir)</AdditionalLibraryDirectories>
       <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>

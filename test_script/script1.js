@@ -1,13 +1,12 @@
 
-var calculation = 5 * 2;
-var calculation2 = calculation + "";
-var hash_map = new Map();
-hash_map.set("test1", 1);
-hash_map.set("test2", 2);
-hash_map.set("test3", calculation);
+var core = require("core");
 
-var hash_map2 = new Map([
-	["test1", "test!!"],
-	["한글키", "test!!"],
-	["한글키2", calculation2],
-]);
+var image1 = new core.image("image1",2048, 2048, 1);
+var image2 = new core.image("image2", 2048, 2048,1);
+
+script.trace(image1.to_string());
+script.trace(image2.to_string());
+
+script.trace("image width = " + image1.width );
+script.trace("image height = " + image1.height );
+image1.show(image2);

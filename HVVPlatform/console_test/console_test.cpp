@@ -57,18 +57,18 @@ int main()
 
             auto duration = time / std::chrono::milliseconds(1);
 
-            //std::cout << "takt time : " << duration << std::endl;
-            //std::cout << "=============================================" << std::endl;
-            //for (auto element : *global_objects)
-            //{
-            //    std::cout << "Key : " << element.first << std::endl;
-            //    std::cout << "Type : " << element.second->type() << std::endl;
-            //    std::cout << "Data : " << element.second->to_string() << std::endl;
-            //    std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
+            std::cout << "takt time : " << duration << std::endl;
+            std::cout << "=============================================" << std::endl;
+            for (auto element : *global_objects)
+            {
+                std::cout << "Key : " << element.first << std::endl;
+                std::cout << "Type : " << element.second->type() << std::endl;
+                std::cout << "Data : " << element.second->to_string() << std::endl;
+                std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
 
-            //    std::cout << "---------------------------------------------" << std::endl;
-            //}
-            //std::cout << "=============================================" << std::endl;
+                std::cout << "---------------------------------------------" << std::endl;
+            }
+            std::cout << "=============================================" << std::endl;
 
         }
         catch (hv::v1::script_error error) {
