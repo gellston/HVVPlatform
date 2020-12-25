@@ -7,7 +7,10 @@
 #include <iostream>
 #include <filesystem>
 #include <chrono>
-
+#include <execution>
+#include <memory>
+#include <array>
+#include <any>
 
 #include <interpreter.h>
 #include <exception.h>
@@ -48,7 +51,7 @@ int main()
             current_script_path += "\\";
             current_script_path += "script.js";
 
-            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\script1.js");
+            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\test_addon.js");
 
             auto global_objects = interpreter.global_objects();
 

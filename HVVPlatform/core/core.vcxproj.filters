@@ -18,8 +18,17 @@
     <ClInclude Include="image.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="image_addon.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="data_type.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
     <ClCompile Include="image.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
