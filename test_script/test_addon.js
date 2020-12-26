@@ -1,13 +1,1 @@
-var core = require("core");
-var image1 = new core.image("test1", 2048,2048,core.u8_image);
-var image2 = new core.image("test1", 1024,1024,core.u8_image);
-//var image3 = new core.image("test1", 5050,5050,core.u8_image);
-//var image4 = new core.image("test1", 5050,5050,core.u8_image);
-//var image5 = new core.image("test1", 3024,3024,core.u8_image);
-script.trace("image1 width = " + image1.width);
-script.trace("image1 height = " + image1.height);
-script.trace(image1.to_string());
-script.trace(image2.to_string());
-//script.trace(image3.to_string());
-//script.trace(image4.to_string());
-//script.trace(image5.to_string());
+﻿

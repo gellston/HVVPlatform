@@ -19,7 +19,10 @@ V8PP_PLUGIN_INIT(v8::Isolate* isolate)
 		.set("width", v8pp::property(&hv::v1::image::height))
 		.set("height", v8pp::property(&hv::v1::image::width))
 		.set("stride", &hv::v1::image::stride)
-		.set("count", &hv::v1::image::count);
+		.set("count", &hv::v1::image::count)
+		.set("fill", &hv::v1::image::fill)
+		.set("copy", &hv::v1::image::copy)
+		.set("reduce", &hv::v1::image::reduce);
 
 
 

@@ -45,8 +45,10 @@ namespace hv::v1 {
 		unsigned int stride();
 		unsigned int count();
 		void* ptr();
-
-
+		bool copy(image& data);
+		bool fill(double value);
+		double reduce();
+	
 	};
 }
 

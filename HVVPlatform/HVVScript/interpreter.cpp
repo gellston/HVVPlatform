@@ -312,8 +312,8 @@ void interpreter::_loop() {
 				std::string u8_key = v8pp::from_v8<std::string>(isolate->_instance, v8KeyValue);
 				std::string u8_type = v8pp::from_v8<std::string>(isolate->_instance, v8TypeValue);
 
-				std::string key = string_to_u8string(u8_key);
-				std::string type = string_to_u8string(u8_type);
+				std::string key = u8string_to_string(u8_key);
+				std::string type = u8string_to_string(u8_type);
 
 				if (val_local->IsNullOrUndefined())
 					continue;
