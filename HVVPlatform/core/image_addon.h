@@ -22,7 +22,9 @@ V8PP_PLUGIN_INIT(v8::Isolate* isolate)
 		.set("count", &hv::v1::image::count)
 		.set("fill", &hv::v1::image::fill)
 		.set("copy", &hv::v1::image::copy)
-		.set("reduce", &hv::v1::image::reduce);
+		.set("reduce", &hv::v1::image::reduce)
+		.set("multiply", &hv::v1::image::multiply)
+		.set("divide", &hv::v1::image::divide);
 
 
 

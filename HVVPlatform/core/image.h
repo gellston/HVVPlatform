@@ -48,6 +48,8 @@ namespace hv::v1 {
 		bool copy(image& data);
 		bool fill(double value);
 		double reduce();
+		bool multiply(double value);
+		bool divide(double value);
 	
 	};
 }

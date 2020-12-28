@@ -51,7 +51,7 @@ int main()
             current_script_path += "\\";
             current_script_path += "script.js";
 
-            interpreter.run_file("C:\\Github\\HVVPlatform\\test_script\\test_addon.js");
+            interpreter.run_file(current_script_path);
 
             auto global_objects = interpreter.global_objects();
 
