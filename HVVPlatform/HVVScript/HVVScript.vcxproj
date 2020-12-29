@@ -145,6 +145,7 @@ copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
 copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
 copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
 copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
+copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
 copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
 copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
 
@@ -188,6 +189,7 @@ copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
 copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
 copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
 copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
+copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
 copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
 copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
 
@@ -201,6 +203,7 @@ endlocal</Command>
     <ClCompile Include="interpreter.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="binding.h" />
     <ClInclude Include="converter.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="interpreter.h" />

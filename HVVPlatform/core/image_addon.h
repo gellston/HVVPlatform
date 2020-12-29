@@ -1,23 +1,20 @@
 #pragma once
 
 
-#include <v8.h>
-#include <v8pp/config.hpp>
-#include <v8pp/class.hpp>
-#include <v8pp/module.hpp>
+#include <binding.h>
 
 #include "image.h"
 
 
-V8PP_PLUGIN_INIT(v8::Isolate* isolate)
+V8PP_PLUGIN_INIT(hv::v1::isolate * isolate)
 {
-	v8::EscapableHandleScope scope(isolate);
-
-	v8pp::class_<hv::v1::image> image_class(isolate);
+	hv::v1::EscapeHandleScope scope(isolate);
+	
+	hv::v1::class_<hv::v1::image> image_class(isolate);
 	image_class.ctor<std::string, unsigned int, unsigned int, hv::v1::image_data_type>()
 		.set("to_string", &hv::v1::image::to_string)
-		.set("width", v8pp::property(&hv::v1::image::height))
-		.set("height", v8pp::property(&hv::v1::image::width))
+		.set("width", hv::v1::property(&hv::v1::image::height))
+		.set("height", hv::v1::property(&hv::v1::image::width))
 		.set("stride", &hv::v1::image::stride)
 		.set("count", &hv::v1::image::count)
 		.set("fill", &hv::v1::image::fill)
@@ -28,7 +25,7 @@ V8PP_PLUGIN_INIT(v8::Isolate* isolate)
 
 
 
-	v8pp::module m(isolate);
+	hv::v1::module m(isolate);
 	m.set_const("u8_image", hv::v1::image_data_type::u8_image)
 	 .set_const("u16_image", hv::v1::image_data_type::u16_image)
 	 .set_const("u32_image", hv::v1::image_data_type::u32_image)
