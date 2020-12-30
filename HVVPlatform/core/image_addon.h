@@ -6,22 +6,31 @@
 #include "image.h"
 
 
-V8PP_PLUGIN_INIT(hv::v1::isolate * isolate)
+HV_PLUGIN_INIT(hv::v1::isolate * isolate)
 {
 	hv::v1::EscapeHandleScope scope(isolate);
+
+
+
+	//hv::v1::class_<hv::v1::object> object_class(isolate);
+	//object_class.ctor<std::string, std::string>()
+	//			.set("name", &hv::v1::object::name)
+	//			.set("type",&hv::v1::object::type);
 	
 	hv::v1::class_<hv::v1::image> image_class(isolate);
 	image_class.ctor<std::string, unsigned int, unsigned int, hv::v1::image_data_type>()
 		.set("to_string", &hv::v1::image::to_string)
-		.set("width", hv::v1::property(&hv::v1::image::height))
-		.set("height", hv::v1::property(&hv::v1::image::width))
 		.set("stride", &hv::v1::image::stride)
 		.set("count", &hv::v1::image::count)
 		.set("fill", &hv::v1::image::fill)
 		.set("copy", &hv::v1::image::copy)
 		.set("reduce", &hv::v1::image::reduce)
 		.set("multiply", &hv::v1::image::multiply)
-		.set("divide", &hv::v1::image::divide);
+		.set("divide", &hv::v1::image::divide)
+		.set("add", &hv::v1::image::add)
+		.set("minus", &hv::v1::image::minus);
+
+
 
 
 

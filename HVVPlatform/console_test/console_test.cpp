@@ -36,21 +36,25 @@ int main()
     hv::v1::interpreter::init_v8_engine();
     hv::v1::interpreter::set_v8_flag("--use_strict");
     hv::v1::interpreter::set_v8_flag("--max_old_space_size=8192");
-    
+    hv::v1::interpreter::set_v8_flag("--expose_gc");
+
     hv::v1::interpreter interpreter;
 
-
+    interpreter.set_module_path(current_path);
     while (true) {
 
         system("cls");
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
-
+            std::string current_module_path = current_path;
             std::string current_script_path = current_path;
             current_script_path += "\\";
             current_script_path += "script.js";
 
+            current_module_path += "\\module";
+
+            
             interpreter.run_file(current_script_path);
 
             auto global_objects = interpreter.global_objects();
@@ -83,7 +87,7 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        Sleep(300);
+        //Sleep(300);
     }
     
 }

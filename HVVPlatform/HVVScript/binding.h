@@ -14,17 +14,21 @@
 #include <v8pp/property.hpp>
 
 
+#define HV_PLUGIN_INIT V8PP_PLUGIN_INIT 
+
 namespace hv::v1 {
+
+	
+
 	using EscapeHandleScope = v8::EscapableHandleScope;
+
 	using raw_ptr_trait = v8pp::raw_ptr_traits;
 
+	using shared_ptr_traits = v8pp::shared_ptr_traits;
 
-	template<typename T, typename Traits = raw_ptr_trait> using class_ = v8pp::class_<T, Traits>;
+
+	template<typename T, typename Traits = shared_ptr_traits> using class_ = v8pp::class_<T, Traits>;
 	using module = v8pp::module;
-
-
-	template<typename Get, typename Set> using property_ = v8pp::property_<Get, Set>;
-	template<typename Get> using property__ = v8pp::property_<Get, Get>;
 
 	template<typename Get, typename Set>
 	v8pp::property_<Get, Set> property(Get get, Set set)

@@ -61,17 +61,22 @@ namespace hv::v1 {
 
 	class pimpl_local_var_solid : public pimpl_local_var {
 	public:
-		pimpl_local_var_solid() : _isolate(nullptr),
-								  _local(nullptr) {}
+		pimpl_local_var_solid() : _isolate(nullptr){}
 
-		~pimpl_local_var_solid() override { }
-		v8::Local<v8::Value> * _local;
+		~pimpl_local_var_solid() override { 
+			this->_global.Reset(); 
+
+		}
+		///v8::Local<v8::Value> * _local;
+		//v8::CopyablePersistentTraits<v8::Value>::CopyablePersistent _global_persistent;
+		v8::Global<v8::Value> _global;
+		
 		v8::Isolate* _isolate;
 		std::string _key;
 
 
-		void set(v8::Local<v8::Value> * local, v8::Isolate * isolate, std::string key) {
-			this->_local = local;
+		void set(v8::Local<v8::Value> local, v8::Isolate * isolate, std::string key) {
+			this->_global.Reset(isolate, local);
 			this->_isolate = isolate;
 			this->_key = key;
 		}

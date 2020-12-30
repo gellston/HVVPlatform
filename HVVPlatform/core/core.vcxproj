@@ -139,6 +139,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)object;$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)out_lib\include</AdditionalIncludeDirectories>
       <Optimization>MaxSpeed</Optimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

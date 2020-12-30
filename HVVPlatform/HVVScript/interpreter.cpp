@@ -15,7 +15,7 @@
 #include <libplatform/libplatform.h>
 
 
-#include <iostream>
+
 #include <chrono>
 #include <map>
 #include <memory>
@@ -54,7 +54,8 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_error_message(""),
 							_error_start_column(-1),
 						    _error_end_column(-1),
-							_error_rows(-1){
+							_error_rows(-1),
+							_script_module_path(""){
 
 	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
 
@@ -263,9 +264,11 @@ void interpreter::_loop() {
 	
 		try {
 			if (this->_is_content == false) {
+				//parent_context.set_lib_path(this->_script_module_path);
 				auto script_result = parent_context.run_file(this->_script_file_path);
 			}
 			else {
+				//parent_context.set_lib_path(this->_script_module_path);
 				auto script_result = parent_context.run_script(this->_script_content);
 			}
 		}
@@ -315,18 +318,22 @@ void interpreter::_loop() {
 				std::string key = u8string_to_string(u8_key);
 				std::string type = u8string_to_string(u8_type);
 
-				if (val_local->IsNullOrUndefined())
+				if (val_local->IsNullOrUndefined() || val_local->IsFunction() == true)
 					continue;
+
+				
 
 				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "array";
 				if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "map";
+				
+
 
 				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
 
 				std::shared_ptr<pimpl_local_var_solid> local_var_solid = std::make_shared<pimpl_local_var_solid>();
 				auto local_var = std::static_pointer_cast<pimpl_local_var>(local_var_solid);
 
-				local_var_solid->set(&val_local, isolate->_instance, key);
+				local_var_solid->set(val_local, isolate->_instance, key);
 
 				auto converter = this->_converter_lambda[type];
 				object* result = (*converter)(local_var);
@@ -341,7 +348,11 @@ void interpreter::_loop() {
 		/// Clear v8pp context explicitly 
 		/// </summary>
 		v8pp::cleanup(isolate->_instance);
-
+		
+		//std::string const v8_flags = "--expose_gc";
+		//v8::V8::SetFlagsFromString(v8_flags.data(), (int)v8_flags.length());
+		//isolate->_instance->RequestGarbageCollectionForTesting(
+		//v8::Isolate::GarbageCollectionType::kFullGarbageCollection);
 		/// <summary>
 		/// Script end signal
 		/// </summary>
@@ -357,6 +368,15 @@ bool interpreter::register_converter(std::string type , converter* _converter) {
 	return true;
 }
 
+bool interpreter::set_module_path(std::string path) {
+
+
+	if (this->_is_script_running == true) return false;
+
+	this->_script_module_path = path;
+
+	return true;
+}
 
 bool interpreter::run_script(std::string content) {
 

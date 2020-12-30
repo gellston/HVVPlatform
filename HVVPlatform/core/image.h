@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 
+
 namespace hv::v1 {
 	class HVAPI_EXPORT image : object {
 		using image_type = std::variant<std::shared_ptr<std::vector<unsigned char>>,
@@ -35,7 +36,7 @@ namespace hv::v1 {
 
 		image(std::string name, unsigned int width, unsigned int height, unsigned int type);
 		explicit image(image& copy);
-
+		~image() override { }
 
 
 		std::string to_string() override;
@@ -50,7 +51,10 @@ namespace hv::v1 {
 		double reduce();
 		bool multiply(double value);
 		bool divide(double value);
+		bool add(double value);
+		bool minus(double value);
 	
+
 	};
 }
 

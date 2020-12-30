@@ -3,7 +3,7 @@
 #include "primitive_object.h"
 
 #include <stdexcept>
-#include <iostream>
+
 
 
 /// <summary>

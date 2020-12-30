@@ -84,6 +84,7 @@ namespace hv::v1{
 
 		std::string _script_file_path;
 		std::string _script_content;
+		std::string _script_module_path;
 		bool _is_content;
 
 
@@ -106,6 +107,8 @@ namespace hv::v1{
 		/// <summary>
 		/// interpreter member functions
 		/// </summary>
+		/// 
+		bool set_module_path(std::string path);
 		bool run_script(std::string content);
 		bool run_file(std::string path);
 
