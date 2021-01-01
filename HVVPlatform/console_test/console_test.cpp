@@ -98,7 +98,7 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        //Sleep(300);
+        Sleep(300);
     }
     
 }

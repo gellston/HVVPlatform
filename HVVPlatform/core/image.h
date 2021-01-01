@@ -13,7 +13,7 @@
 
 namespace hv::v1 {
 
-	class HVAPI_EXPORT image : public object {
+	class image : public object {
 		using image_type = std::variant<std::shared_ptr<std::vector<unsigned char>>,
 										std::shared_ptr<std::vector<unsigned long>>,
 										std::shared_ptr<std::vector<unsigned short>>,

@@ -7,7 +7,7 @@
 
 HV_CREATE_SHARED_CONVERTER(hv::v1::image);
 
-HV_PLUGIN_INIT(hv::v1::isolate * isolate)
+HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 {
 	hv::v1::EscapeHandleScope scope(isolate);
 
@@ -26,7 +26,7 @@ HV_PLUGIN_INIT(hv::v1::isolate * isolate)
 		.set("add", &hv::v1::image::add)
 		.set("minus", &hv::v1::image::minus)
 		.set("resolution", &hv::v1::image::resolution);
-		
+
 
 	hv::v1::module m(isolate);
 	m.set_const("u8_image", hv::v1::image_data_type::u8_image)
@@ -38,5 +38,3 @@ HV_PLUGIN_INIT(hv::v1::isolate * isolate)
 
 	return scope.Escape(m.new_instance());
 }
-
-

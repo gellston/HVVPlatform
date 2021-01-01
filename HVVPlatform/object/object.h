@@ -1,18 +1,20 @@
 #pragma once
 
 
+#include "macro.h"
+
 #ifndef HV_OBJECT
 #define HV_OBJECT
 
 
-#include "macro.h"
+
 #include <string>
 
 namespace hv::v1 {
 
 
 	class object;
-	class HVAPI_EXPORT object {
+	class object {
 	private:
 		std::string _name;
 		std::string _type;

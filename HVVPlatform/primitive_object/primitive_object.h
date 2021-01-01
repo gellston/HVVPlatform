@@ -10,8 +10,6 @@
 
 namespace hv::v1 {
 
-	//using array_type = std::variant<std::monostate, std::vector<std::string>, std::vector<double>>;
-
 	class boolean;
 	class number;
 	class string;
@@ -56,7 +54,7 @@ namespace hv::v1 {
 		std::string to_string()  override;
 	};
 
-	class HVAPI_EXPORT boolean : public object {
+	class boolean : public object {
 	private:
 		bool _data;
 		boolean() = delete;
@@ -72,7 +70,7 @@ namespace hv::v1 {
 	};
 
 
-	class HVAPI_EXPORT number : public object {
+	class number : public object {
 	private:
 		double _data;
 		number() = delete;
@@ -88,7 +86,7 @@ namespace hv::v1 {
 	};
 
 
-	class HVAPI_EXPORT string : public object {
+	class string : public object {
 	private:
 		std::string _data;
 		string() = delete;
@@ -106,7 +104,7 @@ namespace hv::v1 {
 	
 
 	
-	template<> class HVAPI_EXPORT array<double> : public object {
+	template<> class array<double> : public object {
 	private:
 		
 		std::vector<double> __data;
@@ -126,7 +124,7 @@ namespace hv::v1 {
 	};
 
 
-	template<> class HVAPI_EXPORT array<std::string> : public object {
+	template<> class array<std::string> : public object {
 	private:
 
 		std::vector<std::string> __data;
@@ -146,7 +144,7 @@ namespace hv::v1 {
 	};
 
 
-	template<> class HVAPI_EXPORT array<bool> : public object {
+	template<> class array<bool> : public object {
 	private:
 
 		std::vector<bool> __data;
@@ -165,7 +163,7 @@ namespace hv::v1 {
 		std::string to_string()  override;
 	};
 
-	template<> class HVAPI_EXPORT map<double> : public object {
+	template<> class map<double> : public object {
 	private:
 
 		std::map<std::string, double> __data;
@@ -186,7 +184,7 @@ namespace hv::v1 {
 		std::string to_string()  override;
 	};
 
-	template<> class HVAPI_EXPORT map<std::string> : public object {
+	template<> class map<std::string> : public object {
 	private:
 
 		std::map<std::string, std::string> __data;
@@ -207,7 +205,7 @@ namespace hv::v1 {
 		std::string to_string()  override;
 	};
 
-	template<> class HVAPI_EXPORT map<bool> : public object {
+	template<> class map<bool> : public object {
 	private:
 
 		std::map<std::string, bool> __data;

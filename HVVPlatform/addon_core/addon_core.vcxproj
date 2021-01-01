@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e73da591-3539-4ed8-a5d3-04da60649ccb}</ProjectGuid>
-    <RootNamespace>HVVScript</RootNamespace>
+    <ProjectGuid>{62489f1b-5e6e-469e-9a71-2c4c89172658}</ProjectGuid>
+    <RootNamespace>addoncore</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -114,48 +114,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)core;$(SolutionDir)out_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Debug;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)v8fullset\v8pp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;core.lib;object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PreBuildEvent>
-      <Command>
-      </Command>
-    </PreBuildEvent>
-    <PostBuildEvent>
-      <Command>setlocal
-set OUT_LIB_PATH=$(SolutionDir)out_lib\lib\$(Configuration)\
-set OUT_INCLUDE_PATH=$(SolutionDir)out_lib\include\
-if not exist "%OUT_LIB_PATH%" md "%OUT_LIB_PATH%"
-if not exist "%OUT_INCLUDE_PATH%" md "%OUT_INCLUDE_PATH%"
-
-copy /Y "$(OutDIr)HVVScript.dll" "%OUT_LIB_PATH%HVVScript.dll"
-copy /Y "$(OutDIr)HVVScript.lib" "%OUT_LIB_PATH%HVVScript.lib"
-copy /Y "$(OutDIr)object.lib" "%OUT_LIB_PATH%object.lib"
-copy /Y "$(OutDIr)core.lib" "%OUT_LIB_PATH%core.lib"
-copy /Y "$(OutDIr)primitive_object.lib" "%OUT_LIB_PATH%primitive_object.lib"
-
-copy /Y "$(SolutionDir)HVVScript\macro.h" "%OUT_INCLUDE_PATH%macro.h"
-copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
-copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
-copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
-copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
-copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
-copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
-copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
-copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
-copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
-
-endlocal</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -163,63 +132,25 @@ endlocal</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)primitive_object;$(SolutionDir)object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <Optimization>MaxSpeed</Optimization>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)core;$(SolutionDir)out_lib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Release;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)v8fullset\v8pp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;core.lib;object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>setlocal
-set OUT_LIB_PATH=$(SolutionDir)out_lib\lib\$(Configuration)\
-set OUT_INCLUDE_PATH=$(SolutionDir)out_lib\include\
-if not exist "%OUT_LIB_PATH%" md "%OUT_LIB_PATH%"
-if not exist "%OUT_INCLUDE_PATH%" md "%OUT_INCLUDE_PATH%"
-
-copy /Y "$(OutDIr)HVVScript.dll" "%OUT_LIB_PATH%HVVScript.dll"
-copy /Y "$(OutDIr)HVVScript.lib" "%OUT_LIB_PATH%HVVScript.lib"
-copy /Y "$(OutDIr)object.lib" "%OUT_LIB_PATH%object.lib"
-copy /Y "$(OutDIr)core.lib" "%OUT_LIB_PATH%core.lib"
-copy /Y "$(OutDIr)primitive_object.lib" "%OUT_LIB_PATH%primitive_object.lib"
-
-copy /Y "$(SolutionDir)HVVScript\macro.h" "%OUT_INCLUDE_PATH%macro.h"
-copy /Y "$(SolutionDir)HVVScript\converter.h" "%OUT_INCLUDE_PATH%converter.h"
-copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
-copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
-copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
-copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
-copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
-copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
-copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
-copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
-
-endlocal</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="compile.cpp" />
-    <ClCompile Include="converter.cpp" />
-    <ClCompile Include="exception.cpp" />
-    <ClCompile Include="interpreter.cpp" />
+    <ClCompile Include="addon_core.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="binding.h" />
-    <ClInclude Include="converter.h" />
-    <ClInclude Include="exception.h" />
-    <ClInclude Include="interpreter.h" />
-    <ClInclude Include="macro.h" />
-    <ClInclude Include="pimpl.h" />
-    <ClInclude Include="pimpl_define.h" />
-    <ClInclude Include="string_cvt.h" />
+    <ClInclude Include="addon_core.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
