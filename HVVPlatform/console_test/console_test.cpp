@@ -3,7 +3,7 @@
 //
 #include <Windows.h>
 
-#include <locale.h>
+
 #include <iostream>
 #include <filesystem>
 #include <chrono>
@@ -15,6 +15,8 @@
 #include <interpreter.h>
 #include <exception.h>
 #include <primitive_object.h>
+
+#include <image.h>
 
 
 std::string current_directory()
@@ -29,6 +31,7 @@ std::string current_directory()
 int main()
 {
 
+
     auto current_path = current_directory();
     
     hv::v1::interpreter::init_v8_startup_data(current_path + "\\");
@@ -41,9 +44,17 @@ int main()
     hv::v1::interpreter interpreter;
 
     interpreter.set_module_path(current_path);
+
     while (true) {
 
         system("cls");
+        
+        std::shared_ptr<hv::v1::image> ptr_test(new hv::v1::image("test", 2020, 2020, hv::v1::image_data_type::u8_image));
+
+        auto casted_object = std::static_pointer_cast<hv::v1::object>(ptr_test);
+
+
+        interpreter.register_external_data("test", ptr_test);
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();

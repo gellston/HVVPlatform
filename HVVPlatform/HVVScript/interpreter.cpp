@@ -22,17 +22,24 @@
 
 
 
+
 #include "pimpl_define.h"
 #include "object.h"
 #include "converter.h"
 #include "exception.h"
 #include "string_cvt.h"
+#include "binding.h"
+
+
+HV_CREATE_SHARED_CONVERTER(hv::v1::object);
+
 
 
 using namespace hv;
 using namespace v1;
 
 std::shared_ptr<pimpl> interpreter::_platform_instance = std::make_shared<pimpl_v8_platform>();
+
 
 interpreter::~interpreter() {
 
@@ -238,15 +245,40 @@ void interpreter::_loop() {
 
 		v8::HandleScope handleScope(isolate->_instance);
 
+
+
+
+
+		/// <summary>
+		/// Object Type register
+		/// </summary>
+		hv::v1::class_<hv::v1::object,hv::v1::shared_ptr_traits> object_class(isolate->_instance);
+		object_class.ctor<std::string, std::string>()
+			.auto_wrap_objects(true)
+			.set("to_string", &hv::v1::object::to_string)
+			.set("name", &hv::v1::object::name)
+			.set("type", &hv::v1::object::type);
+
+		v8pp::module object_module(isolate->_instance);
+		object_module.set("object", object_class);
+		isolate->_instance->GetCurrentContext()->Global()->Set(v8pp::to_v8(isolate->_instance, "internal"), object_module.new_instance());
+
+
 		/// <summary>
 		///  Class 함수 등록
 		/// </summary>
+		/// 
 		typedef v8pp::class_<interpreter> wrap_class_interpreter;
 		wrap_class_interpreter interpreter_instance(isolate->_instance);
 		interpreter_instance.set("trace", &interpreter::trace);
+		interpreter_instance.set("check_external_data", &interpreter::check_external_data);
+		interpreter_instance.set("external_data", &interpreter::external_data);
+		
 		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
 		auto key = v8pp::to_v8(isolate->_instance, "script");
 		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
+	
+
 
 
 		// 오브젝트 등록을 위해 여기서 멈춰있어야함. 
@@ -429,6 +461,45 @@ bool interpreter::run_file(std::string path) {
 }
 
 
+bool interpreter::register_external_data(std::string key, std::shared_ptr<object> data) {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+
+	this->_external_hash_map[key] = data;
+
+	return true;
+}
+
+std::shared_ptr<object> interpreter::external_data(std::string key) {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+
+	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) {
+		std::shared_ptr<object> null_pointer(nullptr);
+		return null_pointer;
+	}
+
+	auto shared_pointer = this->_external_hash_map[key];
+
+	return shared_pointer;
+}
+
+
+
+bool interpreter::check_external_data(std::string key) {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+
+	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) return false;
+
+
+	return true;
+}
+
+void interpreter::clear_external_data() {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+
+	this->_external_hash_map.clear();
+}
+
+
 
 bool interpreter::init_v8_startup_data(std::string path) {
 
@@ -462,3 +533,5 @@ void interpreter::set_v8_flag(std::string flag) {
 
 	v8::V8::SetFlagsFromString(flag.c_str(), size);
 }
+
+

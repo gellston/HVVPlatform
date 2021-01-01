@@ -7,10 +7,11 @@
 #include <limits>
 #include <valarray>
 
-hv::v1::image::image(std::string name, unsigned int width, unsigned int height, unsigned int type) : object(name, "image"),
-																					_width(width),
-																					_height(height),
-																					_type((hv::v1::image_data_type)type){
+hv::v1::image::image(std::string name, unsigned int width, unsigned int height, unsigned int type, double resolution) : object(name, "image"),
+																														_width(width),
+																														_height(height),
+																														_type((hv::v1::image_data_type)type),
+																														_pixel_resolution(resolution){
 
 	if (width == 0 || height == 0 || width < 0 || height < 0)
 		throw std::runtime_error("size is not correct");
@@ -45,6 +46,7 @@ hv::v1::image::image(std::string name, unsigned int width, unsigned int height, 
 }
 
 
+
 hv::v1::image::image(image& instance) : object(instance.name(), "image"),
 									_width(instance._width),
 									_height(instance._height),
@@ -52,7 +54,8 @@ hv::v1::image::image(image& instance) : object(instance.name(), "image"),
 									__data(instance.__data),
 									_size(instance._size),
 									_stride(instance._stride),
-									_count(instance._count){
+									_count(instance._count),
+								    _pixel_resolution(instance._pixel_resolution) {
 	
 }
 
@@ -379,4 +382,10 @@ bool hv::v1::image::add(double value) {
 	}
 
 	return true;
+}
+
+
+double hv::v1::image::resolution() {
+
+	return this->_pixel_resolution;
 }

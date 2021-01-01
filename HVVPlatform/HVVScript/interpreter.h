@@ -47,6 +47,9 @@ namespace hv::v1{
 		//std::shared_ptr<pimpl> _converter_lambda;
 		std::map<std::string, std::shared_ptr<converter>> _converter_lambda;
 
+
+		std::map<std::string, std::shared_ptr<object>> _external_hash_map;
+
 			
 
 		/// <summary>
@@ -77,6 +80,7 @@ namespace hv::v1{
 		std::mutex _mtx_event_start_script;
 		std::mutex _mtx_event_end_script;
 		std::mutex _mtx_event_global_hash;
+		std::mutex _mtx_event_external_hash;
 
 		bool _is_script_running;
 		
@@ -112,6 +116,10 @@ namespace hv::v1{
 		bool run_script(std::string content);
 		bool run_file(std::string path);
 
+		bool register_external_data(std::string key, std::shared_ptr<object> data);
+		std::shared_ptr<object> external_data(std::string key);
+		bool check_external_data(std::string key);
+		void clear_external_data();
 
 		std::list<std::string> global_names();
 		std::map<std::string, std::shared_ptr<object>> * global_objects();

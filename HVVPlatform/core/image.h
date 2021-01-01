@@ -11,9 +11,9 @@
 #include <memory>
 #include <vector>
 
-
 namespace hv::v1 {
-	class HVAPI_EXPORT image : object {
+
+	class HVAPI_EXPORT image : public object {
 		using image_type = std::variant<std::shared_ptr<std::vector<unsigned char>>,
 										std::shared_ptr<std::vector<unsigned long>>,
 										std::shared_ptr<std::vector<unsigned short>>,
@@ -26,6 +26,7 @@ namespace hv::v1 {
 		unsigned int _size;
 		unsigned int _count;
 		unsigned int _stride;
+		double _pixel_resolution;
 
 		image_type __data;
 
@@ -34,7 +35,7 @@ namespace hv::v1 {
 	public:
 
 
-		image(std::string name, unsigned int width, unsigned int height, unsigned int type);
+		image(std::string name, unsigned int width, unsigned int height, unsigned int type, double resolution = 1);
 		explicit image(image& copy);
 		~image() override { }
 
@@ -53,9 +54,14 @@ namespace hv::v1 {
 		bool divide(double value);
 		bool add(double value);
 		bool minus(double value);
-	
+		double resolution();
 
 	};
+
+	static std::shared_ptr<hv::v1::image> to_image(std::shared_ptr<hv::v1::object> data) {
+		
+		return std::static_pointer_cast<hv::v1::image>(data);
+	}
 }
 
 #endif // !HV_IMAGE

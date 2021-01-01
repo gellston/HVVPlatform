@@ -23,7 +23,7 @@ namespace hv::v1 {
 		object(std::string name, std::string type);
 		std::string name();
 		std::string type();
-		virtual std::string to_string() = 0;
+		virtual std::string to_string();
 
 	};
 
