@@ -149,6 +149,7 @@ copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
 copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
 copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
 copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
+copy /Y "$(SolutionDir)HVVScript\interpreter_managed.h" "%OUT_INCLUDE_PATH%interpreter_managed.h"
 copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
 copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
@@ -197,6 +198,7 @@ copy /Y "$(SolutionDir)HVVScript\exception.h" "%OUT_INCLUDE_PATH%exception.h"
 copy /Y "$(SolutionDir)HVVScript\interpreter.h" "%OUT_INCLUDE_PATH%interpreter.h"
 copy /Y "$(SolutionDir)HVVScript\pimpl.h" "%OUT_INCLUDE_PATH%pimpl.h"
 copy /Y "$(SolutionDir)HVVScript\binding.h" "%OUT_INCLUDE_PATH%binding.h"
+copy /Y "$(SolutionDir)HVVScript\interpreter_managed.h" "%OUT_INCLUDE_PATH%interpreter_managed.h"
 copy /Y "$(SolutionDir)object\object.h" "%OUT_INCLUDE_PATH%object.h"
 copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%primitive_object.h"
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
@@ -210,12 +212,14 @@ endlocal</Command>
     <ClCompile Include="converter.cpp" />
     <ClCompile Include="exception.cpp" />
     <ClCompile Include="interpreter.cpp" />
+    <ClCompile Include="interpreter_managed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="binding.h" />
     <ClInclude Include="converter.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="interpreter.h" />
+    <ClInclude Include="interpreter_managed.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="pimpl.h" />
     <ClInclude Include="pimpl_define.h" />

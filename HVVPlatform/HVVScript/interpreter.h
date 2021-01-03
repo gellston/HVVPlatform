@@ -103,6 +103,9 @@ namespace hv::v1{
 		void trace(std::string input);
 		
 
+
+		bool register_converter(std::string type, converter* converter);
+
 	public:
 		interpreter();
 		~interpreter();
@@ -124,7 +127,7 @@ namespace hv::v1{
 		std::list<std::string> global_names();
 		std::map<std::string, std::shared_ptr<object>> * global_objects();
 
-		bool register_converter(std::string type , converter* converter);
+		
 
 		 
 
