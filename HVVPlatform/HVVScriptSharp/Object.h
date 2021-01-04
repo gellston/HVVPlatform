@@ -20,10 +20,10 @@ namespace HV {
 
 		internal:
 			void reset();
-			std::shared_ptr<hv::v1::object> * _instnace;
+			std::shared_ptr<hv::v1::object> * _instance;
 			
 		public:
-
+			Object(std::shared_ptr<hv::v1::object> & object);
 			Object(System::String^ Name, System::String^ Type);
 			~Object();
 			!Object();

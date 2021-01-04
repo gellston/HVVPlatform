@@ -121,7 +121,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)v8fullset\v8pp\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;core.lib;object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -141,7 +141,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)v8fullset\v8pp\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;core.lib;object.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>

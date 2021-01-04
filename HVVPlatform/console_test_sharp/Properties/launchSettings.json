@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "console_test_sharp": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

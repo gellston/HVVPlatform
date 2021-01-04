@@ -1,17 +1,18 @@
 
-// Managed Header
-#include <msclr/marshal_cppstd.h>
-
-
-
-
 // Native Header
+#include <msclr/marshal_cppstd.h>
+#include <stdexcept>
+
+
+
+// Managed Header
 #include "HVVScriptSharp.h"
 
 
 
 HV::V1::Interpreter::Interpreter() {
-	_instance = new hv::v1::interpreter_managed();
+	this->_instance = new hv::v1::interpreter_managed();
+	//this->GlobalObjects = gcnew Dictionary<String^, HV::V1::Object^>();
 }
 
 HV::V1::Interpreter::~Interpreter() {
@@ -37,7 +38,15 @@ bool HV::V1::Interpreter::RunScript(String^ content) {
 }
 bool HV::V1::Interpreter::RunFile(String^ path) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(path);
-	return this->_instance->run_file(convert_value);
+	bool check = false;
+	try {
+		check = this->_instance->run_file(convert_value);
+	}
+	catch (std::runtime_error error) {
+		throw gcnew System::Exception(gcnew String(error.what()));
+	}
+
+	return check;
 }
 bool HV::V1::Interpreter::CheckExternalData(String^ key) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(key);
@@ -71,4 +80,31 @@ List<String^>^ HV::V1::Interpreter::GlobalNames() {
 	}
 
 	return list;
+}
+
+Dictionary<String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
+	if (this->_GlobalObject == nullptr)
+		this->_GlobalObject = gcnew Dictionary<String^, HV::V1::Object^>();
+
+	this->_GlobalObject->Clear();
+
+	auto globals = this->_instance->global_objects();
+	for (auto& [key, val] : *globals) {
+		auto managed_object = gcnew HV::V1::Object(val);
+		this->_GlobalObject->Add(gcnew String(key.c_str()), managed_object);
+	}
+
+	return this->_GlobalObject;
+}
+
+bool HV::V1::Interpreter::RegisterExternalData(String^ key, HV::V1::Object^ data) {
+
+
+	return true;
+}
+HV::V1::Object^ HV::V1::Interpreter::ExternalData(String^ key) {
+
+	
+	auto test = gcnew HV::V1::Object("", "");
+	return test;
 }

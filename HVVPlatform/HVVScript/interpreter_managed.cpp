@@ -6,8 +6,9 @@
 namespace hv::v1 {
 	class pimpl_interpreter {
 	public:
-		pimpl_interpreter() : ptr(std::make_shared<hv::v1::interpreter>()) {
-
+		pimpl_interpreter() {
+			std::shared_ptr<hv::v1::interpreter> shared_interpreter(new hv::v1::interpreter());
+			ptr = shared_interpreter;
 		}
 
 		~pimpl_interpreter() {
@@ -20,8 +21,9 @@ namespace hv::v1 {
 
 
 
-hv::v1::interpreter_managed::interpreter_managed() : _pimpl(std::make_shared<hv::v1::pimpl_interpreter>()){
-
+hv::v1::interpreter_managed::interpreter_managed(){
+	std::shared_ptr<pimpl_interpreter> pimpl_interpreter(new pimpl_interpreter());
+	this->_pimpl = pimpl_interpreter;
 }
 hv::v1::interpreter_managed::~interpreter_managed() {
 

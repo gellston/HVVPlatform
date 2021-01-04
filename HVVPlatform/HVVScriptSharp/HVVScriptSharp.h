@@ -6,13 +6,15 @@
 
 
 
+#include "Object.h"
+
+
 using namespace System;
 using namespace System::Collections;
 using namespace System::Collections::Generic;
 
 
 namespace HV {
-
 	namespace V1 {
 		public ref class Interpreter
 		{
@@ -20,6 +22,9 @@ namespace HV {
 		internal:
 			hv::v1::interpreter_managed *_instance;
 			void reset();
+			
+		private:
+			Dictionary<String^, HV::V1::Object^>^ _GlobalObject;
 
 		public:
 
@@ -37,12 +42,16 @@ namespace HV {
 
 			//bool register_external_data(std::string key, std::shared_ptr<object> data);
 			//std::shared_ptr<object> external_data(std::string key);
+			bool RegisterExternalData(String^ key, HV::V1::Object^ data);
+			HV::V1::Object^ ExternalData(String^ key);
 			bool CheckExternalData(String^ key);
 			void ClearExternalData();
 
+
 			List<String^>^ GlobalNames();
-			//std::list<std::string> global_names();
-			//std::map<std::string, std::shared_ptr<object>>* global_objects();
+			property Dictionary<String^, HV::V1::Object^>^ GlobalObjects {
+				Dictionary<String^, HV::V1::Object^>^ get();
+			}
 
 
 			/// <summary>
