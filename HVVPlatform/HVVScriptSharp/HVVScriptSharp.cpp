@@ -10,23 +10,22 @@
 
 
 
-HV::V1::Interpreter::Interpreter() {
-	this->_instance = new hv::v1::interpreter_managed();
-	//this->GlobalObjects = gcnew Dictionary<String^, HV::V1::Object^>();
+HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()) {
+	//this->_instance = new hv::v1::interpreter_managed();
 }
 
 HV::V1::Interpreter::~Interpreter() {
-	this->reset();
+	//this->reset();
 }
 
 HV::V1::Interpreter::!Interpreter() {
-	this->reset();
+	//this->reset();
 }
 
 
-void HV::V1::Interpreter::reset() {
-	delete this->_instance;
-}
+//void HV::V1::Interpreter::reset() {
+//	delete this->_instance;
+//}
 
 bool HV::V1::Interpreter::SetModulePath(String^ path) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(path);
@@ -99,12 +98,18 @@ Dictionary<String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() 
 
 bool HV::V1::Interpreter::RegisterExternalData(String^ key, HV::V1::Object^ data) {
 
+	auto native_key =  msclr::interop::marshal_as<std::string>(key);
+
+	this->_instance->register_external_data(native_key, data->_instance.get());
+
 
 	return true;
 }
 HV::V1::Object^ HV::V1::Interpreter::ExternalData(String^ key) {
 
-	
-	auto test = gcnew HV::V1::Object("", "");
-	return test;
+	auto native_key = msclr::interop::marshal_as<std::string>(key);
+	auto shared_native_pointer = this->_instance->external_data(native_key);
+	auto managed_object = gcnew HV::V1::Object(shared_native_pointer);
+
+	return managed_object;
 }

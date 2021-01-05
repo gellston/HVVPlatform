@@ -86,6 +86,7 @@
     <Link>
       <AdditionalDependencies>HVVScript.lib;object.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -122,11 +123,12 @@
     <Link>
       <AdditionalDependencies>HVVScript.lib;object.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="HVVScriptSharp.h" />
+    <ClInclude Include="mananged_shared_ptr.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>

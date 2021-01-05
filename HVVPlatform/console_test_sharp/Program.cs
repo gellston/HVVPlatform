@@ -30,6 +30,9 @@ namespace console_test_sharp
 
                     var watch = System.Diagnostics.Stopwatch.StartNew();
 
+                    HV.V1.Object object_test = new HV.V1.Object("test", "test");
+                    test.RegisterExternalData("test_object", object_test);
+
                     test.RunFile(currentDirecturoy + "script.js");
 
                     watch.Stop();

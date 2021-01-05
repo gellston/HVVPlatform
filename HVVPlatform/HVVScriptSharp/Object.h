@@ -5,6 +5,9 @@
 #include <memory>
 
 
+#include "mananged_shared_ptr.h"
+
+
 
 using namespace System;
 using namespace System::Collections;
@@ -19,8 +22,8 @@ namespace HV {
 		{
 
 		internal:
-			void reset();
-			std::shared_ptr<hv::v1::object> * _instance;
+
+			HV::V1::mananged_shared_ptr<hv::v1::object> _instance;
 			
 		public:
 			Object(std::shared_ptr<hv::v1::object> & object);

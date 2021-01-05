@@ -3,9 +3,6 @@
 
 #include <interpreter_managed.h>
 
-
-
-
 #include "Object.h"
 
 
@@ -20,8 +17,8 @@ namespace HV {
 		{
 
 		internal:
-			hv::v1::interpreter_managed *_instance;
-			void reset();
+			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
+			//void reset();
 			
 		private:
 			Dictionary<String^, HV::V1::Object^>^ _GlobalObject;
@@ -32,16 +29,14 @@ namespace HV {
 			~Interpreter();
 			!Interpreter();
 
-			
-			
 
 
 			bool SetModulePath(String^ path);
 			bool RunScript(String^ content);
 			bool RunFile(String^ path);
 
-			//bool register_external_data(std::string key, std::shared_ptr<object> data);
-			//std::shared_ptr<object> external_data(std::string key);
+			
+
 			bool RegisterExternalData(String^ key, HV::V1::Object^ data);
 			HV::V1::Object^ ExternalData(String^ key);
 			bool CheckExternalData(String^ key);
