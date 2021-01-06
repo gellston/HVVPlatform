@@ -5,7 +5,7 @@
              StartupUri="View/MainWindowView.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <viewModel:ViewModelLocator x:Key="Locator"></viewModel:ViewModelLocator>
+            <viewModel:ViewModelLocator x:Key="ViewModelLocator"></viewModel:ViewModelLocator>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

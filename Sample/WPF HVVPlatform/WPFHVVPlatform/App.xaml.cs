@@ -14,6 +14,7 @@ namespace WPFHVVPlatform
     /// </summary>
     public partial class App : Application
     {
+        
 
     }
 }

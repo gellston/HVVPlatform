@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using GalaSoft.MvvmLight;
+﻿
 using GalaSoft.MvvmLight.Ioc;
+using GalaSoft.MvvmLight;
+//using GalaSoft.MvvmLight;
+//using GalaSoft.MvvmLight.Ioc;
 using WPFHVVPlatform.Service;
 
 namespace WPFHVVPlatform.ViewModel
@@ -11,10 +11,12 @@ namespace WPFHVVPlatform.ViewModel
     {
         public ViewModelLocator()
         {
-            SimpleIoc.Default.Register<AppConfigService>();
 
+            SimpleIoc.Default.Register<AppConfigService>();
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ScriptEditViewModel>();
+
+            //var test = SimpleIoc.Default.GetInstance<MainWindowViewModel>();
             
         }
 

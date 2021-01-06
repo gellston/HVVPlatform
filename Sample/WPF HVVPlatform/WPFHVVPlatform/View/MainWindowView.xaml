@@ -5,8 +5,91 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     x:Class="WPFHVVPlatform.View.MainWindowView"
     Title="MainWindow" Height="450" Width="800"
-    DataContext="{Binding Source={StaticResource Locator}, Path=MainWindowViewModel}">
-    <Grid>
+    DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
+    xmlns:viewModel="clr-namespace:WPFHVVPlatform.ViewModel"
+    xmlns:view="clr-namespace:WPFHVVPlatform.View"
+    xmlns:model="clr-namespace:WPFHVVPlatform.Model">
+    <DockPanel>
         
-    </Grid>
+        <Grid DockPanel.Dock="Top"
+              Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                    Command="{Binding OpenMainMenuCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ChartGridlinesHorizontal_Major.svg'}"></Image>
+            </Button>
+        </Grid>
+        <ListView Name="LeftMainMenu"
+                  Width="250"
+                  ItemsSource="{Binding MainMenuCollection}"
+                  HorizontalContentAlignment="Stretch"
+                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <ListView.ItemTemplate>
+                <ItemContainerTemplate>
+                    <Button Height="40" 
+                            Command="{Binding MenuAction}"
+                            HorizontalContentAlignment="Stretch">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding Icon}"></Image>
+                            <TextBlock Grid.Column="1" 
+                                       Margin="10,0,0,0" 
+                                       Text="{Binding Name}"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"></TextBlock>
+                        </Grid>
+                    </Button>
+                </ItemContainerTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Resources>
+                <Storyboard x:Key="ShrinkWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftMainMenu}"
+                                         Duration="0:0:0.5"
+                                         To="0">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Key="EnLargeWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftMainMenu}"
+                                         Duration="0:0:0.5"
+                                         To="250">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </ListView.Resources>
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsOpenMenu}" Value="true">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
+        </ListView>
+        <ContentPresenter Content="{Binding CurrentContentViewModel}">
+            <ContentPresenter.Resources>
+                <DataTemplate DataType="{x:Type viewModel:ScriptEditViewModel}">
+                    <view:ScriptEditView></view:ScriptEditView>
+                </DataTemplate>
+            </ContentPresenter.Resources>
+        </ContentPresenter>
+    </DockPanel>
 </dx:ThemedWindow>
