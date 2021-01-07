@@ -7,6 +7,8 @@
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:helper="clr-namespace:WPFHVVPlatform.Helper"
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -15,6 +17,7 @@
               DockPanel.Dock="Top"
               Margin="0,0,0,2">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
@@ -49,15 +52,35 @@
                     Grid.Column="5">
                 <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
             </Button>
-            <Button ToolTip="스크립트 연속 실행"
-                    Grid.Column="5">
-                <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
+            <Button ToolTip="스크립트 정지"
+                    Grid.Column="6">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
             </Button>
-            <Button ToolTip="이미지 리스트 접기"
-                    Grid.Column="6"
-                    >
-                <Image Source="{dx:DXImage 'SvgImages/XAF/ModelEditor_ImageSources.svg'}"></Image>
-            </Button>
+            <dxe:FontEdit Grid.Column="7"
+                          Grid.ColumnSpan="2"
+                          EditValue="Consolas"
+                          Name="editFont"></dxe:FontEdit>
+            <dxe:ComboBoxEdit Grid.Column="9"
+                              SelectedItem="16"
+                              Name="editFontSize">
+                <dxe:ComboBoxEditItem>10</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>11</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>12</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>13</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>14</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>15</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>16</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>17</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>18</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>19</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>20</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>21</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>22</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>23</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>24</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>25</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
+            </dxe:ComboBoxEdit>
         </Grid>
         <dxdo:DockLayoutManager FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal"
@@ -65,42 +88,77 @@
                 <dxdo:LayoutGroup Name="EditPlanel"
                                   Orientation="Vertical"
                                   AllowClose="False">
-                    
                     <dxdo:LayoutPanel Caption="스크립트"
                                       ItemHeight="*"
                                       AllowClose="False">
-                        <avalon:TextEditor SyntaxHighlighting="JavaScript"
-                                           Margin="2"
-                                           FontSize="21">
-                            
-                        </avalon:TextEditor>
+                        <dx:DXTabControl Margin="0,5,0,0"
+                                         ItemsSource="{Binding ScriptCollection}"
+                                         Foreground="Black"
+                                         Name="scriptEditor">
+                            <!--<helper:BindableAvalonEditor SyntaxHighlighting="JavaScript"
+                                                         Margin="2"
+                                                         FontSize="{Binding ElementName=editFontSize, Path=SelectedItemValue}"
+                                                         FontFamily="{Binding ElementName=editFont, Path=EditValue}"
+                                                         Text="{Binding ScriptContent}">
+                            </helper:BindableAvalonEditor>-->
+                            <dx:DXTabControl.ItemHeaderTemplate>
+                                <ItemContainerTemplate>
+                                    <TextBlock Text="{Binding}" Foreground="White"></TextBlock>
+                                </ItemContainerTemplate>
+                            </dx:DXTabControl.ItemHeaderTemplate>
+
+                            <dx:DXTabControl.ItemContainerStyle>
+                                <Style TargetType="dx:DXTabItem">
+                                    <Setter Property="Header" Value="{Binding FileName}"/>
+                                    <Setter Property="IsSelected"  Value="{Binding IsSelected}"/>
+                                    <Setter Property="Content" Value="{Binding ScriptContent}"></Setter>
+                                </Style>
+                            </dx:DXTabControl.ItemContainerStyle>
+
+                            <dx:DXTabControl.View>
+                                <dx:TabControlScrollView ShowHeaderMenu="True" 
+                                                         ShowHiddenTabItemsInHeaderMenu="False" 
+                                                         HeaderLocation="Top" 
+                                                         HeaderOrientation="Horizontal" 
+                                                         AllowAnimation="True"
+                                                         AllowHideTabItems="True" 
+                                                         AutoHideScrollButtons="True"
+                                                         ScrollViewer.PanningMode="HorizontalOnly" 
+                                                         ScrollButtonsShowMode="WhenNeeded"/>
+                            </dx:DXTabControl.View>
+                            <dx:DXTabControl.ItemTemplate>
+                                <DataTemplate>
+                                    <helper:BindableAvalonEditor SyntaxHighlighting="JavaScript"
+                                                         Margin="2"
+                                                         FontSize="{Binding ElementName=editFontSize, Path=SelectedItemValue}"
+                                                         FontFamily="{Binding ElementName=editFont, Path=EditValue}"
+                                                         Text="{Binding Content}">
+                                    </helper:BindableAvalonEditor>
+                                </DataTemplate>
+                            </dx:DXTabControl.ItemTemplate>
+                        </dx:DXTabControl>
                     </dxdo:LayoutPanel>
                     <dxdo:LayoutPanel Caption="로그"
                                       ItemHeight="300"
                                       AllowClose="False">
                         <dx:DXTabControl Margin="0,5,0,0">
-                            <dx:DXTabItem Header="스크립트 에러">
-                                <dxg:GridControl EnableSmartColumnsGeneration="False">
+                            <dx:DXTabItem Header="에러">
+                                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                                 SelectionMode="Row"
+                                                 AutoGenerateColumns="None"
+                                                 ShowAllTableValuesInFilterPopup="False">
+                                    <dxg:GridControl.Columns>
+                                        <dxg:GridColumn FieldName="시간" IsSmart="False" Binding="{Binding Path=Time}"/>
+                                        <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Binding="{Binding Path=Content}"/>
+                                    </dxg:GridControl.Columns>
                                     <dxg:GridControl.View>
                                         <dxg:TableView AllowPerPixelScrolling="True" 
                                                        ShowTotalSummary="False"
-                                                       AllowGrouping="True"
-                                                       />
-                                    </dxg:GridControl.View>
-                                </dxg:GridControl>
-                            </dx:DXTabItem>
-                            <dx:DXTabItem Header="시스템 에러">
-                                <dxg:GridControl EnableSmartColumnsGeneration="False">
-                                    <dxg:GridControl.View>
-                                        <dxg:TableView AllowPerPixelScrolling="True" 
-                                                       ShowTotalSummary="False"
-                                                       AllowGrouping="True"
-                                                       />
+                                                       AllowGrouping="True"/>
                                     </dxg:GridControl.View>
                                 </dxg:GridControl>
                             </dx:DXTabItem>
                         </dx:DXTabControl>
-
                     </dxdo:LayoutPanel>
                 </dxdo:LayoutGroup>
                 <dxdo:LayoutGroup Name="ImageList"
@@ -113,6 +171,9 @@
                                       MaxWidth="300"
                                       AutoHidden="True"
                                       AllowClose="False">
+                        <TextBlock Text="구현 준비중입니다." 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"></TextBlock>
 
                     </dxdo:LayoutPanel>
                     <dxdo:LayoutPanel Caption="모듈"
@@ -120,11 +181,12 @@
                                       MaxWidth="300"
                                       AutoHidden="True"
                                       AllowClose="False">
-
+                        <TextBlock Text="구현 준비중입니다." 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"></TextBlock>
                     </dxdo:LayoutPanel>
                 </dxdo:LayoutGroup>
             </dxdo:LayoutGroup>
-            
         </dxdo:DockLayoutManager>
     </DockPanel>
 </UserControl>

@@ -34,7 +34,7 @@ namespace HV {
 			bool SetModulePath(String^ path);
 			bool RunScript(String^ content);
 			bool RunFile(String^ path);
-
+			bool Terminate();
 			
 
 			bool RegisterExternalData(String^ key, HV::V1::Object^ data);

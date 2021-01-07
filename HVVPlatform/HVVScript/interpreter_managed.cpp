@@ -38,6 +38,9 @@ bool hv::v1::interpreter_managed::run_script(std::string content) {
 bool hv::v1::interpreter_managed::run_file(std::string path) {
 	return this->_pimpl->ptr->run_file(path);
 }
+bool hv::v1::interpreter_managed::terminate() {
+	return this->_pimpl->ptr->terminate();
+}
 
 bool hv::v1::interpreter_managed::register_external_data(std::string key, std::shared_ptr<hv::v1::object> data) {
 	return this->_pimpl->ptr->register_external_data(key, data);

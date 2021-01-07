@@ -47,6 +47,11 @@ bool HV::V1::Interpreter::RunFile(String^ path) {
 
 	return check;
 }
+
+bool HV::V1::Interpreter::Terminate() {
+	return this->_instance->terminate();
+}
+
 bool HV::V1::Interpreter::CheckExternalData(String^ key) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(key);
 	return this->_instance->check_external_data(convert_value);

@@ -83,8 +83,7 @@ namespace hv::v1{
 		std::mutex _mtx_event_external_hash;
 
 		bool _is_script_running;
-		
-		
+		bool _is_terminating;
 
 		std::string _script_file_path;
 		std::string _script_content;
@@ -128,6 +127,7 @@ namespace hv::v1{
 		std::map<std::string, std::shared_ptr<object>> * global_objects();
 
 		
+		bool terminate();
 
 		 
 

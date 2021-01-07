@@ -23,6 +23,7 @@ namespace hv::v1{
 		bool set_module_path(std::string path);
 		bool run_script(std::string content);
 		bool run_file(std::string path);
+		bool terminate();
 
 		bool register_external_data(std::string key, std::shared_ptr<object> data);
 		std::shared_ptr<object> external_data(std::string key);
@@ -31,7 +32,7 @@ namespace hv::v1{
 
 		std::list<std::string> global_names();
 		std::map<std::string, std::shared_ptr<object>>* global_objects();
-
+	
 
 		/// <summary>
 		/// script static functions

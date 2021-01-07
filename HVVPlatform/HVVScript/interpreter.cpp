@@ -62,7 +62,8 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_error_start_column(-1),
 						    _error_end_column(-1),
 							_error_rows(-1),
-							_script_module_path(""){
+							_script_module_path(""),
+							_is_terminating(false){
 
 	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
 
@@ -245,7 +246,7 @@ void interpreter::_loop() {
 
 		v8::HandleScope handleScope(isolate->_instance);
 
-
+		
 
 
 
@@ -293,21 +294,23 @@ void interpreter::_loop() {
 
 
 		v8::TryCatch try_catch(isolate->_instance);
-	
+		
 		try {
 			if (this->_is_content == false) {
-				//parent_context.set_lib_path(this->_script_module_path);
+				this->_is_terminating = true;
 				auto script_result = parent_context.run_file(this->_script_file_path);
+				this->_is_terminating = false;
 			}
 			else {
-				//parent_context.set_lib_path(this->_script_module_path);
+				this->_is_terminating = true;
 				auto script_result = parent_context.run_script(this->_script_content);
+				this->_is_terminating = false;
 			}
 		}
 		catch (std::exception e) {
 			this->_set_error_info(e.what(), -1, -1, -1);
 		}
-
+		
 
 		/// <summary>
 		/// Context after run script
@@ -380,7 +383,7 @@ void interpreter::_loop() {
 		/// Clear v8pp context explicitly 
 		/// </summary>
 		v8pp::cleanup(isolate->_instance);
-		
+		isolate->_instance = nullptr;
 		//std::string const v8_flags = "--expose_gc";
 		//v8::V8::SetFlagsFromString(v8_flags.data(), (int)v8_flags.length());
 		//isolate->_instance->RequestGarbageCollectionForTesting(
@@ -388,6 +391,7 @@ void interpreter::_loop() {
 		/// <summary>
 		/// Script end signal
 		/// </summary>
+
 		this->_script_end_signal();
 	}
 }
@@ -499,6 +503,17 @@ void interpreter::clear_external_data() {
 	this->_external_hash_map.clear();
 }
 
+
+bool interpreter::terminate() {
+	
+	auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
+	if (isolate == nullptr) return false;
+
+	v8::Locker locker(isolate->_instance);
+	isolate->_instance->TerminateExecution();
+	return true;
+
+}
 
 
 bool interpreter::init_v8_startup_data(std::string path) {
