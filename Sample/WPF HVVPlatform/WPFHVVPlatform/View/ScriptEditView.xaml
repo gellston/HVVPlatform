@@ -8,10 +8,16 @@
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:helper="clr-namespace:WPFHVVPlatform.Helper"
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:TextDocumentToStringConverter x:Key="TextDocumentToStringConverter"></converter:TextDocumentToStringConverter>
+    </UserControl.Resources>
+
+    
     <DockPanel>
         <Grid Height="40"
               DockPanel.Dock="Top"
@@ -29,31 +35,38 @@
                 <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button ToolTip="새 스크립트"
-                    Grid.Column="0">
+                    Grid.Column="0"
+                    Command="{Binding NewScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Actions/New.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 열기"
-                    Grid.Column="1">
+                    Grid.Column="1"
+                    Command="{Binding OpenImageCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Actions/Open2.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 저장"
-                    Grid.Column="2">
+                    Grid.Column="2"
+                    Command="{Binding SaveScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/save as.svg'}"></Image>
             </Button>
             <Button ToolTip="이미지 열기"
-                    Grid.Column="3">
+                    Grid.Column="3"
+                    Command="{Binding OpenImageCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/LoadImage.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 실행"
-                    Grid.Column="4">
+                    Grid.Column="4"
+                    Command="{Binding StartRunScriptCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Start.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 연속 실행"
-                    Grid.Column="5">
+                    Grid.Column="5"
+                    Command="{Binding ContinusStartRunScriptCommand}">
                 <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
             </Button>
             <Button ToolTip="스크립트 정지"
-                    Grid.Column="6">
+                    Grid.Column="6"
+                    Command="{Binding StopScriptCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
             </Button>
             <dxe:FontEdit Grid.Column="7"
@@ -61,7 +74,7 @@
                           EditValue="Consolas"
                           Name="editFont"></dxe:FontEdit>
             <dxe:ComboBoxEdit Grid.Column="9"
-                              SelectedItem="16"
+                              SelectedItem="18"
                               Name="editFontSize">
                 <dxe:ComboBoxEditItem>10</dxe:ComboBoxEditItem>
                 <dxe:ComboBoxEditItem>11</dxe:ComboBoxEditItem>
@@ -111,29 +124,22 @@
                                 <Style TargetType="dx:DXTabItem">
                                     <Setter Property="Header" Value="{Binding FileName}"/>
                                     <Setter Property="IsSelected"  Value="{Binding IsSelected}"/>
-                                    <Setter Property="Content" Value="{Binding ScriptContent}"></Setter>
                                 </Style>
                             </dx:DXTabControl.ItemContainerStyle>
 
                             <dx:DXTabControl.View>
-                                <dx:TabControlScrollView ShowHeaderMenu="True" 
-                                                         ShowHiddenTabItemsInHeaderMenu="False" 
-                                                         HeaderLocation="Top" 
-                                                         HeaderOrientation="Horizontal" 
-                                                         AllowAnimation="True"
-                                                         AllowHideTabItems="True" 
-                                                         AutoHideScrollButtons="True"
-                                                         ScrollViewer.PanningMode="HorizontalOnly" 
-                                                         ScrollButtonsShowMode="WhenNeeded"/>
+                                <dx:TabControlStretchView HideButtonShowMode="InAllTabs" 
+                                                          SingleTabItemHideMode="HideAndShowNewItem"/>
                             </dx:DXTabControl.View>
                             <dx:DXTabControl.ItemTemplate>
                                 <DataTemplate>
-                                    <helper:BindableAvalonEditor SyntaxHighlighting="JavaScript"
-                                                         Margin="2"
-                                                         FontSize="{Binding ElementName=editFontSize, Path=SelectedItemValue}"
-                                                         FontFamily="{Binding ElementName=editFont, Path=EditValue}"
-                                                         Text="{Binding Content}">
-                                    </helper:BindableAvalonEditor>
+                                    <avalon:TextEditor Document="{Binding Converter={StaticResource TextDocumentToStringConverter}, Path=ScriptContent, Mode=TwoWay}"
+                                                       SyntaxHighlighting="JavaScript"
+                                                       FontFamily="{Binding Source={x:Reference editFont}, Path=EditValue}"
+                                                       FontSize="{Binding Source={x:Reference editFontSize}, Path=SelectedItem}"
+                                                       ShowLineNumbers="True"
+                                                       >
+                                    </avalon:TextEditor>
                                 </DataTemplate>
                             </dx:DXTabControl.ItemTemplate>
                         </dx:DXTabControl>
@@ -146,7 +152,8 @@
                                 <dxg:GridControl EnableSmartColumnsGeneration="False"
                                                  SelectionMode="Row"
                                                  AutoGenerateColumns="None"
-                                                 ShowAllTableValuesInFilterPopup="False">
+                                                 ShowAllTableValuesInFilterPopup="False"
+                                                 >
                                     <dxg:GridControl.Columns>
                                         <dxg:GridColumn FieldName="시간" IsSmart="False" Binding="{Binding Path=Time}"/>
                                         <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Binding="{Binding Path=Content}"/>

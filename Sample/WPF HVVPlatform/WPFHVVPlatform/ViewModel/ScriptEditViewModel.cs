@@ -7,26 +7,27 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using WPFHVVPlatform.Model;
 
+
 namespace WPFHVVPlatform.ViewModel
 {
     public class ScriptEditViewModel : ViewModelBase
     {
         public ScriptEditViewModel()
         {
+            //this.ScriptCollection.Add(new Script()
+            //{
+            //    FileName = "test",
+            //    ScriptContent = "test"
+            //});
 
-            this.ScriptCollection.Add(new Script()
-            {
-                FileName = "none.js",
-                ScriptContent = "//test"
-            });
+        }
 
 
-            this.ScriptCollection.Add(new Script()
-            {
-                FileName = "none.js",
-                ScriptContent = "//test"
-            });
-
+        private Script _SelectedScript = null;
+        public Script SelectedScript
+        {
+            get => _SelectedScript;
+            set => Set<Script>(nameof(SelectedScript), ref _SelectedScript, value);
         }
 
 
@@ -43,7 +44,14 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => new RelayCommand(() =>
             {
+                this.ScriptCollection.Add(new Script()
+                {
+                    FileName = "new.js",
+                    ScriptContent = "/* Be the god of coding */",
+                    FilePath = ""
+                });
 
+                //System.Console.WriteLine("test");
             });
         }
 
@@ -87,14 +95,15 @@ namespace WPFHVVPlatform.ViewModel
             });
         }
 
-
         private ObservableCollection<Script> _ScriptCollection = null;
         public ObservableCollection<Script> ScriptCollection
         {
             get
             {
-                if (_ScriptCollection == null)
+                if(_ScriptCollection == null)
+                {
                     _ScriptCollection = new ObservableCollection<Script>();
+                }
                 return _ScriptCollection;
             }
         }

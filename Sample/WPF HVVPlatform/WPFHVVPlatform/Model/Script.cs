@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GalaSoft.MvvmLight;
 
 namespace WPFHVVPlatform.Model
 {
@@ -16,6 +17,7 @@ namespace WPFHVVPlatform.Model
             get;set;
         }
 
+     
         public String ScriptContent
         {
             get;set;
