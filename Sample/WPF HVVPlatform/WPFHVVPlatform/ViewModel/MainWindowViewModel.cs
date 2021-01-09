@@ -10,6 +10,7 @@ using GalaSoft.MvvmLight.Ioc;
 using WPFHVVPlatform.Model;
 using WPFHVVPlatform.Service;
 
+
 namespace WPFHVVPlatform.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase

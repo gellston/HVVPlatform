@@ -4,6 +4,8 @@ using GalaSoft.MvvmLight;
 //using GalaSoft.MvvmLight;
 //using GalaSoft.MvvmLight.Ioc;
 using WPFHVVPlatform.Service;
+using System;
+using System.Runtime.InteropServices;
 
 namespace WPFHVVPlatform.ViewModel
 {
@@ -11,13 +13,28 @@ namespace WPFHVVPlatform.ViewModel
     {
         public ViewModelLocator()
         {
+            if(NativeMethods.AllocConsole() == false)
+            {
+                System.Console.WriteLine("error");
+            }
+
+            if (InitializeScript() == false)
+            {
+                System.Console.WriteLine("error");
+            }
+
 
             SimpleIoc.Default.Register<AppConfigService>();
+            SimpleIoc.Default.Register<FileDialogService>();
+            SimpleIoc.Default.Register<MessageDialogService>();
+            SimpleIoc.Default.Register<ScriptFileService>();
+            //SimpleIoc.Default.Register<>
+            
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ScriptEditViewModel>();
 
-            //var test = SimpleIoc.Default.GetInstance<MainWindowViewModel>();
-            
+
+            SimpleIoc.Default.Register<HV.V1.Interpreter>();
         }
 
         public ViewModelBase MainWindowViewModel
@@ -27,6 +44,27 @@ namespace WPFHVVPlatform.ViewModel
                 return SimpleIoc.Default.GetInstance<MainWindowViewModel>();
             }
         }
-         
+
+        static public bool InitializeScript()
+        {
+            bool check = true;
+            String currentDirecturoy = AppDomain.CurrentDomain.BaseDirectory;
+            check = HV.V1.Interpreter.InitV8StartupData(currentDirecturoy);
+            HV.V1.Interpreter.InitV8Platform();
+            check = HV.V1.Interpreter.InitV8Engine();
+            HV.V1.Interpreter.SetV8Flag("--use_strict");
+            HV.V1.Interpreter.SetV8Flag("--max_old_space_size=8192");
+            HV.V1.Interpreter.SetV8Flag("--expose_gc");
+
+            return check;
+        }
+
+        static class NativeMethods
+        {
+            [DllImport("kernel32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            public static extern bool AllocConsole();
+        }
+
     }
 }

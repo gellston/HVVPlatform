@@ -27,10 +27,5 @@ namespace WPFHVVPlatform.Model
         {
             get;set;
         }
-
-        public bool IsSelected
-        {
-            get;set;
-        }
     }
 }
