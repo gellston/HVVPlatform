@@ -18,10 +18,9 @@ namespace HV {
 
 		internal:
 			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
-			//void reset();
 			
 		private:
-			Dictionary<String^, HV::V1::Object^>^ _GlobalObject;
+
 
 		public:
 
@@ -42,9 +41,18 @@ namespace HV {
 			bool CheckExternalData(String^ key);
 			void ClearExternalData();
 
-
-			List<String^>^ GlobalNames();
+			
+			property List<String^>^ GlobalNames {
+				List<String^>^ get();
+			}
 			property Dictionary<String^, HV::V1::Object^>^ GlobalObjects {
+				Dictionary<String^, HV::V1::Object^>^ get();
+			}
+
+			property List<String^>^ ExternalNames{
+				List<String^> ^ get();
+			}
+			property Dictionary<String^, HV::V1::Object^>^ ExternalObjects {
 				Dictionary<String^, HV::V1::Object^>^ get();
 			}
 

@@ -43,24 +43,32 @@ bool hv::v1::interpreter_managed::terminate() {
 }
 
 bool hv::v1::interpreter_managed::register_external_data(std::string key, std::shared_ptr<hv::v1::object> data) {
-	return this->_pimpl->ptr->register_external_data(key, data);
+	return this->_pimpl->ptr->register_external_object(key, data);
 }
 std::shared_ptr<hv::v1::object> hv::v1::interpreter_managed::external_data(std::string key) {
-	return this->_pimpl->ptr->external_data(key);
+	return this->_pimpl->ptr->external_object(key);
 }
 bool hv::v1::interpreter_managed::check_external_data(std::string key) {
-	return this->_pimpl->ptr->check_external_data(key);
+	return this->_pimpl->ptr->check_external_object(key);
 }
 void hv::v1::interpreter_managed::clear_external_data() {
-	return this->_pimpl->ptr->clear_external_data();
+	return this->_pimpl->ptr->clear_external_object();
 }
 
 std::list<std::string> hv::v1::interpreter_managed::global_names() {
 	return this->_pimpl->ptr->global_names();
 }
-std::map<std::string, std::shared_ptr<hv::v1::object>>* hv::v1::interpreter_managed::global_objects() {
+std::map<std::string, std::shared_ptr<hv::v1::object>> hv::v1::interpreter_managed::global_objects() {
 	return this->_pimpl->ptr->global_objects();
 }
+
+std::list<std::string> hv::v1::interpreter_managed::external_names() {
+	return this->_pimpl->ptr->external_names();
+}
+std::map<std::string, std::shared_ptr<hv::v1::object>> hv::v1::interpreter_managed::external_objects() {
+	return this->_pimpl->ptr->external_objects();
+}
+
 
 
 bool hv::v1::interpreter_managed::init_v8_startup_data(std::string path) {

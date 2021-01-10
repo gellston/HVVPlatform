@@ -389,3 +389,11 @@ double hv::v1::image::resolution() {
 
 	return this->_pixel_resolution;
 }
+
+void hv::v1::image::register_draw_object(std::shared_ptr<hv::v1::object> _object) {
+	this->_draw_objects.push_back(_object);
+}
+
+std::list<std::shared_ptr<hv::v1::object>> hv::v1::image::drarw_objects() {
+	return this->_draw_objects;
+}

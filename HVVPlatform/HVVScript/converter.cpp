@@ -3,11 +3,14 @@
 #include "pimpl.h"
 #include "pimpl_define.h"
 #include "string_cvt.h"
+#include "binding.h"
 
 
 using namespace hv;
 using namespace v1;
 
+
+HV_CREATE_SHARED_CONVERTER(object);
 
 converter::converter(std::function<object* (std::shared_ptr<pimpl_local_var>)> _callback) : _function(_callback)
 {
@@ -266,6 +269,25 @@ template<> std::map<std::string, std::string> hv::v1::convert_to_map(std::shared
 			native_map[native_key] = native_value;
 		}
 		return native_map;
+	}
+	catch (std::exception e) {
+		throw e;
+	}
+}
+
+
+// object
+template<> std::shared_ptr<object> hv::v1::convert_to_object(std::shared_ptr<pimpl_local_var> local_var) {
+	auto pimpl_solid_ptr = std::static_pointer_cast<pimpl_local_var_solid>(local_var);
+	auto isolate = pimpl_solid_ptr->_isolate;
+	v8::HandleScope scope(isolate);
+	auto _local = v8pp::to_local(isolate, pimpl_solid_ptr->_global);
+
+	try {
+		//auto v8ObjectValue = _local->ToObject(isolate);
+		auto data = v8pp::from_v8<std::shared_ptr<object>>(isolate, _local);
+		
+		return data;
 	}
 	catch (std::exception e) {
 		throw e;

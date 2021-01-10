@@ -9,6 +9,7 @@
 #include <string>
 #include <variant>
 #include <map>
+#include <memory>
 
 #include "pimpl.h"
 
@@ -39,6 +40,10 @@ namespace hv::v1 {
 	template <> HVAPI_EXPORT std::map<std::string, double> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::map<std::string, std::string> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
 	template <> HVAPI_EXPORT std::map<std::string, bool> convert_to_map(std::shared_ptr<pimpl_local_var> local_var);
+
+
+	template <typename T> std::shared_ptr<T> convert_to_object(std::shared_ptr<pimpl_local_var> local_var);
+	template<> HVAPI_EXPORT std::shared_ptr<object> convert_to_object(std::shared_ptr<pimpl_local_var> local_var);
 }
 
 

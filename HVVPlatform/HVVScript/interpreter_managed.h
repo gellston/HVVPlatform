@@ -31,8 +31,10 @@ namespace hv::v1{
 		void clear_external_data();
 
 		std::list<std::string> global_names();
-		std::map<std::string, std::shared_ptr<object>>* global_objects();
-	
+		std::map<std::string, std::shared_ptr<object>> global_objects();
+		
+		std::list<std::string> external_names();
+		std::map<std::string, std::shared_ptr<object>> external_objects();
 
 		/// <summary>
 		/// script static functions

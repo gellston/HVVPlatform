@@ -76,7 +76,7 @@ void HV::V1::Interpreter::SetV8Flag(String^ flag) {
 	hv::v1::interpreter_managed::set_v8_flag(convert_value);
 }
 
-List<String^>^ HV::V1::Interpreter::GlobalNames() {
+List<String^>^ HV::V1::Interpreter::GlobalNames::get() {
 	List<String^>^ list = gcnew List<String^>();
 	auto native_list = this->_instance->global_names();
 	for (auto& element : native_list) {
@@ -87,18 +87,36 @@ List<String^>^ HV::V1::Interpreter::GlobalNames() {
 }
 
 Dictionary<String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
-	if (this->_GlobalObject == nullptr)
-		this->_GlobalObject = gcnew Dictionary<String^, HV::V1::Object^>();
+	auto global_object = gcnew Dictionary<String^, HV::V1::Object^>();
 
-	this->_GlobalObject->Clear();
 
 	auto globals = this->_instance->global_objects();
-	for (auto& [key, val] : *globals) {
+	for (auto& [key, val] : globals) {
 		auto managed_object = gcnew HV::V1::Object(val);
-		this->_GlobalObject->Add(gcnew String(key.c_str()), managed_object);
+		global_object->Add(gcnew String(key.c_str()), managed_object);
 	}
 
-	return this->_GlobalObject;
+	return global_object;
+}
+
+List<String^>^ HV::V1::Interpreter::ExternalNames::get() {
+	List<String^>^ list = gcnew List<String^>();
+	auto native_list = this->_instance->external_names();
+	for (auto& element : native_list) {
+		list->Add(gcnew String(element.c_str()));
+	}
+	return list;
+}
+Dictionary<String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjects::get() {
+	auto external_object = gcnew Dictionary<String^, HV::V1::Object^>();
+
+	auto externals = this->_instance->external_objects();
+	for (auto& [key, val] : externals) {
+		auto managed_object = gcnew HV::V1::Object(val);
+		external_object->Add(gcnew String(key.c_str()), managed_object);
+	}
+
+	return external_object;
 }
 
 bool HV::V1::Interpreter::RegisterExternalData(String^ key, HV::V1::Object^ data) {

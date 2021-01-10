@@ -41,34 +41,36 @@ int main()
     hv::v1::interpreter::set_v8_flag("--max_old_space_size=8192");
     hv::v1::interpreter::set_v8_flag("--expose_gc");
 
-    hv::v1::interpreter interpreter;
+    hv::v1::interpreter interpreter1;
+    //hv::v1::interpreter interpreter2;
 
-    interpreter.set_module_path(current_path);
+    interpreter1.set_module_path(current_path);
+    //interpreter2.set_module_path(current_path);
 
     while (true) {
 
         system("cls");
-        
+
         std::shared_ptr<hv::v1::image> ptr_test(new hv::v1::image("test", 2020, 2020, hv::v1::image_data_type::u8_image));
 
         auto casted_object = std::static_pointer_cast<hv::v1::object>(ptr_test);
 
 
-        interpreter.register_external_data("test", ptr_test);
+        interpreter1.register_external_object("test", ptr_test);
 
         try {
             auto start_time = std::chrono::high_resolution_clock::now();
             std::string current_module_path = current_path;
             std::string current_script_path = current_path;
             current_script_path += "\\";
-            current_script_path += "script.js";
+            current_script_path += "script1.js";
 
             current_module_path += "\\module";
 
-            
-            interpreter.run_file(current_script_path);
 
-            auto global_objects = interpreter.global_objects();
+            interpreter1.run_file(current_script_path);
+
+            auto global_objects = interpreter1.global_objects();
 
             auto end_time = std::chrono::high_resolution_clock::now();
             auto time = end_time - start_time;
@@ -77,7 +79,7 @@ int main()
 
             std::cout << "takt time : " << duration << std::endl;
             std::cout << "=============================================" << std::endl;
-            for (auto element : *global_objects)
+            for (auto& element : global_objects)
             {
                 std::cout << "Key : " << element.first << std::endl;
                 std::cout << "Type : " << element.second->type() << std::endl;
@@ -98,7 +100,63 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        Sleep(300);
+        //Sleep(300);
     }
-    
+   
+    //while (true) {
+
+    //    system("cls");
+    //    
+    //    std::shared_ptr<hv::v1::image> ptr_test(new hv::v1::image("test", 2020, 2020, hv::v1::image_data_type::u8_image));
+
+    //    auto casted_object = std::static_pointer_cast<hv::v1::object>(ptr_test);
+
+
+    //    interpreter2.register_external_object("test", ptr_test);
+
+    //    try {
+    //        auto start_time = std::chrono::high_resolution_clock::now();
+    //        std::string current_module_path = current_path;
+    //        std::string current_script_path = current_path;
+    //        current_script_path += "\\";
+    //        current_script_path += "script1.js";
+
+    //        current_module_path += "\\module";
+
+    //        
+    //        interpreter2.run_file(current_script_path);
+
+    //        auto global_objects = interpreter2.global_objects();
+
+    //        auto end_time = std::chrono::high_resolution_clock::now();
+    //        auto time = end_time - start_time;
+
+    //        auto duration = time / std::chrono::milliseconds(1);
+
+    //        //std::cout << "takt time : " << duration << std::endl;
+    //        //std::cout << "=============================================" << std::endl;
+    //        for (auto & element : global_objects)
+    //        {
+    //            std::cout << "Key : " << element.first << std::endl;
+    //            std::cout << "Type : " << element.second->type() << std::endl;
+    //            std::cout << "Data : " << element.second->to_string() << std::endl;
+    //            std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
+
+    //            std::cout << "---------------------------------------------" << std::endl;
+    //        }
+    //        std::cout << "=============================================" << std::endl;
+
+    //    }
+    //    catch (hv::v1::script_error error) {
+    //        std::cout << "=============================================" << std::endl;
+    //        std::cout << "error message :" << std::endl;
+    //        std::cout << error.what() << std::endl;
+    //        std::cout << "error line : " << error.line() << std::endl;
+    //        std::cout << "error start column : " << error.start_column() << std::endl;
+    //        std::cout << "error end column : " << error.end_column() << std::endl;
+    //        std::cout << "=============================================" << std::endl;
+    //    }
+    //    Sleep(300);
+    //}
+
 }

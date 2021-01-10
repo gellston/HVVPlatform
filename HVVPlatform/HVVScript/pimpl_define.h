@@ -36,6 +36,17 @@ namespace hv::v1 {
 	//class pimpl_v8_platform;
 	//class pimpl_converter_lambda;
 	//class pimpl_local_var_implement;
+	class pimpl_v8pp_context : public pimpl {
+	private:
+		std::shared_ptr<v8pp::context> _context;
+	public:
+		pimpl_v8pp_context() : _context(std::make_shared<v8pp::context>()) {};
+		~pimpl_v8pp_context() override {};
+
+		std::shared_ptr<v8pp::context> context() {
+			return _context;
+		}
+	};
 
 	class pimpl_object_hash : public pimpl{
 	public:

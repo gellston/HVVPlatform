@@ -44,6 +44,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <CLRSupport>false</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -116,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;HVVAPI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)v8fullset\v8pp\include;$(SolutionDir)object;$(SolutionDir)primitive_object;$(SolutionDir)image;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
@@ -124,7 +125,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)v8fullset\v8pp\lib\Debug;$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>v8pp.lib;v8.dll.lib;v8_libbase.dll.lib;v8_libplatform.dll.lib;object.lib;primitive_object.lib;core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>

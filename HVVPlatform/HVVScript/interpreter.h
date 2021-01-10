@@ -118,20 +118,22 @@ namespace hv::v1{
 		bool run_script(std::string content);
 		bool run_file(std::string path);
 
-		bool register_external_data(std::string key, std::shared_ptr<object> data);
-		std::shared_ptr<object> external_data(std::string key);
-		bool check_external_data(std::string key);
-		void clear_external_data();
+		bool register_external_object(std::string key, std::shared_ptr<object> data);
+		std::shared_ptr<object> external_object(std::string key);
+		bool check_external_object(std::string key);
+		void clear_external_object();
 
 		std::list<std::string> global_names();
-		std::map<std::string, std::shared_ptr<object>> * global_objects();
+		std::map<std::string, std::shared_ptr<object>> global_objects();
+
+
+		std::list<std::string> external_names();
+		std::map<std::string, std::shared_ptr<object>> external_objects();
 
 		
 		bool terminate();
 
 		 
-
-
 		/// <summary>
 		/// script static functions
 		/// </summary>

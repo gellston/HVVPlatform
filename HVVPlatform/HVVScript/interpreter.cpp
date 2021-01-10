@@ -168,6 +168,23 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		}
 		return nullptr;
 	}));
+
+	/*
+	this->register_converter("object", new converter([&](std::shared_ptr<pimpl_local_var> local_variable) -> object* {
+		std::string key = local_variable->key();
+
+		// Map
+		try {
+			auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+			auto data = hv::v1::convert_to_object<object>(local_variable);
+			if (data != nullptr) 
+				global_hash->_instance[key] = data;
+		}
+		catch (std::exception e) {
+		}
+
+		return nullptr;
+	}));*/
 }
 
 void hv::v1::interpreter::trace(std::string input)
@@ -182,11 +199,12 @@ std::list<std::string> interpreter::global_names() {
 	return this->_global_names;
 }
 
-std::map<std::string, std::shared_ptr<object>>* interpreter::global_objects() {
+std::map<std::string, std::shared_ptr<object>> interpreter::global_objects() {
+	std::scoped_lock lock(this->_mtx_event_global_hash);
 
 	auto objects = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
 
-	return &(objects->_instance);
+	return objects->_instance;
 }
 
 
@@ -240,16 +258,16 @@ void interpreter::_loop() {
 
 		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
 		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+		
+
+
 
 		v8pp::context parent_context;
 		isolate->_instance = parent_context.isolate();
 
 		v8::HandleScope handleScope(isolate->_instance);
 
-		
-
-
-
+	
 		/// <summary>
 		/// Object Type register
 		/// </summary>
@@ -272,14 +290,13 @@ void interpreter::_loop() {
 		typedef v8pp::class_<interpreter> wrap_class_interpreter;
 		wrap_class_interpreter interpreter_instance(isolate->_instance);
 		interpreter_instance.set("trace", &interpreter::trace);
-		interpreter_instance.set("check_external_data", &interpreter::check_external_data);
-		interpreter_instance.set("external_data", &interpreter::external_data);
+		interpreter_instance.set("check_external_object", &interpreter::check_external_object);
+		interpreter_instance.set("external_object", &interpreter::external_object);
 		
 		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
 		auto key = v8pp::to_v8(isolate->_instance, "script");
 		isolate->_instance->GetCurrentContext()->Global()->Set(key, val);
 	
-
 
 
 		// 오브젝트 등록을 위해 여기서 멈춰있어야함. 
@@ -293,6 +310,8 @@ void interpreter::_loop() {
 		this->_clear_error_message();
 
 
+
+		// Try catch object 생성;
 		v8::TryCatch try_catch(isolate->_instance);
 		
 		try {
@@ -328,12 +347,15 @@ void interpreter::_loop() {
 			this->_set_error_info(msg, startColumn, endColumn, lineNumber);
 		}
 
-		auto globals = currentContext->Global();
-		auto global_names = globals->GetOwnPropertyNames(currentContext).ToLocalChecked();
+
 
 		// global hash lock
 		{
 			std::scoped_lock lock(this->_mtx_event_global_hash);
+
+			auto globals = currentContext->Global();
+			auto global_names = globals->GetOwnPropertyNames(currentContext).ToLocalChecked();
+
 			global_hash->_instance.clear();
 			this->_global_names.clear();
 
@@ -353,14 +375,14 @@ void interpreter::_loop() {
 				std::string key = u8string_to_string(u8_key);
 				std::string type = u8string_to_string(u8_type);
 
-				if (val_local->IsNullOrUndefined() || val_local->IsFunction() == true)
+				if (val_local->IsNullOrUndefined() || val_local->IsFunction() == true || val_local->IsDate() || val_local->IsName())
 					continue;
 
 				
 
 				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "array";
-				if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "map";
-				
+				else if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "map";
+				else if (val_local->IsObject()) type = "object";
 
 
 				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
@@ -369,19 +391,22 @@ void interpreter::_loop() {
 				auto local_var = std::static_pointer_cast<pimpl_local_var>(local_var_solid);
 
 				local_var_solid->set(val_local, isolate->_instance, key);
-
+				
 				auto converter = this->_converter_lambda[type];
 				object* result = (*converter)(local_var);
 				if (result != nullptr) {
 					this->_global_names.push_back(key);
-					std::shared_ptr<object> smart_ptr = std::shared_ptr<object>(result);
-					global_hash->_instance[key] = smart_ptr;
+					global_hash->_instance[key] = std::shared_ptr<object>(result);
 				}
+
 			}
 		}
 		/// <summary>
 		/// Clear v8pp context explicitly 
 		/// </summary>
+		/// 
+		// isolate->_instance->RequestGarbageCollectionForTesting(v8::Isolate::GarbageCollectionType::kFullGarbageCollection);
+
 		v8pp::cleanup(isolate->_instance);
 		isolate->_instance = nullptr;
 		//std::string const v8_flags = "--expose_gc";
@@ -405,10 +430,7 @@ bool interpreter::register_converter(std::string type , converter* _converter) {
 }
 
 bool interpreter::set_module_path(std::string path) {
-
-
 	if (this->_is_script_running == true) return false;
-
 	this->_script_module_path = path;
 
 	return true;
@@ -465,7 +487,7 @@ bool interpreter::run_file(std::string path) {
 }
 
 
-bool interpreter::register_external_data(std::string key, std::shared_ptr<object> data) {
+bool interpreter::register_external_object(std::string key, std::shared_ptr<object> data) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
 	this->_external_hash_map[key] = data;
@@ -473,7 +495,7 @@ bool interpreter::register_external_data(std::string key, std::shared_ptr<object
 	return true;
 }
 
-std::shared_ptr<object> interpreter::external_data(std::string key) {
+std::shared_ptr<object> interpreter::external_object(std::string key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
 	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) {
@@ -486,9 +508,25 @@ std::shared_ptr<object> interpreter::external_data(std::string key) {
 	return shared_pointer;
 }
 
+std::list<std::string> interpreter::external_names() {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+	std::list<std::string> name_list;
+
+	for (auto& pair : this->_external_hash_map) {
+		name_list.push_back(pair.first);
+	}
+
+	return name_list;
+}
+std::map<std::string, std::shared_ptr<object>> interpreter::external_objects() {
+	std::scoped_lock lock(this->_mtx_event_external_hash);
+
+	return this->_external_hash_map;
+}
 
 
-bool interpreter::check_external_data(std::string key) {
+
+bool interpreter::check_external_object(std::string key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
 	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) return false;
@@ -497,7 +535,7 @@ bool interpreter::check_external_data(std::string key) {
 	return true;
 }
 
-void interpreter::clear_external_data() {
+void interpreter::clear_external_object() {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
 	this->_external_hash_map.clear();
@@ -508,9 +546,10 @@ bool interpreter::terminate() {
 	
 	auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
 	if (isolate == nullptr) return false;
-
+	if (this->_is_terminating == false) return false;
 	v8::Locker locker(isolate->_instance);
 	isolate->_instance->TerminateExecution();
+
 	return true;
 
 }
