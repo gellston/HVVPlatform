@@ -15,6 +15,7 @@
 #include "pimpl.h"
 #include "converter.h"
 #include "macro.h"
+#include "native_module.hpp"
 
 namespace hv::v1{
 
@@ -22,7 +23,7 @@ namespace hv::v1{
 
 	private:
 
-		//friend class hv::v1::converter;
+		
 		/// <summary>
 		/// pimpl v8 isolate 
 		/// </summary>
@@ -99,10 +100,12 @@ namespace hv::v1{
 		int _error_end_column;
 		int _error_rows;
 		std::string _error_message;
+
+
+		// native module 
+		std::shared_ptr<std::map<std::string, hv::v1::native_module>> _native_modules;
+
 		void trace(std::string input);
-		
-
-
 		bool register_converter(std::string type, converter* converter);
 
 	public:
@@ -133,6 +136,7 @@ namespace hv::v1{
 		
 		bool terminate();
 
+		void release_native_modules();
 		 
 		/// <summary>
 		/// script static functions

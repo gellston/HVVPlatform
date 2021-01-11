@@ -59,5 +59,8 @@
     <ClInclude Include="interpreter_managed.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="native_module.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

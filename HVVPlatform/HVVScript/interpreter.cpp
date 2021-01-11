@@ -13,7 +13,7 @@
 
 
 #include <libplatform/libplatform.h>
-
+#include <windows.h>
 
 
 #include <chrono>
@@ -49,10 +49,17 @@ interpreter::~interpreter() {
 
 	this->_interpreter_thread.join();
 
+	// global native object deletion
+	for (auto& element : *this->_native_modules) {
+		if (element.second.handle == nullptr) continue;
+		::FreeLibrary(static_cast<HMODULE>(element.second.handle));
+	}
+
 }
 
 interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_global_object_hash(std::make_shared<pimpl_object_hash>()),
+							_native_modules(std::make_shared<std::map<std::string, hv::v1::native_module>>()),
 							_is_thread_running(true),
 							_is_script_running(false),
 							_interpreter_thread(),
@@ -169,7 +176,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		return nullptr;
 	}));
 
-	/*
+	
 	this->register_converter("object", new converter([&](std::shared_ptr<pimpl_local_var> local_variable) -> object* {
 		std::string key = local_variable->key();
 
@@ -184,7 +191,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		}
 
 		return nullptr;
-	}));*/
+	}));
 }
 
 void hv::v1::interpreter::trace(std::string input)
@@ -262,7 +269,7 @@ void interpreter::_loop() {
 
 
 
-		v8pp::context parent_context;
+		v8pp::context parent_context(nullptr,nullptr,true,this->_native_modules);
 		isolate->_instance = parent_context.isolate();
 
 		v8::HandleScope handleScope(isolate->_instance);
@@ -375,7 +382,7 @@ void interpreter::_loop() {
 				std::string key = u8string_to_string(u8_key);
 				std::string type = u8string_to_string(u8_type);
 
-				if (val_local->IsNullOrUndefined() || val_local->IsFunction() == true || val_local->IsDate() || val_local->IsName())
+				if (val_local->IsNullOrUndefined() || val_local->IsFunction() == true || val_local->IsDate())
 					continue;
 
 				
@@ -407,7 +414,7 @@ void interpreter::_loop() {
 		/// 
 		// isolate->_instance->RequestGarbageCollectionForTesting(v8::Isolate::GarbageCollectionType::kFullGarbageCollection);
 
-		v8pp::cleanup(isolate->_instance);
+		//v8pp::cleanup(isolate->_instance);
 		isolate->_instance = nullptr;
 		//std::string const v8_flags = "--expose_gc";
 		//v8::V8::SetFlagsFromString(v8_flags.data(), (int)v8_flags.length());
@@ -552,6 +559,14 @@ bool interpreter::terminate() {
 
 	return true;
 
+}
+
+void interpreter::release_native_modules() {
+	// global native object deletion
+	for (auto& element : *this->_native_modules) {
+		if (element.second.handle == nullptr) continue;
+		::FreeLibrary(static_cast<HMODULE>(element.second.handle));
+	}
 }
 
 

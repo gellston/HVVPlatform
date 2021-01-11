@@ -15,6 +15,7 @@
 #include <v8.h>
 
 #include "v8pp/convert.hpp"
+#include "v8pp/native_module.hpp"
 
 namespace v8pp {
 
@@ -32,7 +33,8 @@ public:
 	//  and add default global methods (`require()`, `run()`)
 	explicit context(v8::Isolate* isolate = nullptr,
 		v8::ArrayBuffer::Allocator* allocator = nullptr,
-		bool add_default_global_methods = true);
+		bool add_default_global_methods = true,
+		std::shared_ptr<std::map<std::string, hv::v1::native_module>> _native_module = nullptr);
 	~context();
 
 	/// V8 isolate associated with this context
@@ -68,8 +70,12 @@ public:
 		return set(name, cl.js_function_template()->GetFunction(isolate_->GetCurrentContext()).ToLocalChecked());
 	}
 
+
+	std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
+
 private:
 	bool own_isolate_;
+	bool own_native_module_;
 	v8::Isolate* isolate_;
 	v8::Global<v8::Context> impl_;
 
@@ -81,6 +87,10 @@ private:
 
 	dynamic_modules modules_;
 	std::string lib_path_;
+
+
+	
+	std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules_;
 };
 
 } // namespace v8pp

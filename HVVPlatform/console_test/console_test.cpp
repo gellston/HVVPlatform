@@ -46,7 +46,7 @@ int main()
 
     interpreter1.set_module_path(current_path);
     //interpreter2.set_module_path(current_path);
-
+    int count = 5;
     while (true) {
 
         system("cls");
@@ -100,63 +100,6 @@ int main()
             std::cout << "error end column : " << error.end_column() << std::endl;
             std::cout << "=============================================" << std::endl;
         }
-        //Sleep(300);
+        Sleep(300);
     }
-   
-    //while (true) {
-
-    //    system("cls");
-    //    
-    //    std::shared_ptr<hv::v1::image> ptr_test(new hv::v1::image("test", 2020, 2020, hv::v1::image_data_type::u8_image));
-
-    //    auto casted_object = std::static_pointer_cast<hv::v1::object>(ptr_test);
-
-
-    //    interpreter2.register_external_object("test", ptr_test);
-
-    //    try {
-    //        auto start_time = std::chrono::high_resolution_clock::now();
-    //        std::string current_module_path = current_path;
-    //        std::string current_script_path = current_path;
-    //        current_script_path += "\\";
-    //        current_script_path += "script1.js";
-
-    //        current_module_path += "\\module";
-
-    //        
-    //        interpreter2.run_file(current_script_path);
-
-    //        auto global_objects = interpreter2.global_objects();
-
-    //        auto end_time = std::chrono::high_resolution_clock::now();
-    //        auto time = end_time - start_time;
-
-    //        auto duration = time / std::chrono::milliseconds(1);
-
-    //        //std::cout << "takt time : " << duration << std::endl;
-    //        //std::cout << "=============================================" << std::endl;
-    //        for (auto & element : global_objects)
-    //        {
-    //            std::cout << "Key : " << element.first << std::endl;
-    //            std::cout << "Type : " << element.second->type() << std::endl;
-    //            std::cout << "Data : " << element.second->to_string() << std::endl;
-    //            std::cout << "Is Array check : " << (element.second->type().compare("array") == 0) << std::endl;
-
-    //            std::cout << "---------------------------------------------" << std::endl;
-    //        }
-    //        std::cout << "=============================================" << std::endl;
-
-    //    }
-    //    catch (hv::v1::script_error error) {
-    //        std::cout << "=============================================" << std::endl;
-    //        std::cout << "error message :" << std::endl;
-    //        std::cout << error.what() << std::endl;
-    //        std::cout << "error line : " << error.line() << std::endl;
-    //        std::cout << "error start column : " << error.start_column() << std::endl;
-    //        std::cout << "error end column : " << error.end_column() << std::endl;
-    //        std::cout << "=============================================" << std::endl;
-    //    }
-    //    Sleep(300);
-    //}
-
 }
