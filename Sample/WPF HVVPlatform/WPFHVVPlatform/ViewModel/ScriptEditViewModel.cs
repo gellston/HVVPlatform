@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -44,6 +45,26 @@ namespace WPFHVVPlatform.ViewModel
 
 
             this.SelectedScript = ScriptCollection[0];
+
+
+            this.interpreter.TraceEvent += Trace;
+        }
+
+        ~ScriptEditViewModel()
+        {
+            this.interpreter.TraceEvent -= Trace;
+        }
+
+        private void Trace(string text)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.LogCollection.Add(new Log()
+                {
+                    Type = "스크립트",
+                    Content = text
+                });
+            });
         }
 
 
@@ -121,6 +142,14 @@ namespace WPFHVVPlatform.ViewModel
                     catch (Exception e)
                     {
                         System.Console.WriteLine(e.Message);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            this.LogCollection.Add(new Log()
+                            {
+                                Type = "Error",
+                                Content = e.Message
+                            });
+                        });
                     }
                     this.IsRunningScript = false;
                 });
@@ -139,7 +168,7 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => new RelayCommand(() =>
             {
-
+                //this.interpreter.Terminate();
             });
         }
 
@@ -162,5 +191,20 @@ namespace WPFHVVPlatform.ViewModel
             get => _IsRunningScript;
             set => Set<bool>(nameof(IsRunningScript), ref _IsRunningScript, value);
         }
+
+
+        private ObservableCollection<Log> _LogCollection = null;
+        public ObservableCollection<Log> LogCollection
+        {
+            get
+            {
+                if (_LogCollection == null)
+                {
+                    _LogCollection = new ObservableCollection<Log>();
+                }
+                return _LogCollection;
+            }
+        }
+
     }
 }

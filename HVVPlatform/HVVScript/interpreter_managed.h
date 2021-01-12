@@ -38,7 +38,7 @@ namespace hv::v1{
 		std::map<std::string, std::shared_ptr<object>> external_objects();
 
 
-		std::function<void(std::string)>& set_trace_callback();
+		void set_trace_callback(std::function<void(char*)> _callback);
 		void reset_trace_callback();
 
 		/// <summary>

@@ -11,21 +11,30 @@
 
 
 HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()) {
-	//this->_instance = new hv::v1::interpreter_managed();
+	
+	this->EventTraceCallback = gcnew HV::V1::DelegateTrace(this, &HV::V1::Interpreter::Trace);
+	this->Handle = GCHandle::Alloc(this->EventTraceCallback);
+
 }
 
 HV::V1::Interpreter::~Interpreter() {
-	//this->reset();
+	if (this->Handle.IsAllocated) {
+		this->Handle.Free();
+	}
+	this->EventTraceCallback = nullptr;
+	this->HandlePtr = IntPtr::Zero;
+	this->_instance->reset_trace_callback();
 }
 
 HV::V1::Interpreter::!Interpreter() {
-	//this->reset();
+	if (this->Handle.IsAllocated) {
+		this->Handle.Free();
+	}
+	this->EventTraceCallback = nullptr;
+	this->HandlePtr = IntPtr::Zero;
+	this->_instance->reset_trace_callback();
 }
 
-
-//void HV::V1::Interpreter::reset() {
-//	delete this->_instance;
-//}
 
 bool HV::V1::Interpreter::SetModulePath(String^ path) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(path);
@@ -33,7 +42,16 @@ bool HV::V1::Interpreter::SetModulePath(String^ path) {
 }
 bool HV::V1::Interpreter::RunScript(String^ content) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(content);
-	return this->_instance->run_script(convert_value);
+	bool check = false;
+	try {
+		check = this->_instance->run_script(convert_value);
+	}
+	catch (std::runtime_error error) {
+		throw gcnew System::Exception(gcnew String(error.what()));
+	}
+
+	return check;
+
 }
 bool HV::V1::Interpreter::RunFile(String^ path) {
 	auto convert_value = msclr::interop::marshal_as<std::string>(path);
@@ -137,13 +155,6 @@ HV::V1::Object^ HV::V1::Interpreter::ExternalData(String^ key) {
 	return managed_object;
 }
 
-//::add(HV::V1::DelegateTrace^ pointer) {
-//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
-//}
-//HV::V1::DelegateTrace^ HV::V1::Interpreter::TraceEvent::remove(HV::V1::DelegateTrace^ pointer) {
-//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
-//}
-//
-//HV::V1::DelegateTrace^ HV::V1::Interpreter::TraceEvent::raise(String^ pointer) {
-//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
-//}
+void HV::V1::Interpreter::Trace(String^ data) {
+
+}

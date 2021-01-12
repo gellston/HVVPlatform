@@ -5,7 +5,19 @@ namespace console_test_sharp
 {
     class Program
     {
+ 
+        static void Trace(String test)
+        {
+      
+            System.Console.WriteLine(test);
+        }
 
+
+        static void Trace2(String test)
+        {
+
+            System.Console.WriteLine(test);
+        }
 
         static void Main(string[] args)
         {
@@ -21,129 +33,47 @@ namespace console_test_sharp
 
 
             HV.V1.Interpreter test1 = new HV.V1.Interpreter();
+            test1.TraceEvent += Trace;
+            test1.TraceEvent += Trace2;
 
-            HV.V1.Interpreter test2 = new HV.V1.Interpreter();
 
-
-            var task1 = Task.Run(() =>
+            while (true)
             {
-                while (true)
+                Console.Clear();
+                try
                 {
-                    Console.Clear();
-                    try
+              
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                    HV.V1.Object object_test = new HV.V1.Object("test", "test");
+                    test1.RegisterExternalData("test_object", object_test);
+
+                    test1.RunFile(currentDirecturoy + "script1.js");
+
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    System.Console.WriteLine("takt time = " + elapsedMs);
+
+
+                    foreach (var object_set in test1.GlobalObjects)
                     {
-
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                        HV.V1.Object object_test = new HV.V1.Object("test", "test");
-                        test1.RegisterExternalData("test_object", object_test);
-
-                        test1.RunFile(currentDirecturoy + "script1.js");
-
-                        watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
-                        System.Console.WriteLine("takt time = " + elapsedMs);
-
-
-                        foreach (var object_set in test1.GlobalObjects)
-                        {
-                            var key = object_set.Key;
-                            var value = object_set.Value;
-                            System.Console.WriteLine("===================================");
-                            System.Console.WriteLine("key : " + value.Name);
-                            System.Console.WriteLine("value : ");
-                            System.Console.WriteLine(value.ToString());
-                            System.Console.WriteLine("===================================");
-                        }
+                        var key = object_set.Key;
+                        var value = object_set.Value;
+                        System.Console.WriteLine("===================================");
+                        System.Console.WriteLine("key : " + value.Name);
+                        System.Console.WriteLine("value : ");
+                        System.Console.WriteLine(value.ToString());
+                        System.Console.WriteLine("===================================");
                     }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.ToString());
-                    }
-                    GC.Collect();
-                    //Task.Delay(1000);
                 }
-            });
-
-
-            var task2 = Task.Run(() =>
-            {
-                while (true)
+                catch (Exception e)
                 {
-                    Console.Clear();
-                    try
-                    {
-
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                        HV.V1.Object object_test = new HV.V1.Object("test", "test");
-                        test2.RegisterExternalData("test_object", object_test);
-
-                        test2.RunFile(currentDirecturoy + "script2.js");
-
-                        watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
-                        System.Console.WriteLine("takt time = " + elapsedMs);
-
-
-                        foreach (var object_set in test2.GlobalObjects)
-                        {
-                            var key = object_set.Key;
-                            var value = object_set.Value;
-                            System.Console.WriteLine("===================================");
-                            System.Console.WriteLine("key : " + value.Name);
-                            System.Console.WriteLine("value : ");
-                            System.Console.WriteLine(value.ToString());
-                            System.Console.WriteLine("===================================");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e.ToString());
-                    }
-                    GC.Collect();
-                    //Task.Delay(1000);
+                    System.Console.WriteLine(e.ToString());
                 }
-            });
+                GC.Collect();
+                System.Threading.Thread.Sleep(300);
+            }
 
-            task1.Wait();
-            task2.Wait();
-            //while (true)
-            //{
-            //    Console.Clear();
-            //    try
-            //    {
-
-            //        var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            //        HV.V1.Object object_test = new HV.V1.Object("test", "test");
-            //        test1.RegisterExternalData("test_object", object_test);
-
-            //        test1.RunFile(currentDirecturoy + "script1.js");
-
-            //        watch.Stop();
-            //        var elapsedMs = watch.ElapsedMilliseconds;
-            //        System.Console.WriteLine("takt time = " + elapsedMs);
-
-                    
-            //        foreach (var object_set in test1.GlobalObjects)
-            //        {
-            //            var key = object_set.Key;
-            //            var value = object_set.Value;
-            //            System.Console.WriteLine("===================================");
-            //            System.Console.WriteLine("key : " + value.Name);
-            //            System.Console.WriteLine("value : ");
-            //            System.Console.WriteLine(value.ToString());
-            //            System.Console.WriteLine("===================================");
-            //        }
-            //    }
-            //    catch(Exception e)
-            //    {
-            //        System.Console.WriteLine(e.ToString());
-            //    }
-            //    System.Threading.Thread.Sleep(300);
-            //}
-            
         }
     }
 }

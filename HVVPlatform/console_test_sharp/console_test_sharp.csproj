@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Reference Include="HVVScriptSharp">
-      <HintPath>..\x64\Release\HVVScriptSharp.dll</HintPath>
+      <HintPath>..\x64\Debug\HVVScriptSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
 

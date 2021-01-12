@@ -72,8 +72,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_script_module_path(""),
 							_is_terminating(false){
 
-	_trace_callback = [&](std::string data) {
-		// empty callback
+	_trace_callback = [&](char* data) {
 
 	};
 	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
@@ -200,8 +199,8 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 void hv::v1::interpreter::trace(std::string input)
 {
-	this->_trace_callback(input);
-	std::cout << input << std::endl;
+	auto u8String = u8string_to_string(input);
+	this->_trace_callback((char *)u8String.c_str());
 }
 
 std::list<std::string> interpreter::global_names() {
@@ -574,13 +573,16 @@ void interpreter::release_native_modules() {
 }
 
 
-std::function<void(std::string)>& interpreter::set_trace_callback() {
-	return this->_trace_callback;
+void interpreter::set_trace_callback(std::function<void(char *)> _callback) {
+	std::scoped_lock lock(this->_mtx_event_trace_callback);
+
+	this->_trace_callback = _callback;
 }
 
 void interpreter::reset_trace_callback() {
-	this->_trace_callback = [&](std::string data) {
-		//empty callback
+	std::scoped_lock lock(this->_mtx_event_trace_callback);
+
+	this->_trace_callback = [&](char* data) {
 	};
 }
 

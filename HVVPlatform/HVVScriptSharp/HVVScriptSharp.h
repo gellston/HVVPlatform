@@ -9,12 +9,13 @@
 using namespace System;
 using namespace System::Collections;
 using namespace System::Collections::Generic;
-
+using namespace System::Runtime::InteropServices;
 
 namespace HV {
 	namespace V1 {
 
-		delegate void DelegateTrace(String^ str);
+		public delegate void DelegateTrace(String^ str);
+		
 
 		public ref class Interpreter
 		{
@@ -25,6 +26,13 @@ namespace HV {
 		private:
 
 			DelegateTrace^ EventTraceCallback;
+			DelegateTrace^ EventTraceTriggerCallback;
+			//Delegator^ delegator;
+			GCHandle Handle;
+			IntPtr HandlePtr;
+
+
+			void Trace(String^ data);
 
 		public:
 
@@ -59,16 +67,20 @@ namespace HV {
 			property Dictionary<String^, HV::V1::Object^>^ ExternalObjects {
 				Dictionary<String^, HV::V1::Object^>^ get();
 			}
-			//event DelegateTrace^ TraceEvent;
-			event DelegateTrace^ TraceEvent {
-				void add(DelegateTrace^ p2) {
-					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Combine(EventTraceCallback, p2));
-					this->_instance->set_trace_callback();
 
+			event DelegateTrace^ TraceEvent {
+				void add(DelegateTrace^ _delegate) {
+					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Combine(EventTraceCallback, _delegate));
+					this->HandlePtr = Marshal::GetFunctionPointerForDelegate(EventTraceCallback);
+					auto native_pointer =  static_cast<void(*)(char*)>(HandlePtr.ToPointer());
+					this->_instance->set_trace_callback(native_pointer);
 				}
 
-				void remove(DelegateTrace^ p2) {
-					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Remove(EventTraceCallback, p2));
+				void remove(DelegateTrace^ _delegate) {
+					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Remove(EventTraceCallback, _delegate));
+					this->HandlePtr = Marshal::GetFunctionPointerForDelegate(EventTraceCallback);
+					auto native_pointer = static_cast<void(*)(char*)>(HandlePtr.ToPointer());
+					this->_instance->set_trace_callback(native_pointer);
 				}
 
 				void raise(String^ data) {

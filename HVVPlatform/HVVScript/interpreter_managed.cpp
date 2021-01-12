@@ -70,8 +70,8 @@ std::map<std::string, std::shared_ptr<hv::v1::object>> hv::v1::interpreter_manag
 }
 
 
-std::function<void(std::string)>& hv::v1::interpreter_managed::set_trace_callback() {
-	return this->_pimpl->ptr->set_trace_callback();
+void hv::v1::interpreter_managed::set_trace_callback(std::function<void(char*)> _callback) {
+	return this->_pimpl->ptr->set_trace_callback(_callback);
 }
 void hv::v1::interpreter_managed::reset_trace_callback() {
 	this->_pimpl->ptr->reset_trace_callback();

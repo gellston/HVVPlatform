@@ -12,9 +12,13 @@
              xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:UC="clr-namespace:WPFHVVPlatform.UC"
              xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="1024" d:DesignWidth="1280">
 
+    <UserControl.Resources>
+        <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
+    </UserControl.Resources>
     <mvvm:Interaction.Behaviors>
         <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
     </mvvm:Interaction.Behaviors>
@@ -63,17 +67,20 @@
             </Button>
             <Button ToolTip="스크립트 실행"
                     Grid.Column="4"
-                    Command="{Binding StartRunScriptCommand}">
+                    Command="{Binding StartRunScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Start.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 연속 실행"
                     Grid.Column="5"
-                    Command="{Binding ContinusStartRunScriptCommand}">
+                    Command="{Binding ContinusStartRunScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
                 <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
             </Button>
             <Button ToolTip="스크립트 정지"
                     Grid.Column="6"
-                    Command="{Binding StopScriptCommand}">
+                    Command="{Binding StopScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
             </Button>
             <dxe:FontEdit Grid.Column="7"
@@ -162,9 +169,10 @@
                                 <dxg:GridControl EnableSmartColumnsGeneration="False"
                                                  SelectionMode="Row"
                                                  AutoGenerateColumns="None"
-                                                 ShowAllTableValuesInFilterPopup="False">
+                                                 ShowAllTableValuesInFilterPopup="False"
+                                                 ItemsSource="{Binding LogCollection}">
                                     <dxg:GridControl.Columns>
-                                        <dxg:GridColumn FieldName="시간" IsSmart="False" Binding="{Binding Path=Time}"/>
+                                        <dxg:GridColumn FieldName="종류" IsSmart="False" Binding="{Binding Path=Type}"/>
                                         <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Width="*" Binding="{Binding Path=Content}"/>
                                     </dxg:GridControl.Columns>
                                     <dxg:GridControl.View>

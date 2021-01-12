@@ -82,6 +82,7 @@ namespace hv::v1{
 		std::mutex _mtx_event_end_script;
 		std::mutex _mtx_event_global_hash;
 		std::mutex _mtx_event_external_hash;
+		std::mutex _mtx_event_trace_callback;
 
 		bool _is_script_running;
 		bool _is_terminating;
@@ -110,7 +111,7 @@ namespace hv::v1{
 
 
 		// lambda trace callback
-		std::function<void(std::string)> _trace_callback;
+		std::function<void(char *)> _trace_callback;
 
 
 	public:
@@ -142,7 +143,7 @@ namespace hv::v1{
 		bool terminate();
 		void release_native_modules();
 
-		std::function<void(std::string)>& set_trace_callback();
+		void set_trace_callback(std::function<void(char *)> _callback);
 		void reset_trace_callback();
 		 
 		/// <summary>
