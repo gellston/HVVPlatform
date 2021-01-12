@@ -108,6 +108,11 @@ namespace hv::v1{
 		void trace(std::string input);
 		bool register_converter(std::string type, converter* converter);
 
+
+		// lambda trace callback
+		std::function<void(std::string)> _trace_callback;
+
+
 	public:
 		interpreter();
 		~interpreter();
@@ -135,8 +140,10 @@ namespace hv::v1{
 
 		
 		bool terminate();
-
 		void release_native_modules();
+
+		std::function<void(std::string)>& set_trace_callback();
+		void reset_trace_callback();
 		 
 		/// <summary>
 		/// script static functions

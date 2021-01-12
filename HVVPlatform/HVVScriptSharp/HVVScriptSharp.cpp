@@ -136,3 +136,14 @@ HV::V1::Object^ HV::V1::Interpreter::ExternalData(String^ key) {
 
 	return managed_object;
 }
+
+//::add(HV::V1::DelegateTrace^ pointer) {
+//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
+//}
+//HV::V1::DelegateTrace^ HV::V1::Interpreter::TraceEvent::remove(HV::V1::DelegateTrace^ pointer) {
+//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
+//}
+//
+//HV::V1::DelegateTrace^ HV::V1::Interpreter::TraceEvent::raise(String^ pointer) {
+//	this->EventTraceCallback = static_cast<HV::V1::DelegateTrace^>(Delegate::Combine(this->EventTraceCallback, pointer));
+//}

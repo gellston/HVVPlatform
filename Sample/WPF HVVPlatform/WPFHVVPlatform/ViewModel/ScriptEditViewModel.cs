@@ -19,7 +19,7 @@ namespace WPFHVVPlatform.ViewModel
         private readonly ScriptFileService scriptFileService;
 
 
-        private bool IsRunningScript = false;
+       
         private readonly HV.V1.Interpreter interpreter;
        
 
@@ -154,6 +154,13 @@ namespace WPFHVVPlatform.ViewModel
                 }
                 return _ScriptCollection;
             }
+        }
+
+        private bool _IsRunningScript = false;
+        public bool IsRunningScript
+        {
+            get => _IsRunningScript;
+            set => Set<bool>(nameof(IsRunningScript), ref _IsRunningScript, value);
         }
     }
 }

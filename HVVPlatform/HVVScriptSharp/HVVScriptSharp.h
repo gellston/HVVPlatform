@@ -13,6 +13,9 @@ using namespace System::Collections::Generic;
 
 namespace HV {
 	namespace V1 {
+
+		delegate void DelegateTrace(String^ str);
+
 		public ref class Interpreter
 		{
 
@@ -21,6 +24,7 @@ namespace HV {
 			
 		private:
 
+			DelegateTrace^ EventTraceCallback;
 
 		public:
 
@@ -55,7 +59,24 @@ namespace HV {
 			property Dictionary<String^, HV::V1::Object^>^ ExternalObjects {
 				Dictionary<String^, HV::V1::Object^>^ get();
 			}
+			//event DelegateTrace^ TraceEvent;
+			event DelegateTrace^ TraceEvent {
+				void add(DelegateTrace^ p2) {
+					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Combine(EventTraceCallback, p2));
+					this->_instance->set_trace_callback();
 
+				}
+
+				void remove(DelegateTrace^ p2) {
+					EventTraceCallback = static_cast<DelegateTrace^> (Delegate::Remove(EventTraceCallback, p2));
+				}
+
+				void raise(String^ data) {
+					if (EventTraceCallback != nullptr) {
+						return EventTraceCallback->Invoke(data);
+					}
+				}
+			}
 
 			/// <summary>
 			/// script static functions

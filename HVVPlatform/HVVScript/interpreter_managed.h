@@ -6,6 +6,7 @@
 #include <memory>
 #include <list>
 #include <map>
+#include <functional>
 
 #include "object.h"
 
@@ -35,6 +36,10 @@ namespace hv::v1{
 		
 		std::list<std::string> external_names();
 		std::map<std::string, std::shared_ptr<object>> external_objects();
+
+
+		std::function<void(std::string)>& set_trace_callback();
+		void reset_trace_callback();
 
 		/// <summary>
 		/// script static functions

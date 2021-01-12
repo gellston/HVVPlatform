@@ -72,6 +72,10 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 							_script_module_path(""),
 							_is_terminating(false){
 
+	_trace_callback = [&](std::string data) {
+		// empty callback
+
+	};
 	_interpreter_thread = std::move(std::thread(&interpreter::_loop, this));
 
 	/// <summary>
@@ -196,7 +200,7 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 void hv::v1::interpreter::trace(std::string input)
 {
-
+	this->_trace_callback(input);
 	std::cout << input << std::endl;
 }
 
@@ -570,6 +574,17 @@ void interpreter::release_native_modules() {
 }
 
 
+std::function<void(std::string)>& interpreter::set_trace_callback() {
+	return this->_trace_callback;
+}
+
+void interpreter::reset_trace_callback() {
+	this->_trace_callback = [&](std::string data) {
+		//empty callback
+	};
+}
+
+
 bool interpreter::init_v8_startup_data(std::string path) {
 
 	if (path.length() == 0) return false;
@@ -602,5 +617,6 @@ void interpreter::set_v8_flag(std::string flag) {
 
 	v8::V8::SetFlagsFromString(flag.c_str(), size);
 }
+
 
 
