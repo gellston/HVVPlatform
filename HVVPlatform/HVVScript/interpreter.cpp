@@ -302,6 +302,7 @@ void interpreter::_loop() {
 		interpreter_instance.set("trace", &interpreter::trace);
 		interpreter_instance.set("check_external_object", &interpreter::check_external_object);
 		interpreter_instance.set("external_object", &interpreter::external_object);
+		interpreter_instance.set("terminate", &interpreter::terminate);
 		
 		auto val = wrap_class_interpreter::reference_external(isolate->_instance, this);
 		auto key = v8pp::to_v8(isolate->_instance, "script");
@@ -339,8 +340,14 @@ void interpreter::_loop() {
 		catch (std::exception e) {
 			this->_set_error_info(e.what(), -1, -1, -1);
 		}
-		
 
+		if (try_catch.HasCaught() == true && try_catch.Exception()->IsNullOrUndefined()) {
+			this->_set_error_info("script force stopped", -1, -1, -1);
+			this->_script_end_signal();
+			continue;
+		}
+
+		
 		/// <summary>
 		/// Context after run script
 		/// </summary>
@@ -557,9 +564,8 @@ bool interpreter::terminate() {
 	auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
 	if (isolate == nullptr) return false;
 	if (this->_is_terminating == false) return false;
-	v8::Locker locker(isolate->_instance);
+	//v8::Locker locker{ isolate->_instance };
 	isolate->_instance->TerminateExecution();
-
 	return true;
 
 }

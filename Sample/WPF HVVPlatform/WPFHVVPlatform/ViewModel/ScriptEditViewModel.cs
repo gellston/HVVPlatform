@@ -168,7 +168,7 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                //this.interpreter.Terminate();
+                this.interpreter.Terminate();
             });
         }
 

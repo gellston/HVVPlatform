@@ -19,9 +19,7 @@
     <UserControl.Resources>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
     </UserControl.Resources>
-    <mvvm:Interaction.Behaviors>
-        <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
-    </mvvm:Interaction.Behaviors>
+
 
     <DockPanel>
         <Grid Height="40"
@@ -149,6 +147,9 @@
                                                          FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
                                                          Grid.Row="1"
                                                          Margin="5">
+                                <mvvm:Interaction.Behaviors>
+                                    <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
+                                </mvvm:Interaction.Behaviors>
                                 <UC:BindableAvalonEditor.Foreground>
                                     <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
                                 </UC:BindableAvalonEditor.Foreground>

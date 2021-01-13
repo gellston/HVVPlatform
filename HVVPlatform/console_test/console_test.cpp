@@ -33,7 +33,7 @@ int main()
 
 
     auto current_path = current_directory();
-    
+
     hv::v1::interpreter::init_v8_startup_data(current_path + "\\");
     hv::v1::interpreter::init_v8_platform();
     hv::v1::interpreter::init_v8_engine();
@@ -47,9 +47,15 @@ int main()
     interpreter1.set_module_path(current_path);
     //interpreter2.set_module_path(current_path);
     int count = 5;
+
+    std::thread thread([&](){
+        
+        Sleep(5000);
+        interpreter1.terminate();
+    });
     while (true) {
 
-        system("cls");
+        //system("cls");
 
         std::shared_ptr<hv::v1::image> ptr_test(new hv::v1::image("test", 2020, 2020, hv::v1::image_data_type::u8_image));
 
