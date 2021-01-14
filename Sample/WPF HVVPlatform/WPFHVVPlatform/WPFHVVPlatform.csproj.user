@@ -7,11 +7,17 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="UC\ImageCanvasViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\ScriptEditView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="UC\ImageCanvasViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\MainWindowView.xaml">
       <SubType>Designer</SubType>
     </Page>
