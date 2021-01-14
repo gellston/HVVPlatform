@@ -32,5 +32,16 @@ namespace WPFHVVPlatform.Service
             return dialog.FileName;
         }
 
+        public string OpenFile(string filter)
+        {
+            DXOpenFileDialog dialog = new DXOpenFileDialog();
+            dialog.Filter = filter;
+
+            if (dialog.ShowDialog() == false)
+                return "";
+
+            return dialog.FileName;
+        }
+
     }
 }

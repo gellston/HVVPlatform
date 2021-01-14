@@ -63,7 +63,7 @@ hv::v1::image::image(image& instance) : object(instance.name(), "image"),
 std::string hv::v1::image::to_string() {
 
 	std::string temp = "";
-	temp += "image:";
+	temp += this->type();
 	temp += this->name();
 	temp += ":[width:";
 	temp += std::to_string(this->_width);

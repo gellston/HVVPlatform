@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -59,12 +61,13 @@ namespace WPFHVVPlatform.ViewModel
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                this.LogCollection.Add(new Log()
+                this.LogCollection.Insert(0,new Log()
                 {
                     Type = "스크립트",
                     Content = text
                 });
             });
+            Thread.Sleep(1);
         }
 
 
@@ -80,7 +83,19 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => new RelayCommand(() =>
              {
-                 
+                 var filePath = this.fileDialogService.OpenFile("Script File (.js)|*.js");
+                 if (filePath.Length == 0) return;
+                 var content = this.scriptFileService.LoadScriptFile(filePath);
+                 var script = new Script()
+                 {
+                     FilePath = filePath,
+                     FileName = Path.GetFileName(filePath),
+                     ScriptContent = content
+                 };
+
+                 this.ScriptCollection.Add(script);
+                 this.SelectedScript = script;
+
              });
             
         }

@@ -17,6 +17,10 @@ namespace WPFHVVPlatform.Service
             File.WriteAllText(_path, _content, Encoding.UTF8);
         }
 
+        public string LoadScriptFile(string _path)
+        {
+            return File.ReadAllText(_path, Encoding.UTF8);
+        }
 
     }
 }

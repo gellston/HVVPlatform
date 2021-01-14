@@ -153,10 +153,12 @@
   <ItemGroup>
     <ClInclude Include="data_type.h" />
     <ClInclude Include="image.h" />
+    <ClInclude Include="point.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core.cpp" />
     <ClCompile Include="image.cpp" />
+    <ClCompile Include="point.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

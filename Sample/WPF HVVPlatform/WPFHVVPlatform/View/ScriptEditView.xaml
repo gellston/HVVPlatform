@@ -38,10 +38,6 @@
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button ToolTip="새 스크립트"
                     Grid.Column="0"
@@ -50,7 +46,7 @@
             </Button>
             <Button ToolTip="스크립트 열기"
                     Grid.Column="1"
-                    Command="{Binding OpenImageCommand}">
+                    Command="{Binding OpenScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Actions/Open2.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 저장"
@@ -106,7 +102,7 @@
                 <dxe:ComboBoxEditItem>25</dxe:ComboBoxEditItem>
                 <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
             </dxe:ComboBoxEdit>
-            <dxe:PopupColorEdit Name="fontColor" Grid.Column="9" Grid.ColumnSpan="2" Color="Black"/>
+            <dxe:PopupColorEdit Name="fontColor" Grid.Column="10" Grid.ColumnSpan="2" Color="Black"/>
         </Grid>
         <dxdo:DockLayoutManager FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal"
@@ -130,6 +126,8 @@
                                 <dx:DXTabControl.ItemContainerStyle>
                                     <Style TargetType="dx:DXTabItem">
                                         <Setter Property="Header" Value="{Binding FileName}"/>
+                                        <Setter Property="ToolTip" Value="{Binding FilePath}"/>
+
                                     </Style>
                                 </dx:DXTabControl.ItemContainerStyle>
 
@@ -171,7 +169,8 @@
                                                  SelectionMode="Row"
                                                  AutoGenerateColumns="None"
                                                  ShowAllTableValuesInFilterPopup="False"
-                                                 ItemsSource="{Binding LogCollection}">
+                                                 ItemsSource="{Binding LogCollection}"
+                                                 >
                                     <dxg:GridControl.Columns>
                                         <dxg:GridColumn FieldName="종류" IsSmart="False" Binding="{Binding Path=Type}"/>
                                         <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Width="*" Binding="{Binding Path=Content}"/>
@@ -179,7 +178,8 @@
                                     <dxg:GridControl.View>
                                         <dxg:TableView AllowPerPixelScrolling="True" 
                                                        ShowTotalSummary="False"
-                                                       AllowGrouping="True"/>
+                                                       AllowGrouping="True"
+                                                       AllowScrollToFocusedRow="False"/>
                                     </dxg:GridControl.View>
                                 </dxg:GridControl>
                             </dx:DXTabItem>
@@ -187,9 +187,17 @@
                     </dxdo:LayoutPanel>
                 </dxdo:LayoutGroup>
                 <dxdo:TabbedGroup Name="ImageList"
-                                  Caption="이미지 리스트"
+                                  Caption="Side Panel"
                                   ItemWidth="300"
                                   AllowClose="False">
+                    <dxdo:LayoutPanel Caption="스크립트 결과"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <TextBlock Text="구현 준비중입니다." 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"></TextBlock>
+
+                    </dxdo:LayoutPanel>
                     <dxdo:LayoutPanel Caption="이미지"
                                       ItemWidth="300"
                                       AllowClose="False">
