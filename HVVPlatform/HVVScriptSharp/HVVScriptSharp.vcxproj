@@ -84,7 +84,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>HVVScript.lib;object.lib</AdditionalDependencies>
+      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
@@ -121,12 +121,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>HVVScript.lib;object.lib</AdditionalDependencies>
+      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Boolean.h" />
     <ClInclude Include="HVVScriptSharp.h" />
     <ClInclude Include="mananged_shared_ptr.h" />
     <ClInclude Include="Object.h" />
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="Boolean.cpp" />
     <ClCompile Include="HVVScriptSharp.cpp" />
     <ClCompile Include="Object.cpp" />
   </ItemGroup>
