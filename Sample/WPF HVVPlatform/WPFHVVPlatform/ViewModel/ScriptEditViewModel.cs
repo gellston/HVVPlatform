@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using WPFHVVPlatform.Model;
@@ -50,6 +53,14 @@ namespace WPFHVVPlatform.ViewModel
 
 
             this.interpreter.TraceEvent += Trace;
+
+
+            var bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri("pack://application:,,,/WPFHVVPlatform;component/Image/test.jfif");
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            TestImage = bitmap;
         }
 
         ~ScriptEditViewModel()
@@ -68,6 +79,13 @@ namespace WPFHVVPlatform.ViewModel
                 });
             });
             Thread.Sleep(1);
+        }
+
+        private BitmapImage _TestImage = null;
+        public BitmapImage TestImage
+        {
+            set => Set<BitmapImage>(nameof(TestImage), ref _TestImage, value);
+            get => _TestImage;
         }
 
 
@@ -153,6 +171,12 @@ namespace WPFHVVPlatform.ViewModel
                     try
                     {
                         this.interpreter.RunScript(this.SelectedScript.ScriptContent);
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            this.GlobalCollection.Clear();
+                            this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
+
+                        });
                     }
                     catch (Exception e)
                     {
@@ -197,6 +221,19 @@ namespace WPFHVVPlatform.ViewModel
                     _ScriptCollection = new ObservableCollection<Script>();
                 }
                 return _ScriptCollection;
+            }
+        }
+
+        private ObservableCollection<HV.V1.Object> _GlobalCollection = null;
+        public ObservableCollection<HV.V1.Object> GlobalCollection
+        {
+            get
+            {
+                if (_GlobalCollection == null)
+                {
+                    _GlobalCollection = new ObservableCollection<HV.V1.Object>();
+                }
+                return _GlobalCollection;
             }
         }
 

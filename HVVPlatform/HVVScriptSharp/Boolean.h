@@ -6,7 +6,7 @@
 
 
 #include "mananged_shared_ptr.h"
-
+#include "Object.h"
 
 
 using namespace System;
@@ -18,7 +18,7 @@ using namespace System::Collections::Generic;
 namespace HV {
 
 	namespace V1 {
-		public ref class Boolean : public Object
+		public ref class Boolean : public HV::V1::Object
 		{
 
 		internal:

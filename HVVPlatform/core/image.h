@@ -70,6 +70,7 @@ namespace hv::v1 {
 		
 		return std::static_pointer_cast<hv::v1::image>(data);
 	}
+
 }
 
 #endif // !HV_IMAGE

@@ -13,6 +13,7 @@
              xmlns:UC="clr-namespace:WPFHVVPlatform.UC"
              xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
+             xmlns:uc="clr-namespace:WPFHVVPlatform.UC"
              mc:Ignorable="d" 
              d:DesignHeight="1024" d:DesignWidth="1280">
 
@@ -193,10 +194,24 @@
                     <dxdo:LayoutPanel Caption="스크립트 결과"
                                       ItemWidth="300"
                                       AllowClose="False">
-                        <TextBlock Text="구현 준비중입니다." 
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"></TextBlock>
-
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                                 SelectionMode="Row"
+                                                 AutoGenerateColumns="None"
+                                                 ShowAllTableValuesInFilterPopup="False"
+                                                 ItemsSource="{Binding GlobalCollection}"
+                                                 >
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="이름" IsSmart="False" Binding="{Binding Path=Name}"/>
+                                <dxg:GridColumn FieldName="타입" IsSmart="False" Width="*" Binding="{Binding Path=Type}"/>
+                                <dxg:GridColumn FieldName="값" IsSmart="False" Width="*" Binding="{Binding Path=ToString}"/>
+                            </dxg:GridControl.Columns>
+                            <dxg:GridControl.View>
+                                <dxg:TableView AllowPerPixelScrolling="True" 
+                                                       ShowTotalSummary="False"
+                                                       AllowGrouping="True"
+                                                       AllowScrollToFocusedRow="False"/>
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
                     </dxdo:LayoutPanel>
                     <dxdo:LayoutPanel Caption="이미지"
                                       ItemWidth="300"

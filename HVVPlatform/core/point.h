@@ -36,6 +36,11 @@ namespace hv::v1 {
 		std::string to_string() override;
 
 	};
+
+	static std::shared_ptr<hv::v1::point> to_point(std::shared_ptr<hv::v1::object> data) {
+
+		return std::static_pointer_cast<hv::v1::point>(data);
+	}
 }
 
 #endif // !HV_IMAGE

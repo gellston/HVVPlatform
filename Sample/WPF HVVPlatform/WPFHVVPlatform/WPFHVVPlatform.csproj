@@ -17,6 +17,14 @@
     <None Remove="Behaviour\**" />
     <Page Remove="Behaviour\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Image\test.jfif" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Image\test.jfif" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
     <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.0-pre-*" />

@@ -64,6 +64,7 @@ std::string hv::v1::image::to_string() {
 
 	std::string temp = "";
 	temp += this->type();
+	temp += ":";
 	temp += this->name();
 	temp += ":[width:";
 	temp += std::to_string(this->_width);

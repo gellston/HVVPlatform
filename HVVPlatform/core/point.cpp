@@ -23,6 +23,7 @@ double hv::v1::point::y() {
 std::string hv::v1::point::to_string() {
 	std::string temp = "";
 	temp += this->type();
+	temp += ":";
 	temp += this->name();
 	temp += ":[x:";
 	temp += std::to_string(this->_x);

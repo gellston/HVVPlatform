@@ -5,6 +5,7 @@
 
 #include "image.h"
 #include "point.h"
+#include "_math.h"
 
 HV_CREATE_SHARED_CONVERTER(hv::v1::image);
 HV_CREATE_SHARED_CONVERTER(hv::v1::point);
@@ -45,7 +46,11 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		.set_const("u64_image", hv::v1::image_data_type::u64_image)
 		.set("image", image_class)
 		.set("point", point_class)
-		.set("to_image", &hv::v1::to_image);
+		.set("to_image", &hv::v1::to_image)
+		.set("to_point", &hv::v1::to_point)
+		.set("sleep", _sleep)
+		.set("round", hv::v1::round);
+		
 
 	return scope.Escape(m.new_instance());
 }

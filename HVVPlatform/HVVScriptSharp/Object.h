@@ -38,7 +38,9 @@ namespace HV {
 				String^ get();
 			}
 
-			virtual String^ ToString() override;
+			property virtual String^ ToString{
+				String ^ get();
+			}
 		};
 	}
 

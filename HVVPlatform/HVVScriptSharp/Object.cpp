@@ -37,7 +37,7 @@ String^ HV::V1::Object::Type::get() {
 	return gcnew String(this->_instance->type().c_str());
 }
 
-String^ HV::V1::Object::ToString() {
+String^ HV::V1::Object::ToString::get() {
 
 	return gcnew String(this->_instance->to_string().c_str());
 }

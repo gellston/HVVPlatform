@@ -4,9 +4,60 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFHVVPlatform.UC"
+             xmlns:hv="clr-namespace:HV.V1;assembly=HVVScriptSharp"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" 
+                  VerticalScrollBarVisibility="Auto"
+                  Name="OutScrollViewer"
+                  PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+        <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=DrawObjectsCollection, Mode=OneWay}"
+                      ClipToBounds="True"
+                      >
+            <ItemsControl.Resources>
+                <DataTemplate x:Key="DefaultObjectTemplate" DataType="{x:Type hv:Object}">
+                    <Grid Height="50">
+                        <TextBlock Text="{Binding ToString}"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+                <DataTemplate x:Key="ObjectContainerTemplate">
+                    <ContentPresenter Content="{TemplateBinding Content}">
+                        
+                    </ContentPresenter>
+                </DataTemplate>
+            </ItemsControl.Resources> 
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Canvas Width="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=CanvasWidth, Mode=OneWay}" 
+                            Height="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=CanvasHeight, Mode=OneWay}"
+                            Name="ChildCanvas" 
+                            MouseMove="ChildCanvas_MouseMove"
+                            MouseLeftButtonDown="ChildCanvas_MouseLeftButtonDown"
+                            MouseLeftButtonUp="ChildCanvas_MouseLeftButtonUp"
+                            RenderTransformOrigin="0.5,0.5">
+                        <Canvas.Background>
+                            <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Image, Mode=OneWay}"></ImageBrush>
+                        </Canvas.Background>
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Zoom, Mode=OneWay}"
+                                                ScaleY="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Zoom, Mode=OneWay}"/>
+                                <TranslateTransform X="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=TranslationX, Mode=OneWay}" 
+                                                    Y="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=TranslationY, Mode=OneWay}"/>
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+                    </Canvas>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
+                    <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
+                    <Setter Property="Panel.ZIndex" Value="{Binding Path=Z}"></Setter>
+                    <Setter Property="Width" Value="{Binding Path=Width}"></Setter>
+                    <Setter Property="Height" Value="{Binding Path=Height}"></Setter>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+    </ScrollViewer>
 </UserControl>

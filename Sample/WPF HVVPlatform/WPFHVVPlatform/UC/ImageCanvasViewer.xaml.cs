@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WPFHVVPlatform.UC
 {
@@ -66,7 +61,17 @@ namespace WPFHVVPlatform.UC
                 BitmapImage image = e.NewValue as BitmapImage;
                 if (image == null) return;
 
-                
+                control.CanvasWidth = image.Width;
+                control.CanvasHeight = image.Height;
+                control.Zoom = (image.Width > image.Height ? (control.ActualWidth / image.Width) : (control.ActualHeight / image.Height));
+                control.ZoomMax = control.Zoom * 20;
+                control.ZoomMin = control.Zoom / 20;
+                control.ZoomStep = (control.ZoomMax - control.ZoomMin) / 40;
+
+                control.OutScrollViewer.UpdateLayout();
+
+                control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
+                control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
             }
         }
 
@@ -169,26 +174,118 @@ namespace WPFHVVPlatform.UC
             }
         }
 
-        //public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(ImageCanvasViewer), typeof(Object), new PropertyMetadata(OnSelectedItemChangedCallBack));
-        //public ClassificationLabelBox SelectedItem
-        //{
-        //    get
-        //    {
-        //        return (ClassificationLabelBox)GetValue(SelectedItemProperty);
-        //    }
+        public static readonly DependencyProperty DrawObjectsCollectionProperty = DependencyProperty.Register("DrawObjectsCollection", typeof(ObservableCollection<HV.V1.Object>), typeof(ImageCanvasViewer));
+        public ObservableCollection<HV.V1.Object> DrawObjectsCollection
+        {
+            get
+            {
+                return (ObservableCollection<HV.V1.Object>)GetValue(DrawObjectsCollectionProperty);
+            }
 
-        //    set
-        //    {
-        //        SetValue(SelectedItemProperty, value);
-        //    }
-        //}
-        //private static void OnSelectedItemChangedCallBack(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        //{
-        //    BoxLabelControler control = sender as BoxLabelControler;
-        //    if (control != null)
-        //    {
-        //        control.SelectedItem = e.NewValue as ClassificationLabelBox;
-        //    }
-        //}
+            set
+            {
+                SetValue(DrawObjectsCollectionProperty, value);
+            }
+        }
+
+
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(HV.V1.Object), typeof(ImageCanvasViewer), new PropertyMetadata(OnSelectedItemChangedCallBack));
+        public HV.V1.Object SelectedItem
+        {
+            get
+            {
+                return (HV.V1.Object)GetValue(SelectedItemProperty);
+            }
+
+            set
+            {
+                SetValue(SelectedItemProperty, value);
+            }
+        }
+        private static void OnSelectedItemChangedCallBack(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            ImageCanvasViewer control = sender as ImageCanvasViewer;
+            if (control != null)
+            {
+                ///control.SelectedItem = e.NewValue as HV.V1.Object;
+            }
+        }
+
+
+        private Point CanvasStart;
+        private Point CanvasOrigin;
+        private bool IsCanvasCaptured = false;
+        private void OutScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            e.Handled = true;
+
+            //var draggableControl = sender as Canvas;
+            if (this.IsMouseCaptured == true)
+                return;
+
+            if (e.Delta > 0)
+            {
+                this.Zoom -= this.ZoomStep;
+                if (this.Zoom <= this.ZoomMin)
+                    this.Zoom = this.ZoomMin;
+            }
+            else
+            {
+                this.Zoom += this.ZoomStep;
+                if (this.Zoom >= this.ZoomMax)
+                    this.Zoom = this.ZoomMax;
+
+            }
+            OutScrollViewer.ScrollToVerticalOffset(OutScrollViewer.ScrollableHeight / 2);
+            OutScrollViewer.ScrollToHorizontalOffset(OutScrollViewer.ScrollableWidth / 2);
+        }
+
+        private void ChildCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point cursorPosition = e.GetPosition(this);
+            Canvas canvas = sender as Canvas;
+
+            if (canvas != null)
+            {
+                if (canvas.IsMouseCaptured == true && canvas != null && Keyboard.IsKeyDown(Key.LeftShift))
+                {
+                    Vector v = this.CanvasStart - cursorPosition;
+                    this.TranslationX = CanvasOrigin.X - v.X;
+                    this.TranslationY = CanvasOrigin.Y - v.Y;
+                    return;
+                }
+
+            }
+        }
+
+        private void ChildCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point pressedPoint = e.GetPosition(sender as IInputElement);
+
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(sender as Visual, e.GetPosition(sender as IInputElement));
+            if (hitTestResult == null) return;
+            var element = hitTestResult.VisualHit;
+
+
+            if (Keyboard.IsKeyDown(Key.LeftShift) == true && element.GetType() == typeof(Canvas))
+            {
+                this.CanvasStart = e.GetPosition(this);
+                this.CanvasOrigin = new Point(this.TranslationX, this.TranslationY);
+
+                var draggableControl = sender as Canvas;
+                draggableControl.CaptureMouse();
+                IsCanvasCaptured = true;
+                return;
+            }
+
+        }
+
+        private void ChildCanvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Canvas canvas = sender as Canvas;
+            canvas.ReleaseMouseCapture();
+            this.SelectedItem = null;
+            this.IsCanvasCaptured = false;
+        }
     }
 }
