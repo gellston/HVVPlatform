@@ -41,19 +41,18 @@ namespace WPFHVVPlatform.ViewModel
             this.interpreter = _interpreter;
 
 
-            this.ScriptCollection.Add(new Script()
-            {
-                FileName = "new.js",
-                ScriptContent = "/* Be the god of coding */",
-                FilePath = ""
-            });
+            //this.ScriptCollection.Add(new Script()
+            //{
+            //    FileName = "new.js",
+            //    ScriptContent = "/* Be the god of coding */",
+            //    FilePath = ""
+            //});
 
 
-            this.SelectedScript = ScriptCollection[0];
+            //this.SelectedScript = ScriptCollection[0];
 
 
             this.interpreter.TraceEvent += Trace;
-
 
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
@@ -197,9 +196,41 @@ namespace WPFHVVPlatform.ViewModel
 
         public ICommand ContinusStartRunScriptCommand
         {
-            get => new RelayCommand(() =>
+            get => new RelayCommand(async () =>
             {
+                if (this.IsRunningScript == true) return;
+                if (this.SelectedScript == null) return;
+                await Task.Run(() =>
+                {
+                    this.IsRunningScript = true;
+                    while (IsRunningScript)
+                    {
+                        try
+                        {
+                            this.interpreter.RunScript(this.SelectedScript.ScriptContent);
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                this.GlobalCollection.Clear();
+                                this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
 
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            System.Console.WriteLine(e.Message);
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                this.LogCollection.Add(new Log()
+                                {
+                                    Type = "Error",
+                                    Content = e.Message
+                                });
+                            });
+                        }
+                    }
+                    
+                    this.IsRunningScript = false;
+                });
             });
         }
 
@@ -208,6 +239,7 @@ namespace WPFHVVPlatform.ViewModel
             get => new RelayCommand(() =>
             {
                 this.interpreter.Terminate();
+                this.IsRunningScript = false;
             });
         }
 
@@ -235,6 +267,13 @@ namespace WPFHVVPlatform.ViewModel
                 }
                 return _GlobalCollection;
             }
+        }
+
+        private HV.V1.Object _SelectedGlobal = null;
+        public HV.V1.Object SelectedGlobal
+        {
+            get => _SelectedGlobal;
+            set => Set<HV.V1.Object>(nameof(SelectedGlobal), ref _SelectedGlobal, value);
         }
 
         private bool _IsRunningScript = false;

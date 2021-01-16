@@ -84,7 +84,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib</AdditionalDependencies>
+      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib;core.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
@@ -121,23 +121,30 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib</AdditionalDependencies>
+      <AdditionalDependencies>HVVScript.lib;object.lib;primitive_object.lib;core.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Boolean.h" />
+    <ClInclude Include="DataType.h" />
     <ClInclude Include="HVVScriptSharp.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="mananged_shared_ptr.h" />
+    <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Boolean.cpp" />
     <ClCompile Include="HVVScriptSharp.cpp" />
+    <ClCompile Include="Image.cpp" />
+    <ClCompile Include="Number.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc" />

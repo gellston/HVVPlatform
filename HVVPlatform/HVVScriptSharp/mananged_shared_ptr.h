@@ -53,6 +53,10 @@ namespace HV {
                 return *this;
             }
 
+            void operator=(std::shared_ptr<T> & ptr) {
+                *pPtr = ptr;
+            }
+
             T* operator->() {
                 return (*pPtr).get();
             }
@@ -61,7 +65,7 @@ namespace HV {
                 pPtr->reset();
             }
 
-            const std::shared_ptr<T>& get() {
+            std::shared_ptr<T>& get() {
                 return *pPtr;
             }
         };

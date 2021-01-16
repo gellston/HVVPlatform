@@ -32,11 +32,20 @@ namespace WPFHVVPlatform.UC
             }
         }
 
+        private double CustomActualHeight { get; set; }
+        private double CustomActualWidth { get; set; }
 
 
         public ImageCanvasViewer()
         {
             InitializeComponent();
+
+            this.ZoomStep = 0.5;
+            this.ZoomMax = 5;
+            this.ZoomMin = 0.2;
+            this.Zoom = 1;
+
+
         }
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(BitmapImage), typeof(ImageCanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
@@ -61,6 +70,8 @@ namespace WPFHVVPlatform.UC
                 BitmapImage image = e.NewValue as BitmapImage;
                 if (image == null) return;
 
+                if (control.IsLoaded == false) return;
+
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
                 control.Zoom = (image.Width > image.Height ? (control.ActualWidth / image.Width) : (control.ActualHeight / image.Height));
@@ -72,6 +83,7 @@ namespace WPFHVVPlatform.UC
 
                 control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
                 control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
+
             }
         }
 
@@ -207,7 +219,7 @@ namespace WPFHVVPlatform.UC
             ImageCanvasViewer control = sender as ImageCanvasViewer;
             if (control != null)
             {
-                ///control.SelectedItem = e.NewValue as HV.V1.Object;
+                //control.SelectedItem = e.NewValue as HV.V1.Object;
             }
         }
 
@@ -287,5 +299,11 @@ namespace WPFHVVPlatform.UC
             this.SelectedItem = null;
             this.IsCanvasCaptured = false;
         }
+
+        //private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        //{
+
+        //}
+
     }
 }

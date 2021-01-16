@@ -30,6 +30,18 @@
     <ClInclude Include="Boolean.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Number.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DataType.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HVVScriptSharp.cpp">
@@ -42,6 +54,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Boolean.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Number.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="String.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,10 +7,13 @@
 #include "Object.h"
 
 
+HV::V1::Object::Object() : _instance(new hv::v1::object("", "")){
+
+}
 
 
 HV::V1::Object::Object(std::shared_ptr<hv::v1::object> & object) : _instance(object){
-
+	
 }
 
 

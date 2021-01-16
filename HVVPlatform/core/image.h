@@ -63,6 +63,7 @@ namespace hv::v1 {
 		bool add(double value);
 		bool minus(double value);
 		double resolution();
+		image_data_type pixel_type();
 
 	};
 

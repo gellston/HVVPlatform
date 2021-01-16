@@ -18,23 +18,21 @@ using namespace System::Collections::Generic;
 namespace HV {
 
 	namespace V1 {
-		public ref class Boolean : public HV::V1::Object
+		public ref class Number : public HV::V1::Object
 		{
 
 		internal:
 
-
 		public:
+			Number(System::String^ Name, double data);
+			Number(double data);
+			Number(HV::V1::Object^ object);
+			~Number();
+			!Number();
 
-			Boolean(System::String^ Name, bool data);
-			Boolean(bool data);
-			Boolean(HV::V1::Object^ object);
-			~Boolean();
-			!Boolean();
 
-		
-			bool Data();
-			void Data(bool data);
+			double Data();
+			void Data(double data);
 
 		};
 	}

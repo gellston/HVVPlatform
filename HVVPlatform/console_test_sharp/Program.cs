@@ -36,44 +36,6 @@ namespace console_test_sharp
             test1.TraceEvent += Trace;
             test1.TraceEvent += Trace2;
 
-
-            while (true)
-            {
-                Console.Clear();
-                try
-                {
-              
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                    HV.V1.Object object_test = new HV.V1.Object("test", "test");
-                    test1.RegisterExternalData("test_object", object_test);
-
-                    test1.RunFile(currentDirecturoy + "script1.js");
-
-                    watch.Stop();
-                    var elapsedMs = watch.ElapsedMilliseconds;
-                    System.Console.WriteLine("takt time = " + elapsedMs);
-
-
-                    foreach (var object_set in test1.GlobalObjects)
-                    {
-                        var key = object_set.Key;
-                        var value = object_set.Value;
-                        System.Console.WriteLine("===================================");
-                        System.Console.WriteLine("key : " + value.Name);
-                        System.Console.WriteLine("value : ");
-                        System.Console.WriteLine(value.ToString());
-                        System.Console.WriteLine("===================================");
-                    }
-                }
-                catch (Exception e)
-                {
-                    System.Console.WriteLine(e.ToString());
-                }
-                GC.Collect();
-                System.Threading.Thread.Sleep(300);
-            }
-
         }
     }
 }

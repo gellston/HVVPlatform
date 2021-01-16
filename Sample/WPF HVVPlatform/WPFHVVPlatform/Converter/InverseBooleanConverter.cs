@@ -22,7 +22,7 @@ namespace WPFHVVPlatform.Converter
             }
             catch (Exception e)
             {
-
+                System.Console.WriteLine(e.Message);
             }
             return convertedValue;
         }

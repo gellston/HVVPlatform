@@ -19,6 +19,8 @@
 
     <UserControl.Resources>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
+        <converter:ObjectTypeTriggerConverter x:Key="ObjectTypeTriggerConverter"></converter:ObjectTypeTriggerConverter>
+        <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
     </UserControl.Resources>
 
 
@@ -111,56 +113,107 @@
                 <dxdo:LayoutGroup Name="EditPlanel"
                                   Orientation="Vertical"
                                   AllowClose="False">
-                    <dxdo:LayoutPanel Caption="스크립트"
+                    <dxdo:LayoutGroup Name="중앙패널"
+                                  Orientation="Horizontal"
+                                  AllowClose="False">
+                        <dxdo:LayoutPanel Caption="스크립트"
                                       ItemHeight="*"
                                       AllowClose="False">
-                        <Grid >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="27"></RowDefinition>
-                                <RowDefinition Height="*"></RowDefinition>
-                            </Grid.RowDefinitions>
-                            <dx:DXTabControl ItemsSource="{Binding ScriptCollection}"
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="27"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <dx:DXTabControl ItemsSource="{Binding ScriptCollection}"
                                              SelectedItem="{Binding SelectedScript}"
                                              Margin="0,3,0,0"
                                              Grid.Row="0"
                                              Grid.RowSpan="2">
-                                <dx:DXTabControl.ItemContainerStyle>
-                                    <Style TargetType="dx:DXTabItem">
-                                        <Setter Property="Header" Value="{Binding FileName}"/>
-                                        <Setter Property="ToolTip" Value="{Binding FilePath}"/>
+                                    <dx:DXTabControl.ItemContainerStyle>
+                                        <Style TargetType="dx:DXTabItem">
+                                            <Setter Property="Header" Value="{Binding FileName}"/>
+                                            <Setter Property="ToolTip" Value="{Binding FilePath}"/>
 
-                                    </Style>
-                                </dx:DXTabControl.ItemContainerStyle>
+                                        </Style>
+                                    </dx:DXTabControl.ItemContainerStyle>
 
-                                <dx:DXTabControl.View>
-                                    <dx:TabControlStretchView HideButtonShowMode="InAllTabs "
+                                    <dx:DXTabControl.View>
+                                        <dx:TabControlStretchView HideButtonShowMode="InAllTabs "
                                                               NewButtonShowMode="NoWhere"
                                                               />
-                                </dx:DXTabControl.View>
-                                
-                            </dx:DXTabControl>
-                            <UC:BindableAvalonEditor ShowLineNumbers="True"
+                                    </dx:DXTabControl.View>
+
+                                </dx:DXTabControl>
+                                <UC:BindableAvalonEditor ShowLineNumbers="True"
                                                          Text="{Binding SelectedScript.ScriptContent}"
                                                          SyntaxHighlighting="JavaScript"
                                                          FontFamily="{Binding ElementName=editFont, Path=EditValue}"
                                                          FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
                                                          Grid.Row="1"
                                                          Margin="5">
-                                <mvvm:Interaction.Behaviors>
-                                    <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
-                                </mvvm:Interaction.Behaviors>
-                                <UC:BindableAvalonEditor.Foreground>
-                                    <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
-                                </UC:BindableAvalonEditor.Foreground>
-                            </UC:BindableAvalonEditor>
-                        </Grid>
-                        
-                        <!--<helper:BindableAvalonEditor ShowLineNumbers="True"
-                                                     Text="{Binding ElementName=ScriptList, Path=SelectedItem.ScriptContent}"
-                                                     SyntaxHighlighting="JavaScript"
-                                                     FontFamily="{Binding ElementName=editFont, Path=EditValue}"
-                                                     FontSize="{Binding ElementName=editFontSize, Path=EditValue}"></helper:BindableAvalonEditor>-->
-                    </dxdo:LayoutPanel>
+                                    <mvvm:Interaction.Behaviors>
+                                        <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
+                                    </mvvm:Interaction.Behaviors>
+                                    <UC:BindableAvalonEditor.Foreground>
+                                        <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
+                                    </UC:BindableAvalonEditor.Foreground>
+                                </UC:BindableAvalonEditor>
+                            </Grid>
+
+                        </dxdo:LayoutPanel>
+                        <dxdo:LayoutPanel Caption="결과"
+                                          ItemHeight="*"
+                                          ItemWidth="*"
+                                          AllowClose="False"
+                                          >
+                            <uc:ImageCanvasViewer Image="{Binding SelectedGlobal, Converter={StaticResource HVObjectBitmapImageConverter}, Mode=OneWay}"
+                                                  Zoom="1"
+                                                  ZoomMin="0.2"
+                                                  ZoomMax="5"
+                                                  ZoomStep="0.5"
+                                                  ></uc:ImageCanvasViewer>
+                            <!--<Grid Background="Green">
+                                <Grid.Resources>
+                                    <DataTemplate x:Key="DefaultTemplate">
+                                        <Grid>
+                                            <TextBlock Text="{Binding ToString}"></TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+
+                                    <DataTemplate x:Key="ImageTemplate">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <uc:ImageCanvasViewer Image="{Binding Converter={StaticResource HVObjectBitmapImageConverter}}"
+                                                                  Zoom="1"
+                                                                  ZoomMin="0.2"
+                                                                  ZoomMax="5"
+                                                                  ZoomStep="0.5"
+                                                                  Background="Red"
+                                                                  ></uc:ImageCanvasViewer>
+                                        </Grid>
+                                    </DataTemplate>
+
+                                    <Style x:Key="ContentSelector" TargetType="{x:Type ContentControl}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedGlobal.Type}" Value="image">
+                                                <Setter Property="ContentTemplate" Value="{StaticResource ImageTemplate}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding SelectedGlobal, Converter={StaticResource ObjectTypeTriggerConverter}}" Value="True">
+                                                <Setter Property="ContentTemplate" Value="{StaticResource DefaultTemplate}"></Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Resources>
+                                <ContentControl Style="{StaticResource ContentSelector}" Content="{Binding SelectedGlobal}"></ContentControl>
+                            </Grid>-->
+                        </dxdo:LayoutPanel>
+                    </dxdo:LayoutGroup>
+                    
                     <dxdo:LayoutPanel Caption="로그"
                                       ItemHeight="300"
                                       AllowClose="False">
@@ -187,6 +240,7 @@
                         </dx:DXTabControl>
                     </dxdo:LayoutPanel>
                 </dxdo:LayoutGroup>
+                
                 <dxdo:TabbedGroup Name="ImageList"
                                   Caption="Side Panel"
                                   ItemWidth="300"
@@ -199,7 +253,7 @@
                                                  AutoGenerateColumns="None"
                                                  ShowAllTableValuesInFilterPopup="False"
                                                  ItemsSource="{Binding GlobalCollection}"
-                                                 >
+                                                 SelectedItem="{Binding SelectedGlobal}">
                             <dxg:GridControl.Columns>
                                 <dxg:GridColumn FieldName="이름" IsSmart="False" Binding="{Binding Path=Name}"/>
                                 <dxg:GridColumn FieldName="타입" IsSmart="False" Width="*" Binding="{Binding Path=Type}"/>

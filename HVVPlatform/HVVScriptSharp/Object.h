@@ -26,6 +26,7 @@ namespace HV {
 			HV::V1::mananged_shared_ptr<hv::v1::object> _instance;
 			
 		public:
+			Object();
 			Object(std::shared_ptr<hv::v1::object> & object);
 			Object(System::String^ Name, System::String^ Type);
 			~Object();
