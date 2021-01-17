@@ -165,52 +165,15 @@
                                           ItemHeight="*"
                                           ItemWidth="*"
                                           AllowClose="False"
-                                          >
+                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
                             <uc:ImageCanvasViewer Image="{Binding SelectedGlobal, Converter={StaticResource HVObjectBitmapImageConverter}, Mode=OneWay}"
                                                   Zoom="1"
                                                   ZoomMin="0.2"
                                                   ZoomMax="5"
                                                   ZoomStep="0.5"
-                                                  ></uc:ImageCanvasViewer>
-                            <!--<Grid Background="Green">
-                                <Grid.Resources>
-                                    <DataTemplate x:Key="DefaultTemplate">
-                                        <Grid>
-                                            <TextBlock Text="{Binding ToString}"></TextBlock>
-                                        </Grid>
-                                    </DataTemplate>
-
-                                    <DataTemplate x:Key="ImageTemplate">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <uc:ImageCanvasViewer Image="{Binding Converter={StaticResource HVObjectBitmapImageConverter}}"
-                                                                  Zoom="1"
-                                                                  ZoomMin="0.2"
-                                                                  ZoomMax="5"
-                                                                  ZoomStep="0.5"
-                                                                  Background="Red"
-                                                                  ></uc:ImageCanvasViewer>
-                                        </Grid>
-                                    </DataTemplate>
-
-                                    <Style x:Key="ContentSelector" TargetType="{x:Type ContentControl}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedGlobal.Type}" Value="image">
-                                                <Setter Property="ContentTemplate" Value="{StaticResource ImageTemplate}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding SelectedGlobal, Converter={StaticResource ObjectTypeTriggerConverter}}" Value="True">
-                                                <Setter Property="ContentTemplate" Value="{StaticResource DefaultTemplate}"></Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Grid.Resources>
-                                <ContentControl Style="{StaticResource ContentSelector}" Content="{Binding SelectedGlobal}"></ContentControl>
-                            </Grid>-->
+                                                  Background="White"></uc:ImageCanvasViewer>
+                            
                         </dxdo:LayoutPanel>
                     </dxdo:LayoutGroup>
                     

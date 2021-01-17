@@ -26,16 +26,25 @@
                 <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ChartGridlinesHorizontal_Major.svg'}"></Image>
             </Button>
         </Grid>
+        
         <ListView Name="LeftMainMenu"
                   Width="250"
                   ItemsSource="{Binding MainMenuCollection}"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Focusable" Value="false"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <ItemContainerTemplate>
                     <Button Height="40" 
                             Command="{Binding MenuAction}"
-                            HorizontalContentAlignment="Stretch">
+                            HorizontalContentAlignment="Stretch"
+                            Focusable="False"
+                            Margin="0">
+                        
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40"></ColumnDefinition>

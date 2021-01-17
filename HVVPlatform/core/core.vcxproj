@@ -156,6 +156,7 @@
     <ClInclude Include="image.h" />
     <ClInclude Include="_math.h" />
     <ClInclude Include="point.h" />
+    <ClInclude Include="_system.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="core.cpp" />

@@ -48,12 +48,12 @@ namespace WPFHVVPlatform.UC
 
         }
 
-        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(BitmapImage), typeof(ImageCanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
-        public BitmapImage Image
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ImageCanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
+        public ImageSource Image
         {
             get
             {
-                return (BitmapImage)GetValue(ImageProperty);
+                return (ImageSource)GetValue(ImageProperty);
             }
 
             set
@@ -67,7 +67,7 @@ namespace WPFHVVPlatform.UC
             ImageCanvasViewer control = sender as ImageCanvasViewer;
             if (control != null)
             {
-                BitmapImage image = e.NewValue as BitmapImage;
+                ImageSource image = e.NewValue as ImageSource;
                 if (image == null) return;
 
                 if (control.IsLoaded == false) return;

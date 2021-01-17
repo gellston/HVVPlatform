@@ -174,7 +174,7 @@ namespace WPFHVVPlatform.ViewModel
                         {
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-
+                            
                         });
                     }
                     catch (Exception e)
@@ -212,7 +212,6 @@ namespace WPFHVVPlatform.ViewModel
                             {
                                 this.GlobalCollection.Clear();
                                 this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-
                             });
                         }
                         catch (Exception e)
@@ -227,6 +226,7 @@ namespace WPFHVVPlatform.ViewModel
                                 });
                             });
                         }
+              
                     }
                     
                     this.IsRunningScript = false;

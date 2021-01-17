@@ -6,6 +6,7 @@
 #include "image.h"
 #include "point.h"
 #include "_math.h"
+#include "_system.h"
 
 HV_CREATE_SHARED_CONVERTER(hv::v1::image);
 HV_CREATE_SHARED_CONVERTER(hv::v1::point);
@@ -49,7 +50,8 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		.set("to_image", &hv::v1::to_image)
 		.set("to_point", &hv::v1::to_point)
 		.set("sleep", _sleep)
-		.set("round", hv::v1::round);
+		.set("round", hv::v1::round)
+		.set("rand", hv::v1::rand);
 		
 
 	return scope.Escape(m.new_instance());

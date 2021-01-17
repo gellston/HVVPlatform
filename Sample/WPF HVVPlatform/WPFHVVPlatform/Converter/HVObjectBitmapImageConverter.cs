@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,8 +13,12 @@ using System.Windows.Media.Imaging;
 
 namespace WPFHVVPlatform.Converter
 {
+
+
+
     public class HVObjectBitmapImageConverter : IValueConverter
     {
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
@@ -26,6 +31,8 @@ namespace WPFHVVPlatform.Converter
 
                 PixelFormat format = PixelFormat.Format8bppIndexed;
                 System.Windows.Media.PixelFormat bitmapImageFormat = System.Windows.Media.PixelFormats.Gray8;
+
+
                 switch (hvImage.PixelType())
                 {
                     case HV.V1.ImageDataType.u8Image:
@@ -44,22 +51,34 @@ namespace WPFHVVPlatform.Converter
                         return null;
                 }
 
-                Bitmap bitmap = new Bitmap(hvImage.Width(), hvImage.Height(), hvImage.Stride(), format, hvImage.Ptr());
+                WriteableBitmap bmp = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, bitmapImageFormat, null);
 
-                
-                using (MemoryStream memory = new MemoryStream())
+                bmp.Lock();
+                try
                 {
-                    bitmap.Save(memory, ImageFormat.Tiff);
-                    memory.Position = 0;
-                    BitmapImage bitmapimage = new BitmapImage();
-                    bitmapimage.BeginInit();
-                    bitmapimage.StreamSource = memory;
-                    bitmapimage.CacheOption = BitmapCacheOption.OnLoad;
-                
-                    bitmapimage.EndInit();
+                    System.Windows.Int32Rect rect;
+                    rect.X = 0;
+                    rect.Y = 0;
+                    rect.Width = hvImage.Width();
+                    rect.Height = hvImage.Height();
 
-                    return bitmapimage;
+                    int totalSize = hvImage.Stride() * hvImage.Height();
+                    IntPtr backbuffer = bmp.BackBuffer;
+
+                    //CopyMemory(bmp.BackBuffer, hvImage.Ptr(),hvImage.Size());
+                    bmp.WritePixels(rect, hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
+                 
                 }
+                catch(Exception e)
+                {
+
+                }
+                finally
+                {
+                    bmp.Unlock();
+                }
+
+                return bmp;
 
             }
             catch (Exception e)
