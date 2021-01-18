@@ -13,10 +13,10 @@ namespace WPFHVVPlatform.ViewModel
     {
         public ViewModelLocator()
         {
-            //if(NativeMethods.AllocConsole() == false)
-            //{
-            //    System.Console.WriteLine("error");
-            //}
+            if (Nativemethods.AllocConsole() == false)
+            {
+                System.Console.WriteLine("error");
+            }
 
             if (InitializeScript() == false)
             {
@@ -59,12 +59,11 @@ namespace WPFHVVPlatform.ViewModel
             return check;
         }
 
-        //static class NativeMethods
-        //{
-        //    [DllImport("kernel32.dll", SetLastError = true)]
-        //    [return: MarshalAs(UnmanagedType.Bool)]
-        //    public static extern bool AllocConsole();
-        //}
+        static class Nativemethods
+        {
+            [DllImport("kernel32")]
+            public static extern bool AllocConsole();
+        }
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using WPFHVVPlatform.Model;
 using WPFHVVPlatform.Service;
 
@@ -27,7 +31,13 @@ namespace WPFHVVPlatform.ViewModel
 
        
         private readonly HV.V1.Interpreter interpreter;
-       
+
+
+
+        private string _trackingName;
+        private string _trackingType;
+
+
 
         public ScriptEditViewModel(FileDialogService _fileDialogService,
                                    MessageDialogService _messageDialogService,
@@ -41,31 +51,15 @@ namespace WPFHVVPlatform.ViewModel
             this.interpreter = _interpreter;
 
 
-            //this.ScriptCollection.Add(new Script()
-            //{
-            //    FileName = "new.js",
-            //    ScriptContent = "/* Be the god of coding */",
-            //    FilePath = ""
-            //});
-
-
-            //this.SelectedScript = ScriptCollection[0];
-
-
             this.interpreter.TraceEvent += Trace;
 
-            var bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri("pack://application:,,,/WPFHVVPlatform;component/Image/test.jfif");
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.EndInit();
-            TestImage = bitmap;
         }
 
         ~ScriptEditViewModel()
         {
             this.interpreter.TraceEvent -= Trace;
         }
+
 
         private void Trace(string text)
         {
@@ -80,11 +74,11 @@ namespace WPFHVVPlatform.ViewModel
             Thread.Sleep(1);
         }
 
-        private BitmapImage _TestImage = null;
-        public BitmapImage TestImage
+        private WriteableBitmap _ImagePresenter = null;
+        public WriteableBitmap ImagePresenter
         {
-            set => Set<BitmapImage>(nameof(TestImage), ref _TestImage, value);
-            get => _TestImage;
+            set => Set<WriteableBitmap>(nameof(ImagePresenter), ref _ImagePresenter, value);
+            get => _ImagePresenter;
         }
 
 
@@ -144,6 +138,8 @@ namespace WPFHVVPlatform.ViewModel
                     var filePath = this.fileDialogService.SaveFile("Script File (.js)|*.js");
                     if (filePath.Length == 0) return;
                     this.SelectedScript.FilePath = filePath;
+                    this.SelectedScript.FileName = Path.GetFileName(filePath);
+                    RaisePropertyChanged(nameof(SelectedScript));
                 }
 
                 this.scriptFileService.SaveScriptFile(this.SelectedScript.FilePath, this.SelectedScript.ScriptContent);
@@ -188,6 +184,7 @@ namespace WPFHVVPlatform.ViewModel
                                 Content = e.Message
                             });
                         });
+                        
                     }
                     this.IsRunningScript = false;
                 });
@@ -196,22 +193,40 @@ namespace WPFHVVPlatform.ViewModel
 
         public ICommand ContinusStartRunScriptCommand
         {
-            get => new RelayCommand(async () =>
+            get => new RelayCommand(() =>
             {
                 if (this.IsRunningScript == true) return;
                 if (this.SelectedScript == null) return;
-                await Task.Run(() =>
+
+                this.IsRunningScript = true;
+
+                Task.Run(async () =>
                 {
-                    this.IsRunningScript = true;
                     while (IsRunningScript)
                     {
+                        var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                        this.interpreter.RunScript(this.SelectedScript.ScriptContent);
                         try
                         {
                             this.interpreter.RunScript(this.SelectedScript.ScriptContent);
+
                             Application.Current.Dispatcher.Invoke(() =>
                             {
                                 this.GlobalCollection.Clear();
                                 this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
+
+                                var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
+                                {
+                                    return _object.Name.Contains(this._trackingName)  && _object.Type.Contains(this._trackingType);
+                                }).First();
+
+                                var hvImage = new HV.V1.Image(image);
+                                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
+                                {
+                                    ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                                }
+                                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
                             });
                         }
                         catch (Exception e)
@@ -225,12 +240,17 @@ namespace WPFHVVPlatform.ViewModel
                                     Content = e.Message
                                 });
                             });
+                            break;
                         }
-              
+
+                        watch.Stop();
+                        var elapsedMs = watch.ElapsedMilliseconds;
+                        System.Console.WriteLine("time = " + elapsedMs);
                     }
-                    
+
                     this.IsRunningScript = false;
                 });
+
             });
         }
 
@@ -240,6 +260,18 @@ namespace WPFHVVPlatform.ViewModel
             {
                 this.interpreter.Terminate();
                 this.IsRunningScript = false;
+            });
+        }
+
+        public ICommand TrackingImageCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                if (this.SelectedGlobal == null) return;
+                if (!this.SelectedGlobal.Type.Contains("image")) return;
+
+                this._trackingType = this.SelectedGlobal.Type;
+                this._trackingName = this.SelectedGlobal.Name;
             });
         }
 
@@ -267,6 +299,7 @@ namespace WPFHVVPlatform.ViewModel
                 }
                 return _GlobalCollection;
             }
+            set => Set<ObservableCollection<HV.V1.Object>>(nameof(GlobalCollection), ref _GlobalCollection, value);
         }
 
         private HV.V1.Object _SelectedGlobal = null;

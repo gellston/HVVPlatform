@@ -70,7 +70,6 @@ namespace WPFHVVPlatform.UC
                 ImageSource image = e.NewValue as ImageSource;
                 if (image == null) return;
 
-                if (control.IsLoaded == false) return;
 
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
@@ -83,7 +82,7 @@ namespace WPFHVVPlatform.UC
 
                 control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
                 control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
-
+              
             }
         }
 

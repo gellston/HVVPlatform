@@ -13,7 +13,11 @@ HV_CREATE_SHARED_CONVERTER(hv::v1::point);
 
 HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 {
+
+	
+
 	hv::v1::EscapeHandleScope scope(isolate);
+
 
 
 	hv::v1::class_<hv::v1::image, hv::v1::shared_ptr_traits> image_class(isolate);
@@ -30,6 +34,7 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		.set("add", &hv::v1::image::add)
 		.set("minus", &hv::v1::image::minus)
 		.set("resolution", &hv::v1::image::resolution);
+		
 
 
 	hv::v1::class_<hv::v1::point, hv::v1::shared_ptr_traits> point_class(isolate);
