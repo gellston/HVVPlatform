@@ -1,4 +1,9 @@
 
+
+#include <primitive_object.h>
+#include <memory>
+
+
 // Managed Header
 #include <msclr/marshal_cppstd.h>
 

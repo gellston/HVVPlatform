@@ -134,6 +134,7 @@
     <ClInclude Include="mananged_shared_ptr.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>

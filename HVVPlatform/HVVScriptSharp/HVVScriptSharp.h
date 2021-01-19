@@ -5,24 +5,32 @@
 
 #include "Object.h"
 
-
 using namespace System;
 using namespace System::Collections;
 using namespace System::Collections::Generic;
 using namespace System::Runtime::InteropServices;
 
+
+namespace hv::v1 {
+	class pimpl_casting_container;
+};
+
+
 namespace HV {
 	namespace V1 {
+		
 
-		public delegate void DelegateTrace(String^ str);
+		public delegate void DelegateTrace(System::String^ str);
 		
 
 		public ref class Interpreter
 		{
 
 		internal:
-			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
 			
+			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
+			HV::V1::mananged_shared_ptr<hv::v1::pimpl_casting_container> _casting_pimpl;
+
 		private:
 
 			DelegateTrace^ EventTraceCallback;
@@ -32,7 +40,9 @@ namespace HV {
 			IntPtr HandlePtr;
 
 
-			void Trace(String^ data);
+			void Trace(System::String^ data);
+
+		
 
 		public:
 
@@ -42,30 +52,30 @@ namespace HV {
 
 
 
-			bool SetModulePath(String^ path);
-			bool RunScript(String^ content);
-			bool RunFile(String^ path);
+			bool SetModulePath(System::String^ path);
+			bool RunScript(System::String^ content);
+			bool RunFile(System::String^ path);
 			bool Terminate();
 			
 
-			bool RegisterExternalData(String^ key, HV::V1::Object^ data);
-			HV::V1::Object^ ExternalData(String^ key);
-			bool CheckExternalData(String^ key);
+			bool RegisterExternalData(System::String^ key, HV::V1::Object^ data);
+			System::Object^ ExternalData(System::String^ key);
+			bool CheckExternalData(System::String^ key);
 			void ClearExternalData();
 
 			
-			property List<String^>^ GlobalNames {
-				List<String^>^ get();
+			property List<System::String^>^ GlobalNames {
+				List<System::String^>^ get();
 			}
-			property Dictionary<String^, HV::V1::Object^>^ GlobalObjects {
-				Dictionary<String^, HV::V1::Object^>^ get();
+			property Dictionary<System::String^, System::Object^>^ GlobalObjects {
+				Dictionary<System::String^, System::Object^>^ get();
 			}
 
-			property List<String^>^ ExternalNames{
-				List<String^> ^ get();
+			property List<System::String^>^ ExternalNames{
+				List<System::String^> ^ get();
 			}
-			property Dictionary<String^, HV::V1::Object^>^ ExternalObjects {
-				Dictionary<String^, HV::V1::Object^>^ get();
+			property Dictionary<System::String^, System::Object^>^ ExternalObjects {
+				Dictionary<System::String^, System::Object^>^ get();
 			}
 
 			event DelegateTrace^ TraceEvent {
@@ -83,7 +93,7 @@ namespace HV {
 					this->_instance->set_trace_callback(native_pointer);
 				}
 
-				void raise(String^ data) {
+				void raise(System::String^ data) {
 					if (EventTraceCallback != nullptr) {
 						return EventTraceCallback->Invoke(data);
 					}
@@ -93,10 +103,10 @@ namespace HV {
 			/// <summary>
 			/// script static functions
 			/// </summary>
-			static bool InitV8StartupData(String^ path);
+			static bool InitV8StartupData(System::String^ path);
 			static void InitV8Platform();
 			static bool InitV8Engine();
-			static void SetV8Flag(String^ flag);
+			static void SetV8Flag(System::String^ flag);
 		};
 	}
 

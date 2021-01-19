@@ -1,4 +1,8 @@
 
+#include <image.h>
+#include <memory>
+
+
 // Managed Header
 #include <msclr/marshal_cppstd.h>
 
@@ -32,7 +36,7 @@ void HV::V1::Image::RegisterDrawObject(HV::V1::Object^ _object) {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get())->register_draw_object(_object->_instance.get());
 }
-List<HV::V1::Object^>^ HV::V1::Image::DrawObjects() {
+List<HV::V1::Object^>^ HV::V1::Image::DrawObjects::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	auto list = gcnew List<HV::V1::Object^>();
 	auto native_list = target->drarw_objects();
@@ -44,23 +48,23 @@ List<HV::V1::Object^>^ HV::V1::Image::DrawObjects() {
 
 
 
-int HV::V1::Image::Width() {
+int HV::V1::Image::Width::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->width();
 }
-int HV::V1::Image::Height() {
+int HV::V1::Image::Height::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->height();
 }
-int HV::V1::Image::Size() {
+int HV::V1::Image::Size::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->size();
 }
-int HV::V1::Image::Stride() {
+int HV::V1::Image::Stride::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->stride();
 }
-int HV::V1::Image::Count() {
+int HV::V1::Image::Count::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->count();
 }
@@ -98,12 +102,12 @@ bool HV::V1::Image::Minus(double value) {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->minus(value);
 }
-double HV::V1::Image::Resolution() {
+double HV::V1::Image::Resolution::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	return target->resolution();
 }
 
-HV::V1::ImageDataType HV::V1::Image::PixelType() {
+HV::V1::ImageDataType HV::V1::Image::PixelType::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 
 	return static_cast<HV::V1::ImageDataType>(target->pixel_type());

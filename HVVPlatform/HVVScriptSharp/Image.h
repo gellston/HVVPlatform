@@ -1,11 +1,8 @@
 #pragma once
 
 
-#include <image.h>
-#include <memory>
 
 
-#include "mananged_shared_ptr.h"
 #include "Object.h"
 #include "DataType.h"
 
@@ -34,15 +31,27 @@ namespace HV {
 
 
 			void RegisterDrawObject(HV::V1::Object^ _object);
-			List<HV::V1::Object^>^ DrawObjects();
+			property List<HV::V1::Object^>^ DrawObjects{
+				List<HV::V1::Object^>^ get();
+			};
 
 
 	
-			int Width();
-			int Height();
-			int Size();
-			int Stride();
-			int Count();
+			property int Width {
+				int get();
+			};
+			property int Height {
+				int get();
+			};;
+			property int Size {
+				int get();
+			};;
+			property int Stride {
+				int get();
+			};;
+			property int Count {
+				int get();
+			};;
 			IntPtr Ptr();
 			bool Copy(Image^ data);
 			bool Fill(double value);
@@ -51,8 +60,12 @@ namespace HV {
 			bool Divide(double value);
 			bool Add(double value);
 			bool Minus(double value);
-			double Resolution();
-			ImageDataType PixelType();
+			property double Resolution {
+				double get();
+			};;
+			property ImageDataType PixelType {
+				ImageDataType get();
+			};
 		};
 	}
 

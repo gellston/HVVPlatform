@@ -170,7 +170,17 @@ namespace WPFHVVPlatform.ViewModel
                         {
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-                            
+                            var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
+                            {
+                                return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
+                            }).First();
+
+                            var hvImage = new HV.V1.Image(image);
+                            if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
+                            {
+                                ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                            }
+                            ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
                         });
                     }
                     catch (Exception e)
@@ -272,6 +282,13 @@ namespace WPFHVVPlatform.ViewModel
 
                 this._trackingType = this.SelectedGlobal.Type;
                 this._trackingName = this.SelectedGlobal.Name;
+
+                var hvImage = new HV.V1.Image(this.SelectedGlobal);
+                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
+                {
+                    ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                }
+                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
             });
         }
 

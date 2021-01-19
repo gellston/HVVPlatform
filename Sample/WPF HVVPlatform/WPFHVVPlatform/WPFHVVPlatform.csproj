@@ -36,7 +36,7 @@
       <HintPath>..\..\..\..\..\..\Program Files (x86)\DevExpress 20.2\.NET Core Desktop Libraries\Bin\NetCore\DevExpress.Xpf.Themes.VS2019Dark.v20.2.dll</HintPath>
     </Reference>
     <Reference Include="HVVScriptSharp">
-      <HintPath>..\..\..\HVVPlatform\x64\Release\HVVScriptSharp.dll</HintPath>
+      <HintPath>..\..\..\HVVPlatform\x64\Debug\HVVScriptSharp.dll</HintPath>
     </Reference>
   </ItemGroup>    
 </Project>
