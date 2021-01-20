@@ -12,9 +12,8 @@ using namespace System::Runtime::InteropServices;
 
 
 namespace hv::v1 {
-	class pimpl_casting_container;
+	class pimpl_hvvscript_casting_container;
 };
-
 
 namespace HV {
 	namespace V1 {
@@ -29,13 +28,13 @@ namespace HV {
 		internal:
 			
 			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
-			HV::V1::mananged_shared_ptr<hv::v1::pimpl_casting_container> _casting_pimpl;
+			HV::V1::mananged_shared_ptr<hv::v1::pimpl_hvvscript_casting_container> _casting_pimpl;
 
 		private:
 
 			DelegateTrace^ EventTraceCallback;
 			DelegateTrace^ EventTraceTriggerCallback;
-			//Delegator^ delegator;
+
 			GCHandle Handle;
 			IntPtr HandlePtr;
 
@@ -67,15 +66,15 @@ namespace HV {
 			property List<System::String^>^ GlobalNames {
 				List<System::String^>^ get();
 			}
-			property Dictionary<System::String^, System::Object^>^ GlobalObjects {
-				Dictionary<System::String^, System::Object^>^ get();
+			property Dictionary<System::String^, HV::V1::Object^>^ GlobalObjects {
+				Dictionary<System::String^, HV::V1::Object^>^ get();
 			}
 
 			property List<System::String^>^ ExternalNames{
 				List<System::String^> ^ get();
 			}
-			property Dictionary<System::String^, System::Object^>^ ExternalObjects {
-				Dictionary<System::String^, System::Object^>^ get();
+			property Dictionary<System::String^, HV::V1::Object^>^ ExternalObjects {
+				Dictionary<System::String^, HV::V1::Object^>^ get();
 			}
 
 			event DelegateTrace^ TraceEvent {

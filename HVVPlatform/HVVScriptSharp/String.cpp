@@ -11,6 +11,9 @@
 #include "String.h"
 
 
+HV::V1::String::String(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
+	this->_instance = object;
+}
 
 HV::V1::String::String(System::String^ data) {
 	this->_instance = new hv::v1::string(msclr::interop::marshal_as<std::string>(data));

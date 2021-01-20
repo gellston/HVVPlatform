@@ -29,11 +29,17 @@ namespace WPFHVVPlatform.Converter
                 if (hvObject.Type.Contains("image") != true) return null;
                 var hvImage = new HV.V1.Image(hvObject);
 
+                var width = hvImage.Width;
+                var height = hvImage.Height;
+                var stride = hvImage.Stride;
+                var size = hvImage.Size;
+
+
                 PixelFormat format = PixelFormat.Format8bppIndexed;
                 System.Windows.Media.PixelFormat bitmapImageFormat = System.Windows.Media.PixelFormats.Gray8;
 
 
-                switch (hvImage.PixelType())
+                switch (hvImage.PixelType)
                 {
                     case HV.V1.ImageDataType.u8Image:
                         format = PixelFormat.Format8bppIndexed;
@@ -51,7 +57,7 @@ namespace WPFHVVPlatform.Converter
                         return null;
                 }
 
-                WriteableBitmap bmp = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, bitmapImageFormat, null);
+                WriteableBitmap bmp = new WriteableBitmap(width, height, 96, 96, bitmapImageFormat, null);
 
                 bmp.Lock();
                 try
@@ -59,14 +65,13 @@ namespace WPFHVVPlatform.Converter
                     System.Windows.Int32Rect rect;
                     rect.X = 0;
                     rect.Y = 0;
-                    rect.Width = hvImage.Width();
-                    rect.Height = hvImage.Height();
+                    rect.Width = width;
+                    rect.Height = height;
 
-                    int totalSize = hvImage.Stride() * hvImage.Height();
+                    int totalSize = stride * height;
                     IntPtr backbuffer = bmp.BackBuffer;
 
-                    //CopyMemory(bmp.BackBuffer, hvImage.Ptr(),hvImage.Size());
-                    bmp.WritePixels(rect, hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
+                    bmp.WritePixels(rect, hvImage.Ptr(), size, stride);
                  
                 }
                 catch(Exception e)

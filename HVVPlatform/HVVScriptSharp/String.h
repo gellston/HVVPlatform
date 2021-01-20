@@ -1,7 +1,12 @@
 #pragma once
 
 
+
+
+
+
 #include "Object.h"
+
 
 
 using namespace System;
@@ -19,6 +24,7 @@ namespace HV {
 		internal:
 
 		public:
+			String(std::shared_ptr<hv::v1::object>& object);
 			String(System::String^ Name, System::String^ data);
 			String(System::String^ data);
 			String(HV::V1::Object^ object);

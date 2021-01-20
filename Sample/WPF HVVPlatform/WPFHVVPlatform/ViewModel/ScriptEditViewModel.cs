@@ -166,22 +166,39 @@ namespace WPFHVVPlatform.ViewModel
                     try
                     {
                         this.interpreter.RunScript(this.SelectedScript.ScriptContent);
+
+
+
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-                            var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
-                            {
-                                return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
-                            }).First();
 
-                            var hvImage = new HV.V1.Image(image);
-                            if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
+                            try
                             {
-                                ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                                var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
+                                {
+                                    return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
+                                }).First();
+
+                                var hvImage = new HV.V1.Image(image);
+                                var width = hvImage.Width;
+                                var height = hvImage.Height;
+                                var stride = hvImage.Stride;
+                                var size = hvImage.Size;
+                                if (ImagePresenter == null || ImagePresenter.Width != width || ImagePresenter.Height != height)
+                                {
+                                    ImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
+                                }
+                                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
+                                this.TrackingImageDrawCollection.Clear();
+                                this.TrackingImageDrawCollection.AddRange(hvImage.DrawObjects);
                             }
-                            ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
-                        });
+                            catch (Exception e)
+                            {
+
+                            }
+                        }, DispatcherPriority.ContextIdle);
                     }
                     catch (Exception e)
                     {
@@ -196,6 +213,7 @@ namespace WPFHVVPlatform.ViewModel
                         });
                         
                     }
+
                     this.IsRunningScript = false;
                 });
             });
@@ -212,6 +230,9 @@ namespace WPFHVVPlatform.ViewModel
 
                 Task.Run(async () =>
                 {
+                    var count = 0;
+                    var stacked_time = 0.0;
+
                     while (IsRunningScript)
                     {
                         var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -226,18 +247,32 @@ namespace WPFHVVPlatform.ViewModel
                                 this.GlobalCollection.Clear();
                                 this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
 
-                                var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
+                                try
                                 {
-                                    return _object.Name.Contains(this._trackingName)  && _object.Type.Contains(this._trackingType);
-                                }).First();
+                                    var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
+                                    {
+                                        return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
+                                    }).First();
 
-                                var hvImage = new HV.V1.Image(image);
-                                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
-                                {
-                                    ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                                    var hvImage = new HV.V1.Image(image);
+                                    var width = hvImage.Width;
+                                    var height = hvImage.Height;
+                                    var stride = hvImage.Stride;
+                                    var size = hvImage.Size;
+                                    if (ImagePresenter == null || ImagePresenter.Width != width || ImagePresenter.Height != height)
+                                    {
+                                        ImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
+                                    }
+                                    ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
+                                    this.TrackingImageDrawCollection.Clear();
+                                    this.TrackingImageDrawCollection.AddRange(hvImage.DrawObjects);
+
                                 }
-                                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
-                            });
+                                catch (Exception e)
+                                {
+
+                                }
+                            },DispatcherPriority.Render);
                         }
                         catch (Exception e)
                         {
@@ -252,10 +287,17 @@ namespace WPFHVVPlatform.ViewModel
                             });
                             break;
                         }
-
+                        //await Task.Delay(5);
                         watch.Stop();
                         var elapsedMs = watch.ElapsedMilliseconds;
-                        System.Console.WriteLine("time = " + elapsedMs);
+                        stacked_time += elapsedMs;
+                        count++;
+                        if(stacked_time > 1000)
+                        {
+                            System.Console.WriteLine("fps : " + count);
+                            count = 0;
+                            stacked_time = 0;
+                        }
                     }
 
                     this.IsRunningScript = false;
@@ -284,11 +326,11 @@ namespace WPFHVVPlatform.ViewModel
                 this._trackingName = this.SelectedGlobal.Name;
 
                 var hvImage = new HV.V1.Image(this.SelectedGlobal);
-                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width() || ImagePresenter.Height != hvImage.Height())
+                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width || ImagePresenter.Height != hvImage.Height)
                 {
-                    ImagePresenter = new WriteableBitmap(hvImage.Width(), hvImage.Height(), 96, 96, PixelFormats.Gray8, null);
+                    ImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
                 }
-                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width(), hvImage.Height()), hvImage.Ptr(), hvImage.Size(), hvImage.Stride());
+                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
             });
         }
 
@@ -317,6 +359,20 @@ namespace WPFHVVPlatform.ViewModel
                 return _GlobalCollection;
             }
             set => Set<ObservableCollection<HV.V1.Object>>(nameof(GlobalCollection), ref _GlobalCollection, value);
+        }
+
+        private ObservableCollection<HV.V1.Object> _TrackingImageDrawCollection = null;
+        public ObservableCollection<HV.V1.Object> TrackingImageDrawCollection
+        {
+            get
+            {
+                if (_TrackingImageDrawCollection == null)
+                {
+                    _TrackingImageDrawCollection = new ObservableCollection<HV.V1.Object>();
+                }
+                return _TrackingImageDrawCollection;
+            }
+            set => Set<ObservableCollection<HV.V1.Object>>(nameof(TrackingImageDrawCollection), ref _TrackingImageDrawCollection, value);
         }
 
         private HV.V1.Object _SelectedGlobal = null;

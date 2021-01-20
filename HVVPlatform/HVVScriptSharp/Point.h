@@ -19,6 +19,7 @@ namespace HV {
 		internal:
 
 		public:
+			Point(std::shared_ptr<hv::v1::object>& object);
 			Point(System::String^ Name, double x, double y);
 			Point(HV::V1::Object^ object);
 			~Point();

@@ -1,16 +1,18 @@
 #pragma once
 
 
-
-
 #include "Object.h"
 #include "DataType.h"
+
 
 using namespace System;
 using namespace System::Collections;
 using namespace System::Collections::Generic;
 
 
+namespace hv::v1 {
+	class pimpl_image_casting_container;
+};
 
 namespace HV {
 
@@ -20,8 +22,11 @@ namespace HV {
 
 		internal:
 
+			HV::V1::mananged_shared_ptr<hv::v1::pimpl_image_casting_container> _casting_pimpl;
+
 		public:
 
+			Image(std::shared_ptr<hv::v1::object>& object);
 			Image(HV::V1::Object^ object);
 			~Image();
 			!Image();

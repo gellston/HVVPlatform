@@ -22,6 +22,7 @@ namespace HV {
 
 		public:
 
+			Boolean(std::shared_ptr<hv::v1::object>& object);
 			Boolean(System::String^ Name, bool data);
 			Boolean(bool data);
 			Boolean(HV::V1::Object^ object);

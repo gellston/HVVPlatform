@@ -11,6 +11,9 @@
 #include "Boolean.h"
 
 
+HV::V1::Boolean::Boolean(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
+	this->_instance = object;
+}
 
 HV::V1::Boolean::Boolean(bool data) {
 	this->_instance = new hv::v1::boolean(data);

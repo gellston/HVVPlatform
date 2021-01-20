@@ -5,8 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WPFHVVPlatform.UC"
              xmlns:hv="clr-namespace:HV.V1;assembly=HVVScriptSharp"
+             xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <converter:RadiusCordinateConverter x:Key="RadiusCordinateConverter"></converter:RadiusCordinateConverter>
+    </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
@@ -15,15 +20,33 @@
                       ClipToBounds="True"
                       >
             <ItemsControl.Resources>
-                <DataTemplate x:Key="DefaultObjectTemplate" DataType="{x:Type hv:Object}">
-                    <Grid Height="50">
-                        <TextBlock Text="{Binding ToString}"></TextBlock>
+                <DataTemplate DataType="{x:Type hv:Point}">
+                    <Grid Name="parent">
+                        <Grid.ToolTip>
+                            <ToolTip Width="110">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="50"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="{Binding Name}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"></TextBlock>
+                                    <TextBlock Text="{Binding Type}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"></TextBlock>
+                                    <TextBlock Text="x:" Grid.Column="0" Grid.Row="2"></TextBlock>
+                                    <TextBlock Text="y:" Grid.Column="0" Grid.Row="3"></TextBlock>
+                                    <TextBlock Text="{Binding X}" Grid.Column="1" Grid.Row="2"></TextBlock>
+                                    <TextBlock Text="{Binding Y}" Grid.Column="1" Grid.Row="3"></TextBlock>
+                                </Grid>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                        <Line  X1="0" Y1="0" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="{Binding ElementName='parent', Path='ActualHeight'}" Stroke="Red" StrokeThickness="4" />
+                        <Line  X1="0" Y1="{Binding ElementName='parent', Path='ActualHeight'}" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="0" Stroke="Red" StrokeThickness="4" />
                     </Grid>
-                </DataTemplate>
-                <DataTemplate x:Key="ObjectContainerTemplate">
-                    <ContentPresenter Content="{TemplateBinding Content}">
-                        
-                    </ContentPresenter>
                 </DataTemplate>
             </ItemsControl.Resources> 
             <ItemsControl.ItemsPanel>
@@ -51,11 +74,28 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Left" Value="{Binding Path=X}" />
-                    <Setter Property="Canvas.Top" Value="{Binding Path=Y}" />
-                    <Setter Property="Panel.ZIndex" Value="{Binding Path=Z}"></Setter>
-                    <Setter Property="Width" Value="{Binding Path=Width}"></Setter>
-                    <Setter Property="Height" Value="{Binding Path=Height}"></Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Type}" Value="point">
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
+                                        <Binding Path="Y"></Binding>
+                                        <Binding Path="DoesNotExist" FallbackValue="5" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Left">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
+                                        <Binding Path="X"></Binding>
+                                        <Binding Path="DoesNotExist" FallbackValue="5" />
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Width" Value="{Binding Width, FallbackValue=10}"></Setter>
+                            <Setter Property="Height" Value="{Binding Height, FallbackValue=10}"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>

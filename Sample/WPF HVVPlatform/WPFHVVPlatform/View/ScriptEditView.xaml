@@ -180,6 +180,7 @@
                                           ScrollViewer.VerticalScrollBarVisibility="Hidden">
                             <uc:ImageCanvasViewer x:Name="ImageViewer" 
                                                   Image="{Binding ImagePresenter, Mode=OneWay, IsAsync=True}"
+                                                  DrawObjectsCollection="{Binding TrackingImageDrawCollection, Mode=OneWay}"
                                                   Zoom="1"
                                                   ZoomMin="0.2"
                                                   ZoomMax="5"

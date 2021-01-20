@@ -20,6 +20,8 @@ namespace HV {
 		internal:
 
 		public:
+
+			Number(std::shared_ptr<hv::v1::object>& object);
 			Number(System::String^ Name, double data);
 			Number(double data);
 			Number(HV::V1::Object^ object);

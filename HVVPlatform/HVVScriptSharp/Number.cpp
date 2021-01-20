@@ -11,10 +11,13 @@
 // Native Header
 #include "Number.h"
 
-
+HV::V1::Number::Number(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
+	this->_instance = object;
+}
 
 HV::V1::Number::Number(double data) {
 	this->_instance = new hv::v1::number(data);
+	
 }
 
 HV::V1::Number::Number(String^ name, double data) {

@@ -1,7 +1,6 @@
-
 #include <image.h>
 #include <memory>
-
+#include <map>
 
 // Managed Header
 #include <msclr/marshal_cppstd.h>
@@ -9,10 +8,33 @@
 
 // Native Header
 #include "Image.h"
+#include "Point.h"
 
 
+#include "secure_macro.h"
 
-HV::V1::Image::Image(HV::V1::Object^ data) {
+
+namespace hv::v1 {
+	class pimpl_image_casting_container {
+	private:
+		std::map<std::string, int> _converter;
+	public:
+		pimpl_image_casting_container() {
+			register_casting_type(point);
+		}
+
+		std::map<std::string, int>& converter() {
+			return _converter;
+		}
+	};
+}
+
+HV::V1::Image::Image(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object),
+															    _casting_pimpl(new hv::v1::pimpl_image_casting_container()){
+	this->_instance = object;
+}
+
+HV::V1::Image::Image(HV::V1::Object^ data) : _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
 	this->_instance = data->_instance.get();
 }
 
@@ -40,8 +62,19 @@ List<HV::V1::Object^>^ HV::V1::Image::DrawObjects::get() {
 	auto target = std::dynamic_pointer_cast<hv::v1::image>(this->_instance.get());
 	auto list = gcnew List<HV::V1::Object^>();
 	auto native_list = target->drarw_objects();
+
+	auto casting = this->_casting_pimpl->converter();
+
 	for (auto& element : native_list) {
-		list->Add(gcnew HV::V1::Object(element));
+		switch (casting[element->type()]) {
+
+		case hv::v1::casting::point:
+			list->Add( gcnew HV::V1::Point(element));
+			break;
+		default:
+			list->Add( gcnew HV::V1::Object(element));
+			break;
+		}
 	}
 	return list;
 }

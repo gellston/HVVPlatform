@@ -11,6 +11,9 @@
 #include "Point.h"
 
 
+HV::V1::Point::Point(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
+	this->_instance = object;
+}
 
 HV::V1::Point::Point(String^ name,double x, double y) {
 	this->_instance = new hv::v1::point(msclr::interop::marshal_as<std::string>(name), x, y);

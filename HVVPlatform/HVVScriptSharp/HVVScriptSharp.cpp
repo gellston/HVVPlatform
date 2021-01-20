@@ -3,42 +3,46 @@
 #include <msclr/marshal_cppstd.h>
 #include <stdexcept>
 #include <data_type.h>
+#include "secure_macro.h"
 
 
 // Managed Header
 #include "HVVScriptSharp.h"
+#include "Object.h"
 #include "Boolean.h"
 #include "Number.h"
 #include "Image.h"
 #include "String.h"
 #include "Point.h"
 
+
 namespace hv::v1 {
 
-	class pimpl_casting_container {
+	class pimpl_hvvscript_casting_container {
 	private:
 		std::map<std::string, int> _converter;
 	public:
-		pimpl_casting_container() {
-			_converter["object"] = hv::v1::casting::casting_type::object;
-			_converter["number"] = hv::v1::casting::casting_type::number;
-			_converter["string"] = hv::v1::casting::casting_type::string;
-			_converter["boolean"] = hv::v1::casting::casting_type::boolean;
-			_converter["image"] = hv::v1::casting::casting_type::image;
-			_converter["point"] = hv::v1::casting::casting_type::point;
+		pimpl_hvvscript_casting_container() {
+			register_casting_type(point);
+			register_casting_type(image);
+			register_casting_type(string);
+			register_casting_type(number);
+			register_casting_type(boolean);
 		}
 
-		std::map<std::string, int> &  converter() {
+		std::map<std::string, int>& converter() {
 			return _converter;
 		}
 	};
 }
 
 
-HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()){
+HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()),
+									_casting_pimpl(new hv::v1::pimpl_hvvscript_casting_container()){
 	
 	this->EventTraceCallback = gcnew HV::V1::DelegateTrace(this, &HV::V1::Interpreter::Trace);
 	this->Handle = GCHandle::Alloc(this->EventTraceCallback);
+
 
 }
 
@@ -129,16 +133,36 @@ List<String^>^ HV::V1::Interpreter::GlobalNames::get() {
 	return list;
 }
 
-Dictionary<System::String^, System::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
-	auto global_object = gcnew Dictionary<System::String^, System::Object^>();
+Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
+	auto global_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
 
 
 	auto globals = this->_instance->global_objects();
-	for (auto& [key, val] : globals) {
-		auto managed_object = gcnew HV::V1::Object(val);
-		global_object->Add(gcnew System::String(key.c_str()), managed_object);
-	}
+	auto casting = this->_casting_pimpl->converter();
 
+	for (auto& [key, val] : globals) {
+		switch (casting[val->type()]) {
+
+		case hv::v1::casting::number:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(val));
+			break;
+		case hv::v1::casting::image:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(val));
+			break;
+		case hv::v1::casting::boolean:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(val));
+			break;
+		case hv::v1::casting::string:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(val));
+			break;
+		case hv::v1::casting::point:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(val));
+			break;
+		default:
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(val));
+			break;
+		}
+	}
 	return global_object;
 }
 
@@ -150,36 +174,34 @@ List<System::String^>^ HV::V1::Interpreter::ExternalNames::get() {
 	}
 	return list;
 }
-Dictionary<System::String^, System::Object^>^ HV::V1::Interpreter::ExternalObjects::get() {
-	auto external_object = gcnew Dictionary<System::String^, System::Object^>();
+Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjects::get() {
+	auto external_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
 
 	auto externals = this->_instance->external_objects();
 	auto casting = this->_casting_pimpl->converter();
 
 	for (auto& [key, val] : externals) {
-		auto managed_object = gcnew HV::V1::Object(val);
+		
 		
 		switch (casting[val->type()]) {
-		case hv::v1::casting::object:
-			external_object->Add(gcnew System::String(key.c_str()), managed_object);
-			break;
+
 		case hv::v1::casting::number:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(managed_object));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(val));
 			break;
 		case hv::v1::casting::image:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(managed_object));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(val));
 			break;
 		case hv::v1::casting::boolean:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(managed_object));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(val));
 			break;
 		case hv::v1::casting::string:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(managed_object));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(val));
 			break;
 		case hv::v1::casting::point:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(managed_object));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(val));
 			break;
 		default:
-			external_object->Add(gcnew System::String(key.c_str()), managed_object);
+			external_object->Add(gcnew System::String(key.c_str()),  gcnew HV::V1::Object(val));
 			break;
 		}
 	}

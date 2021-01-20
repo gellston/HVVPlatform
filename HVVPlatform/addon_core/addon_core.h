@@ -33,7 +33,8 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		.set("divide", &hv::v1::image::divide)
 		.set("add", &hv::v1::image::add)
 		.set("minus", &hv::v1::image::minus)
-		.set("resolution", &hv::v1::image::resolution);
+		.set("resolution", &hv::v1::image::resolution)
+		.set("register_draw_object", &hv::v1::image::register_draw_object);
 		
 
 
