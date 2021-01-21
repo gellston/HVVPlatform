@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:WPFHVVPlatform.UC"
              xmlns:hv="clr-namespace:HV.V1;assembly=HVVScriptSharp"
              xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
+             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 

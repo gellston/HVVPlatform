@@ -1,7 +1,10 @@
 ﻿var core = require("addon_core"); // dll 로드 !!
 
 var image = new core.image("test", 2020,2020, core.u8_image, 1);
-image.fill(255);
+
+var rand_value = core.rand(0,255);
+image.fill(rand_value);
+
 
 for(let index =0; index < 100; index++){
 	var rand_x = core.rand(0,2020);

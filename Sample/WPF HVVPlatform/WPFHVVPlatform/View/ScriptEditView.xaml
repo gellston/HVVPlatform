@@ -23,6 +23,7 @@
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
         <converter:ObjectTypeTriggerConverter x:Key="ObjectTypeTriggerConverter"></converter:ObjectTypeTriggerConverter>
         <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
+        <converter:BooleanToVisibility x:Key="BooleanToVisibility"></converter:BooleanToVisibility>
     </UserControl.Resources>
 
 
@@ -116,7 +117,10 @@
                 <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
             </dxe:ComboBoxEdit>
             <dxe:PopupColorEdit Name="fontColor" ToolTip="스크립트 폰트 컬러" Grid.Column="10" Grid.ColumnSpan="2" Color="Black"/>
-            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="White"/>
+            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="Transparent"/>
+            <dx:SimpleButton ToolTip="결과 출력 숨김 (실행 속도 향상)" ButtonKind="Toggle" IsChecked="{Binding IsShowingResult}" Grid.Column="14">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Hide_Chart.svg'}"></Image>
+            </dx:SimpleButton>
         </Grid>
         <dxdo:DockLayoutManager FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal"
@@ -150,8 +154,7 @@
 
                                     <dx:DXTabControl.View>
                                         <dx:TabControlStretchView HideButtonShowMode="InAllTabs "
-                                                              NewButtonShowMode="NoWhere"
-                                                              />
+                                                                  NewButtonShowMode="NoWhere"/>
                                     </dx:DXTabControl.View>
 
                                 </dx:DXTabControl>
@@ -172,25 +175,46 @@
                             </Grid>
 
                         </dxdo:LayoutPanel>
-                        <dxdo:LayoutPanel Caption="결과"
+                        <dxdo:TabbedGroup Name="ImageList"
+                                          Caption="Side Panel"
                                           ItemHeight="*"
                                           ItemWidth="*"
-                                          AllowClose="False"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                                          ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                            <uc:ImageCanvasViewer x:Name="ImageViewer" 
-                                                  Image="{Binding ImagePresenter, Mode=OneWay, IsAsync=True}"
-                                                  DrawObjectsCollection="{Binding TrackingImageDrawCollection, Mode=OneWay}"
-                                                  Zoom="1"
-                                                  ZoomMin="0.2"
-                                                  ZoomMax="5"
-                                                  ZoomStep="0.5">
-                                <uc:ImageCanvasViewer.Background>
-                                    <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
-                                </uc:ImageCanvasViewer.Background>
-                            </uc:ImageCanvasViewer>
-                            
-                        </dxdo:LayoutPanel>
+                                          AllowClose="False">
+                            <dxdo:LayoutPanel Caption="이미지 트랙킹"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <uc:ImageCanvasViewer Image="{Binding TrackingImagePresenter, Mode=OneWay}"
+                                                      Zoom="1"
+                                                      ZoomMin="0.2"
+                                                      ZoomMax="5"
+                                                      ZoomStep="0.5">
+                                    <uc:ImageCanvasViewer.Background>
+                                        <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
+                                    </uc:ImageCanvasViewer.Background>
+                                </uc:ImageCanvasViewer>
+
+                            </dxdo:LayoutPanel>
+                            <dxdo:LayoutPanel Caption="이미지 상세정보"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <uc:ImageCanvasViewer Image="{Binding DetailImagePresenter, Mode=OneWay}"
+                                                      DrawObjectsCollection="{Binding DetailImageDrawCollection, Mode=OneWay}"
+                                                      Zoom="1"
+                                                      ZoomMin="0.2"
+                                                      ZoomMax="5"
+                                                      ZoomStep="0.5">
+                                    <uc:ImageCanvasViewer.Background>
+                                        <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
+                                    </uc:ImageCanvasViewer.Background>
+                                </uc:ImageCanvasViewer>
+                            </dxdo:LayoutPanel>
+                        </dxdo:TabbedGroup>
                     </dxdo:LayoutGroup>
                     
                     <dxdo:LayoutPanel Caption="로그"
@@ -212,7 +236,9 @@
                                         <dxg:TableView AllowPerPixelScrolling="True" 
                                                        ShowTotalSummary="False"
                                                        AllowGrouping="True"
-                                                       AllowScrollToFocusedRow="False"/>
+                                                       AllowScrollToFocusedRow="False">
+                                        </dxg:TableView>
+
                                     </dxg:GridControl.View>
                                 </dxg:GridControl>
                             </dx:DXTabItem>
@@ -220,19 +246,19 @@
                     </dxdo:LayoutPanel>
                 </dxdo:LayoutGroup>
                 
-                <dxdo:TabbedGroup Name="ImageList"
-                                  Caption="Side Panel"
+                <dxdo:TabbedGroup Caption="Side Panel"
                                   ItemWidth="300"
                                   AllowClose="False">
                     <dxdo:LayoutPanel Caption="스크립트 결과"
                                       ItemWidth="300"
                                       AllowClose="False">
                         <dxg:GridControl EnableSmartColumnsGeneration="False"
-                                                 SelectionMode="Row"
-                                                 AutoGenerateColumns="None"
-                                                 ShowAllTableValuesInFilterPopup="False"
-                                                 ItemsSource="{Binding GlobalCollection, UpdateSourceTrigger=PropertyChanged}"
-                                                 SelectedItem="{Binding SelectedGlobal, UpdateSourceTrigger=PropertyChanged}">
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding GlobalCollection, UpdateSourceTrigger=PropertyChanged}"
+                                         SelectedItem="{Binding SelectedGlobal, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding IsShowingResult, Converter={StaticResource BooleanToVisibility},Mode=OneWay}">
                             <dxg:GridControl.Columns>
                                 <dxg:GridColumn FieldName="이름" IsSmart="False" Binding="{Binding Path=Name}"/>
                                 <dxg:GridColumn FieldName="타입" IsSmart="False" Width="*" Binding="{Binding Path=Type}"/>
@@ -240,13 +266,23 @@
                             </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView AllowPerPixelScrolling="True" 
-                                                       ShowTotalSummary="False"
-                                                       AllowGrouping="True"
-                                                       AllowScrollToFocusedRow="False">
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
                                     <dxg:TableView.RowCellMenuCustomizations>
                                         <dxb:BarButtonItem Name="trackingItem" Content="이미지 트랙킹">
                                             <mvvm:Interaction.Behaviors>
                                                 <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.TrackingImageCommand}"></mvvm:EventToCommand>
+                                            </mvvm:Interaction.Behaviors>
+                                        </dxb:BarButtonItem>
+                                        <dxb:BarButtonItem Name="releaseItem" Content="이미지 해제">
+                                            <mvvm:Interaction.Behaviors>
+                                                <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.ReleaseTrackingImageCommand}"></mvvm:EventToCommand>
+                                            </mvvm:Interaction.Behaviors>
+                                        </dxb:BarButtonItem>
+                                        <dxb:BarButtonItem Name="detailItem" Content="이미지 상세 정보 표시">
+                                            <mvvm:Interaction.Behaviors>
+                                                <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.DetailImageShowCommand}"></mvvm:EventToCommand>
                                             </mvvm:Interaction.Behaviors>
                                         </dxb:BarButtonItem>
                                     </dxg:TableView.RowCellMenuCustomizations>

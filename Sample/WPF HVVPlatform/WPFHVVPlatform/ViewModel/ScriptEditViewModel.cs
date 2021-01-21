@@ -36,7 +36,7 @@ namespace WPFHVVPlatform.ViewModel
 
         private string _trackingName;
         private string _trackingType;
-
+        private bool _isTracking = false;
 
 
         public ScriptEditViewModel(FileDialogService _fileDialogService,
@@ -53,6 +53,8 @@ namespace WPFHVVPlatform.ViewModel
 
             this.interpreter.TraceEvent += Trace;
 
+
+           
         }
 
         ~ScriptEditViewModel()
@@ -74,11 +76,18 @@ namespace WPFHVVPlatform.ViewModel
             Thread.Sleep(1);
         }
 
-        private WriteableBitmap _ImagePresenter = null;
-        public WriteableBitmap ImagePresenter
+        private WriteableBitmap _TrackingImagePresenter = null;
+        public WriteableBitmap TrackingImagePresenter
         {
-            set => Set<WriteableBitmap>(nameof(ImagePresenter), ref _ImagePresenter, value);
-            get => _ImagePresenter;
+            set => Set<WriteableBitmap>(nameof(TrackingImagePresenter), ref _TrackingImagePresenter, value);
+            get => _TrackingImagePresenter;
+        }
+
+        private WriteableBitmap _DetailImagePresenter = null;
+        public WriteableBitmap DetailImagePresenter
+        {
+            set => Set<WriteableBitmap>(nameof(DetailImagePresenter), ref _DetailImagePresenter, value);
+            get => _DetailImagePresenter;
         }
 
 
@@ -167,13 +176,11 @@ namespace WPFHVVPlatform.ViewModel
                     {
                         this.interpreter.RunScript(this.SelectedScript.ScriptContent);
 
-
-
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-
+                            if (this._isTracking == false) return;
                             try
                             {
                                 var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
@@ -186,13 +193,11 @@ namespace WPFHVVPlatform.ViewModel
                                 var height = hvImage.Height;
                                 var stride = hvImage.Stride;
                                 var size = hvImage.Size;
-                                if (ImagePresenter == null || ImagePresenter.Width != width || ImagePresenter.Height != height)
+                                if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
                                 {
-                                    ImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
+                                    TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
                                 }
-                                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                                this.TrackingImageDrawCollection.Clear();
-                                this.TrackingImageDrawCollection.AddRange(hvImage.DrawObjects);
+                                TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
                             }
                             catch (Exception e)
                             {
@@ -247,6 +252,7 @@ namespace WPFHVVPlatform.ViewModel
                                 this.GlobalCollection.Clear();
                                 this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
 
+                                if(this._isTracking == false) return;
                                 try
                                 {
                                     var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
@@ -259,13 +265,12 @@ namespace WPFHVVPlatform.ViewModel
                                     var height = hvImage.Height;
                                     var stride = hvImage.Stride;
                                     var size = hvImage.Size;
-                                    if (ImagePresenter == null || ImagePresenter.Width != width || ImagePresenter.Height != height)
+                                    if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
                                     {
-                                        ImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
+                                        TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
                                     }
-                                    ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                                    this.TrackingImageDrawCollection.Clear();
-                                    this.TrackingImageDrawCollection.AddRange(hvImage.DrawObjects);
+                                    TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
+                                    
 
                                 }
                                 catch (Exception e)
@@ -324,13 +329,40 @@ namespace WPFHVVPlatform.ViewModel
 
                 this._trackingType = this.SelectedGlobal.Type;
                 this._trackingName = this.SelectedGlobal.Name;
+                this._isTracking = true;
 
                 var hvImage = new HV.V1.Image(this.SelectedGlobal);
-                if (ImagePresenter == null || ImagePresenter.Width != hvImage.Width || ImagePresenter.Height != hvImage.Height)
+                if (TrackingImagePresenter == null || TrackingImagePresenter.Width != hvImage.Width || TrackingImagePresenter.Height != hvImage.Height)
                 {
-                    ImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
+                    TrackingImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
                 }
-                ImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
+                TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
+            });
+        }
+
+        public ICommand ReleaseTrackingImageCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                this._isTracking = false;
+            });
+        }
+
+        public ICommand DetailImageShowCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                if (this.SelectedGlobal == null) return;
+                if (!this.SelectedGlobal.Type.Contains("image")) return;
+
+                var hvImage = new HV.V1.Image(this.SelectedGlobal);
+                if (DetailImagePresenter == null || DetailImagePresenter.Width != hvImage.Width || DetailImagePresenter.Height != hvImage.Height)
+                {
+                    DetailImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
+                }
+                DetailImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
+                this.DetailImageDrawCollection.Clear();
+                this.DetailImageDrawCollection.AddRange(hvImage.DrawObjects);
             });
         }
 
@@ -361,18 +393,18 @@ namespace WPFHVVPlatform.ViewModel
             set => Set<ObservableCollection<HV.V1.Object>>(nameof(GlobalCollection), ref _GlobalCollection, value);
         }
 
-        private ObservableCollection<HV.V1.Object> _TrackingImageDrawCollection = null;
-        public ObservableCollection<HV.V1.Object> TrackingImageDrawCollection
+        private ObservableCollection<HV.V1.Object> _DetailImageDrawCollection = null;
+        public ObservableCollection<HV.V1.Object> DetailImageDrawCollection
         {
             get
             {
-                if (_TrackingImageDrawCollection == null)
+                if (_DetailImageDrawCollection == null)
                 {
-                    _TrackingImageDrawCollection = new ObservableCollection<HV.V1.Object>();
+                    _DetailImageDrawCollection = new ObservableCollection<HV.V1.Object>();
                 }
-                return _TrackingImageDrawCollection;
+                return _DetailImageDrawCollection;
             }
-            set => Set<ObservableCollection<HV.V1.Object>>(nameof(TrackingImageDrawCollection), ref _TrackingImageDrawCollection, value);
+            set => Set<ObservableCollection<HV.V1.Object>>(nameof(DetailImageDrawCollection), ref _DetailImageDrawCollection, value);
         }
 
         private HV.V1.Object _SelectedGlobal = null;
@@ -387,6 +419,14 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => _IsRunningScript;
             set => Set<bool>(nameof(IsRunningScript), ref _IsRunningScript, value);
+        }
+
+
+        private bool _IsShowingResult = false;
+        public bool IsShowingResult
+        {
+            get => _IsShowingResult;
+            set => Set<bool>(nameof(IsShowingResult), ref _IsShowingResult, value);
         }
 
 
