@@ -33,3 +33,4 @@ std::string hv::v1::object::type() {
 std::string hv::v1::object::to_string() {
 	return "object";
 }
+

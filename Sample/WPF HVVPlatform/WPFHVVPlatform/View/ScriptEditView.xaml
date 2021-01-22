@@ -117,11 +117,23 @@
                 <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
             </dxe:ComboBoxEdit>
             <dxe:PopupColorEdit Name="fontColor" ToolTip="스크립트 폰트 컬러" Grid.Column="10" Grid.ColumnSpan="2" Color="Black"/>
-            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="Transparent"/>
+            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="#FF1F497D"/>
             <dx:SimpleButton ToolTip="결과 출력 숨김 (실행 속도 향상)" ButtonKind="Toggle" IsChecked="{Binding IsShowingResult}" Grid.Column="14">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Hide_Chart.svg'}"></Image>
             </dx:SimpleButton>
         </Grid>
+        
+        <dxb:BarContainerControl ContainerType="Bottom" DockPanel.Dock="Bottom">
+            <dxb:StatusBarControl Caption="Status Bar">
+                <dxb:BarStaticItem Content="FPS:"/>
+                <dxb:BarStaticItem Content="{Binding CurrentFPS}"/>
+
+                <dxb:BarStaticItem Content="실행시간:"/>
+                <dxb:BarStaticItem Content="{Binding CurrentExecutionTime}"/>
+
+            </dxb:StatusBarControl>
+        </dxb:BarContainerControl>
+        
         <dxdo:DockLayoutManager FloatingMode="Desktop">
             <dxdo:LayoutGroup Orientation="Horizontal"
                               AllowClose="False">

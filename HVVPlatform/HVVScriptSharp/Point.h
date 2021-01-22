@@ -9,7 +9,6 @@ using namespace System::Collections;
 using namespace System::Collections::Generic;
 
 
-
 namespace HV {
 
 	namespace V1 {
@@ -26,13 +25,12 @@ namespace HV {
 			!Point();
 
 
-			property double X{
+			property double X {
 				double get();
 			};
-			property double Y{
+			property double Y {
 				double get();
-			};
+			}
 		};
-	}
-
-}
+	};
+};

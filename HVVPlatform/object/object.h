@@ -18,7 +18,13 @@ namespace hv::v1 {
 	private:
 		std::string _name;
 		std::string _type;
+		
 		object() = delete;
+
+	protected:
+
+
+
 	public:
 
 		virtual ~object() {};
@@ -26,6 +32,7 @@ namespace hv::v1 {
 		std::string name();
 		std::string type();
 		virtual std::string to_string();
+
 
 	};
 

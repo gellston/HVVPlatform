@@ -24,10 +24,10 @@ namespace HV {
 		internal:
 
 			HV::V1::mananged_shared_ptr<hv::v1::object> _instance;
-			
+
 		public:
 			Object();
-			Object(std::shared_ptr<hv::v1::object> & object);
+			Object(std::shared_ptr<hv::v1::object>& object);
 			Object(System::String^ Name, System::String^ Type);
 			~Object();
 			!Object();
@@ -39,10 +39,11 @@ namespace HV {
 				String^ get();
 			}
 
-			property virtual String^ ToString{
-				String ^ get();
+			property virtual String^ ToString {
+				String^ get();
 			}
-		};
-	}
 
-}
+		};
+	};
+
+};

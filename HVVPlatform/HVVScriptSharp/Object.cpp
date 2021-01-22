@@ -44,3 +44,4 @@ String^ HV::V1::Object::ToString::get() {
 
 	return gcnew String(this->_instance->to_string().c_str());
 }
+

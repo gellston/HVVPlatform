@@ -270,8 +270,6 @@ namespace WPFHVVPlatform.ViewModel
                                         TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
                                     }
                                     TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                                    
-
                                 }
                                 catch (Exception e)
                                 {
@@ -299,7 +297,11 @@ namespace WPFHVVPlatform.ViewModel
                         count++;
                         if(stacked_time > 1000)
                         {
-                            System.Console.WriteLine("fps : " + count);
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                this.CurrentFPS = count.ToString("F2");
+                                this.CurrentExecutionTime = elapsedMs.ToString() + " ms";
+                            });
                             count = 0;
                             stacked_time = 0;
                         }
@@ -361,8 +363,7 @@ namespace WPFHVVPlatform.ViewModel
                     DetailImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
                 }
                 DetailImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
-                this.DetailImageDrawCollection.Clear();
-                this.DetailImageDrawCollection.AddRange(hvImage.DrawObjects);
+                this.DetailImageDrawCollection = new ObservableCollection<HV.V1.Object>(hvImage.DrawObjects);
             });
         }
 
@@ -427,6 +428,21 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => _IsShowingResult;
             set => Set<bool>(nameof(IsShowingResult), ref _IsShowingResult, value);
+        }
+
+
+        private string _CurrentFPS = "";
+        public string CurrentFPS
+        {
+            get => _CurrentFPS;
+            set => Set<string>(nameof(CurrentFPS), ref _CurrentFPS, value);
+        }
+
+        private string _CurrentExecutionTime = "";
+        public string CurrentExecutionTime
+        {
+            get => _CurrentExecutionTime;
+            set => Set<string>(nameof(CurrentExecutionTime), ref _CurrentExecutionTime, value);
         }
 
 
