@@ -7,6 +7,7 @@
              xmlns:hv="clr-namespace:HV.V1;assembly=HVVScriptSharp"
              xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
              xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -17,13 +18,11 @@
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
                   PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
-        <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=DrawObjectsCollection, Mode=OneWay}"
-                      ClipToBounds="True"
-                      >
+        <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=DrawObjectsCollection, Mode=OneWay}">
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type hv:Point}">
-                    <Rectangle Fill="ForestGreen">
-                        <Rectangle.ToolTip>
+                    <Grid Name="parent">
+                        <Grid.ToolTip>
                             <ToolTip Width="110">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -44,9 +43,10 @@
                                     <TextBlock Text="{Binding Y}" Grid.Column="1" Grid.Row="3"></TextBlock>
                                 </Grid>
                             </ToolTip>
-                        </Rectangle.ToolTip>
-                    </Rectangle>
-
+                        </Grid.ToolTip>
+                        <Line  X1="0" Y1="0" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="{Binding ElementName='parent', Path='ActualHeight'}" Stroke="Green" StrokeThickness="4" />
+                        <Line  X1="0" Y1="{Binding ElementName='parent', Path='ActualHeight'}" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="0" Stroke="Green" StrokeThickness="4" />
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.Resources> 
             <ItemsControl.ItemsPanel>
@@ -57,7 +57,8 @@
                             MouseMove="ChildCanvas_MouseMove"
                             MouseLeftButtonDown="ChildCanvas_MouseLeftButtonDown"
                             MouseLeftButtonUp="ChildCanvas_MouseLeftButtonUp"
-                            RenderTransformOrigin="0.5,0.5">
+                            RenderTransformOrigin="0.5,0.5"
+                            ClipToBounds="True">
                         <Canvas.Background>
                             <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Image, Mode=OneWay}"></ImageBrush>
                         </Canvas.Background>
@@ -74,10 +75,32 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemContainerStyle>
                 <Style TargetType="ContentPresenter">
-                    <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}"></Setter>
-                    <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}"></Setter>
-                    <Setter Property="Width" Value="{Binding Path=CanvasWidth}"></Setter>
-                    <Setter Property="Height" Value="{Binding Path=CanvasHeight}"></Setter>
+                    <Style.Resources>
+                        <sys:Double x:Key="DefaultRadius">5</sys:Double>
+                    </Style.Resources>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=Type}" Value="point">
+                            
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
+                                        <Binding Path="Y"></Binding>
+                                        <Binding Source="{StaticResource DefaultRadius}"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Left">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
+                                        <Binding Path="X"></Binding>
+                                        <Binding Source="{StaticResource DefaultRadius}"/>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Width" Value="10"></Setter>
+                            <Setter Property="Height" Value="10"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
                 </Style>
             </ItemsControl.ItemContainerStyle>
         </ItemsControl>

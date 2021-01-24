@@ -2,6 +2,7 @@
 #include "interpreter_managed.h"
 
 #include "interpreter.h"
+#include "exception.h"
 
 namespace hv::v1 {
 	class pimpl_interpreter {
@@ -33,10 +34,20 @@ bool hv::v1::interpreter_managed::set_module_path(std::string path) {
 	return this->_pimpl->ptr->set_module_path(path);
 }
 bool hv::v1::interpreter_managed::run_script(std::string content) {
-	return this->_pimpl->ptr->run_script(content);
+	try {
+		return this->_pimpl->ptr->run_script(content);
+	}
+	catch (hv::v1::script_error error) {
+		throw error;
+	}
 }
 bool hv::v1::interpreter_managed::run_file(std::string path) {
-	return this->_pimpl->ptr->run_file(path);
+	try {
+		return this->_pimpl->ptr->run_file(path);
+	}
+	catch (hv::v1::script_error error) {
+		throw error;
+	}
 }
 bool hv::v1::interpreter_managed::terminate() {
 	return this->_pimpl->ptr->terminate();
@@ -75,6 +86,11 @@ void hv::v1::interpreter_managed::set_trace_callback(std::function<void(char*)> 
 }
 void hv::v1::interpreter_managed::reset_trace_callback() {
 	this->_pimpl->ptr->reset_trace_callback();
+}
+
+
+std::shared_ptr<std::map<std::string, hv::v1::native_module>> hv::v1::interpreter_managed::native_modules() {
+	return this->_pimpl->ptr->native_modules();
 }
 
 

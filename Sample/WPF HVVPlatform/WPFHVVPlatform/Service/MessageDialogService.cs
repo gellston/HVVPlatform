@@ -1,4 +1,5 @@
 ﻿using DevExpress.Xpf.Core;
+using Notifications.Wpf.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,9 +10,23 @@ namespace WPFHVVPlatform.Service
     public class MessageDialogService
     {
 
+        NotificationManager notificaitonManager = new NotificationManager();
+
         public MessageDialogService()
         {
+           
 
+   
+        }
+
+        public void ShowToastErrorMessage(string title, string message)
+        {
+            notificaitonManager.ShowAsync(new NotificationContent
+            {
+                Title = title,
+                Message = message,
+                Type = Notifications.Wpf.Core.NotificationType.Error
+            });
         }
 
         public void ShowErrorMessage(string message)

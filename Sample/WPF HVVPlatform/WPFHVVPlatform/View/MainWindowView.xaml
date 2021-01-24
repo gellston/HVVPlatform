@@ -11,10 +11,7 @@
     xmlns:view="clr-namespace:WPFHVVPlatform.View"
     xmlns:model="clr-namespace:WPFHVVPlatform.Model" >
     <DockPanel>
-        <!--<dxwui:HamburgerMenu OpenPaneWidth="200">
-            
-        </dxwui:HamburgerMenu>-->
-        
+
         <Grid DockPanel.Dock="Top"
               Height="40">
             <Grid.ColumnDefinitions>
@@ -28,36 +25,31 @@
         </Grid>
         
         <ListView Name="LeftMainMenu"
-                  Width="250"
+                  Width="0"
                   ItemsSource="{Binding MainMenuCollection}"
+                  SelectedItem="{Binding CurrentContentViewModel}"
                   HorizontalContentAlignment="Stretch"
+                  VerticalContentAlignment="Stretch"
                   ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-            <ListView.ItemContainerStyle>
+            <!--<ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Focusable" Value="false"/>
                 </Style>
-            </ListView.ItemContainerStyle>
+            </ListView.ItemContainerStyle>-->
             <ListView.ItemTemplate>
                 <ItemContainerTemplate>
-                    <Button Height="40" 
-                            Command="{Binding MenuAction}"
-                            HorizontalContentAlignment="Stretch"
-                            Focusable="False"
-                            Margin="0">
-                        
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="40"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding Icon}"></Image>
-                            <TextBlock Grid.Column="1" 
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Source="{Binding Icon}"></Image>
+                        <TextBlock Grid.Column="1" 
                                        Margin="10,0,0,0" 
                                        Text="{Binding Name}"
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Left"></TextBlock>
-                        </Grid>
-                    </Button>
+                    </Grid>
                 </ItemContainerTemplate>
             </ListView.ItemTemplate>
             <ListView.Resources>
@@ -97,10 +89,16 @@
                 </Style>
             </ListView.Style>
         </ListView>
-        <ContentPresenter Content="{Binding CurrentContentViewModel}">
+        <ContentPresenter Content="{Binding CurrentContentViewModel.ViewModel}">
             <ContentPresenter.Resources>
                 <DataTemplate DataType="{x:Type viewModel:ScriptEditViewModel}">
                     <view:ScriptEditView></view:ScriptEditView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewModel:ModulePackageManagementViewModel}">
+                    <view:ModulePackageManagementView></view:ModulePackageManagementView>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type viewModel:ApplicationSettingViewModel}">
+                    <view:ApplicationSettingView></view:ApplicationSettingView>
                 </DataTemplate>
             </ContentPresenter.Resources>
         </ContentPresenter>

@@ -13,10 +13,10 @@ namespace WPFHVVPlatform.ViewModel
     {
         public ViewModelLocator()
         {
-            if (Nativemethods.AllocConsole() == false)
-            {
-                System.Console.WriteLine("error");
-            }
+            //if (Nativemethods.AllocConsole() == false)
+            //{
+            //    System.Console.WriteLine("error");
+            //}
 
             if (InitializeScript() == false)
             {
@@ -28,10 +28,12 @@ namespace WPFHVVPlatform.ViewModel
             SimpleIoc.Default.Register<FileDialogService>();
             SimpleIoc.Default.Register<MessageDialogService>();
             SimpleIoc.Default.Register<ScriptFileService>();
-            //SimpleIoc.Default.Register<>
+            
             
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ScriptEditViewModel>();
+            SimpleIoc.Default.Register<ModulePackageManagementViewModel>();
+            SimpleIoc.Default.Register<ApplicationSettingViewModel>();
 
 
             SimpleIoc.Default.Register<HV.V1.Interpreter>();

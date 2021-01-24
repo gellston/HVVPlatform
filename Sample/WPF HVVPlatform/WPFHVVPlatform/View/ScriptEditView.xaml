@@ -24,6 +24,7 @@
         <converter:ObjectTypeTriggerConverter x:Key="ObjectTypeTriggerConverter"></converter:ObjectTypeTriggerConverter>
         <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
         <converter:BooleanToVisibility x:Key="BooleanToVisibility"></converter:BooleanToVisibility>
+        <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
     </UserControl.Resources>
 
 
@@ -127,7 +128,6 @@
             <dxb:StatusBarControl Caption="Status Bar">
                 <dxb:BarStaticItem Content="FPS:"/>
                 <dxb:BarStaticItem Content="{Binding CurrentFPS}"/>
-
                 <dxb:BarStaticItem Content="실행시간:"/>
                 <dxb:BarStaticItem Content="{Binding CurrentExecutionTime}"/>
 
@@ -302,6 +302,29 @@
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </dxdo:LayoutPanel>
+                    <dxdo:LayoutPanel Caption="모듈"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding NativeModuleCollection, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding IsShowingResult, Converter={StaticResource BooleanToVisibility},Mode=OneWay}">
+                            <dxg:GridControl.View>
+                                <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
+                                   
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="어드레스" IsSmart="False" Binding="{Binding Path=Handle, Converter={StaticResource IntPtrToStringConverter}, Mode=OneWay}"/>
+                                <dxg:GridColumn FieldName="모듈 경로" IsSmart="False" Width="*" Binding="{Binding Path=FilePath}"/>
+                            </dxg:GridControl.Columns>
+                        </dxg:GridControl>
+                    </dxdo:LayoutPanel>
                     <dxdo:LayoutPanel Caption="이미지"
                                       ItemWidth="300"
                                       AllowClose="False">
@@ -310,13 +333,7 @@
                                    VerticalAlignment="Center"></TextBlock>
 
                     </dxdo:LayoutPanel>
-                    <dxdo:LayoutPanel Caption="모듈"
-                                      ItemWidth="300"
-                                      AllowClose="False">
-                        <TextBlock Text="구현 준비중입니다." 
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"></TextBlock>
-                    </dxdo:LayoutPanel>
+                    
                 </dxdo:TabbedGroup>
             </dxdo:LayoutGroup>
         </dxdo:DockLayoutManager>

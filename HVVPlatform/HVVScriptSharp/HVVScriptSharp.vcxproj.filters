@@ -48,6 +48,12 @@
     <ClInclude Include="secure_macro.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NativeModule.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HVVScriptSharp.cpp">
@@ -72,6 +78,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Point.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeModule.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

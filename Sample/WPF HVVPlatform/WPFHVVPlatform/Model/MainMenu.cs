@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
+using GalaSoft.MvvmLight;
 
 namespace WPFHVVPlatform.Model
 {
@@ -22,9 +23,9 @@ namespace WPFHVVPlatform.Model
             get; set;
         }
 
-        public ICommand MenuAction
+        public ViewModelBase ViewModel
         {
-            get; set;
+            get;set;
         }
 
     }

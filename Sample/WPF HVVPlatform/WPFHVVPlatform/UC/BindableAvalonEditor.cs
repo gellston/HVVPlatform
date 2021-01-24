@@ -1,13 +1,27 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit.AddIn;
+using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.SharpDevelop.Editor;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Text;
 using System.Windows;
+using System.Windows.Input;
 
 namespace WPFHVVPlatform.UC
 {
     public class BindableAvalonEditor : ICSharpCode.AvalonEdit.TextEditor, INotifyPropertyChanged
     {
+
+
+
+        public BindableAvalonEditor()
+        {
+
+
+        }
+
         /// <summary>
         /// A bindable Text property
         /// </summary>
@@ -15,6 +29,7 @@ namespace WPFHVVPlatform.UC
         {
             get
             {
+                
                 return (string)GetValue(TextProperty);
             }
             set

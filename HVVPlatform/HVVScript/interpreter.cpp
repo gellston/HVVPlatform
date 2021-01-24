@@ -627,4 +627,8 @@ void interpreter::set_v8_flag(std::string flag) {
 }
 
 
+std::shared_ptr<std::map<std::string, hv::v1::native_module>> interpreter::native_modules() {
+	return this->_native_modules;
+}
+
 

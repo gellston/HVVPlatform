@@ -3,11 +3,14 @@
 #include <msclr/marshal_cppstd.h>
 #include <stdexcept>
 #include <data_type.h>
+#include <exception.h>
+#include <native_module.hpp>
 #include "secure_macro.h"
 
 
 // Managed Header
 #include "HVVScriptSharp.h"
+#include "Exception.h"
 #include "Object.h"
 #include "Boolean.h"
 #include "Number.h"
@@ -75,8 +78,8 @@ bool HV::V1::Interpreter::RunScript(System::String^ content) {
 	try {
 		check = this->_instance->run_script(convert_value);
 	}
-	catch (std::runtime_error error) {
-		throw gcnew System::Exception(gcnew System::String(error.what()));
+	catch (hv::v1::script_error error) {
+		throw gcnew HV::V1::ScriptError(gcnew System::String(error.what()), error.start_column(), error.end_column(), error.line());
 	}
 
 	return check;
@@ -88,8 +91,8 @@ bool HV::V1::Interpreter::RunFile(System::String^ path) {
 	try {
 		check = this->_instance->run_file(convert_value);
 	}
-	catch (std::runtime_error error) {
-		throw gcnew System::Exception(gcnew System::String(error.what()));
+	catch (hv::v1::script_error error) {
+		throw gcnew HV::V1::ScriptError(gcnew System::String(error.what()), error.start_column(), error.end_column(), error.line());
 	}
 
 	return check;
@@ -207,6 +210,18 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 	}
 
 	return external_object;
+}
+
+Dictionary<System::String^, HV::V1::NativeModule^>^ HV::V1::Interpreter::NativeModules::get(){
+	Dictionary<System::String^, HV::V1::NativeModule^> ^ dictionary = gcnew Dictionary<System::String^, HV::V1::NativeModule^>();
+	auto native_modules = this->_instance->native_modules();
+
+
+	for (auto& [key, val] : *native_modules) {
+		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(val.file_path.c_str()), System::IntPtr(val.handle)));
+	}
+
+	return dictionary;
 }
 
 bool HV::V1::Interpreter::RegisterExternalData(System::String^ key, HV::V1::Object^ data) {

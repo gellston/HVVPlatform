@@ -4,6 +4,7 @@
 #include <interpreter_managed.h>
 
 #include "Object.h"
+#include "NativeModule.h"
 
 using namespace System;
 using namespace System::Collections;
@@ -75,6 +76,10 @@ namespace HV {
 			}
 			property Dictionary<System::String^, HV::V1::Object^>^ ExternalObjects {
 				Dictionary<System::String^, HV::V1::Object^>^ get();
+			}
+
+			property Dictionary<System::String^, HV::V1::NativeModule^>^ NativeModules {
+				Dictionary<System::String^, HV::V1::NativeModule^>^ get();
 			}
 
 			event DelegateTrace^ TraceEvent {

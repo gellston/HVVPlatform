@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClInclude Include="Boolean.h" />
     <ClInclude Include="DataType.h" />
+    <ClInclude Include="Exception.h" />
     <ClInclude Include="HVVScriptSharp.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="mananged_shared_ptr.h" />
+    <ClInclude Include="NativeModule.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Point.h" />
@@ -142,8 +144,10 @@
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Boolean.cpp" />
+    <ClCompile Include="Exception.cpp" />
     <ClCompile Include="HVVScriptSharp.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="NativeModule.cpp" />
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Point.cpp" />

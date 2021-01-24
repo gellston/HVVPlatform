@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,7 +13,6 @@ using System.Windows.Threading;
 using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using WPFHVVPlatform.Model;
 using WPFHVVPlatform.Service;
 
@@ -48,13 +45,15 @@ namespace WPFHVVPlatform.ViewModel
             this.fileDialogService = _fileDialogService;
             this.messageDialogService = _messageDialogService;
             this.scriptFileService = _scriptFileService;
+
+
             this.interpreter = _interpreter;
-
-
             this.interpreter.TraceEvent += Trace;
 
 
-           
+        
+
+
         }
 
         ~ScriptEditViewModel()
@@ -169,8 +168,9 @@ namespace WPFHVVPlatform.ViewModel
             {
                 if (this.IsRunningScript == true) return;
                 if (this.SelectedScript == null) return;
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
+               
                     this.IsRunningScript = true;
                     try
                     {
@@ -180,6 +180,10 @@ namespace WPFHVVPlatform.ViewModel
                         {
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
+
+                            this.NativeModuleCollection.Clear();
+                            this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
+
                             if (this._isTracking == false) return;
                             try
                             {
@@ -203,19 +207,22 @@ namespace WPFHVVPlatform.ViewModel
                             {
 
                             }
-                        }, DispatcherPriority.ContextIdle);
+                        }, DispatcherPriority.Background);
                     }
-                    catch (Exception e)
+                    catch (HV.V1.ScriptError e)
                     {
                         System.Console.WriteLine(e.Message);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
+                            string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
                             this.LogCollection.Add(new Log()
                             {
                                 Type = "Error",
-                                Content = e.Message
+                                Content = errorContent
                             });
-                        });
+
+                            messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
+                        }, DispatcherPriority.Background);
                         
                     }
 
@@ -240,9 +247,8 @@ namespace WPFHVVPlatform.ViewModel
 
                     while (IsRunningScript)
                     {
+                        await Task.Delay(10);
                         var watch = System.Diagnostics.Stopwatch.StartNew();
-
-                        this.interpreter.RunScript(this.SelectedScript.ScriptContent);
                         try
                         {
                             this.interpreter.RunScript(this.SelectedScript.ScriptContent);
@@ -252,7 +258,10 @@ namespace WPFHVVPlatform.ViewModel
                                 this.GlobalCollection.Clear();
                                 this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
 
-                                if(this._isTracking == false) return;
+                                this.NativeModuleCollection.Clear();
+                                this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
+
+                                if (this._isTracking == false) return;
                                 try
                                 {
                                     var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
@@ -275,22 +284,27 @@ namespace WPFHVVPlatform.ViewModel
                                 {
 
                                 }
-                            },DispatcherPriority.Render);
+                            }, DispatcherPriority.Background);
                         }
-                        catch (Exception e)
+                        catch (HV.V1.ScriptError e)
                         {
+
                             System.Console.WriteLine(e.Message);
                             Application.Current.Dispatcher.Invoke(() =>
                             {
+                                string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
                                 this.LogCollection.Add(new Log()
                                 {
                                     Type = "Error",
-                                    Content = e.Message
+                                    Content = errorContent
                                 });
-                            });
+
+                                messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
+                            }, DispatcherPriority.Background);
+
                             break;
                         }
-                        //await Task.Delay(5);
+                        
                         watch.Stop();
                         var elapsedMs = watch.ElapsedMilliseconds;
                         stacked_time += elapsedMs;
@@ -301,7 +315,7 @@ namespace WPFHVVPlatform.ViewModel
                             {
                                 this.CurrentFPS = count.ToString("F2");
                                 this.CurrentExecutionTime = elapsedMs.ToString() + " ms";
-                            });
+                            }, DispatcherPriority.Background);
                             count = 0;
                             stacked_time = 0;
                         }
@@ -446,6 +460,7 @@ namespace WPFHVVPlatform.ViewModel
         }
 
 
+
         private ObservableCollection<Log> _LogCollection = null;
         public ObservableCollection<Log> LogCollection
         {
@@ -456,6 +471,20 @@ namespace WPFHVVPlatform.ViewModel
                     _LogCollection = new ObservableCollection<Log>();
                 }
                 return _LogCollection;
+            }
+        }
+
+
+        private ObservableCollection<HV.V1.NativeModule> _NativeModuleCollection = null;
+        public ObservableCollection<HV.V1.NativeModule> NativeModuleCollection
+        {
+            get
+            {
+                if (_NativeModuleCollection == null)
+                {
+                    _NativeModuleCollection = new ObservableCollection<HV.V1.NativeModule>();
+                }
+                return _NativeModuleCollection;
             }
         }
 

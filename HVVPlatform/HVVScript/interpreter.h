@@ -139,6 +139,8 @@ namespace hv::v1{
 		std::list<std::string> external_names();
 		std::map<std::string, std::shared_ptr<object>> external_objects();
 
+		std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
+
 		
 		bool terminate();
 		void release_native_modules();

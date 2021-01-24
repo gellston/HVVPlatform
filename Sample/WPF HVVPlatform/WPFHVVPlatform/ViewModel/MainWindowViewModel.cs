@@ -19,23 +19,37 @@ namespace WPFHVVPlatform.ViewModel
         private readonly AppConfigService appConfigService;
         
         public MainWindowViewModel(ScriptEditViewModel _scriptEditViewModel,
-                                   AppConfigService _appConfigService)
+                                   AppConfigService _appConfigService,
+                                   ModulePackageManagementViewModel _modulePackageViewModel,
+                                   ApplicationSettingViewModel _applicationSettingViewModel)
         {
 
             this.appConfigService = _appConfigService;
-            this.CurrentContentViewModel = _scriptEditViewModel;
+            //this.CurrentContentViewModel = _scriptEditViewModel;
             this.MainMenuCollection.Add(new MainMenu()
             {
-
                 Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/XAF/Action_ShowScript.svg")), 1d, null, null, true),
                 Name = "스크립트 편집",
-                MenuAction = new RelayCommand(() =>
-                {
-                    this.CurrentContentViewModel = _scriptEditViewModel;
-                })
-
+                ViewModel = _scriptEditViewModel
             });
 
+            this.MainMenuCollection.Add(new MainMenu()
+            {
+                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Icon Builder/Shopping_Box.svg")), 1d, null, null, true),
+                Name = "모듈 패키지",
+                ViewModel = _modulePackageViewModel
+            });
+
+            this.MainMenuCollection.Add(new MainMenu()
+            {
+                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/XAF/ModelEditor_Settings.svg")), 1d, null, null, true),
+                Name = "어플리케이션 설정",
+                ViewModel = _applicationSettingViewModel
+            });
+
+
+
+            this.CurrentContentViewModel = this.MainMenuCollection[0];
 
 
         }
@@ -54,11 +68,11 @@ namespace WPFHVVPlatform.ViewModel
 
         }
 
-        private ViewModelBase _CurrentContentViewModel = null;
-        public ViewModelBase CurrentContentViewModel
+        private MainMenu _CurrentContentViewModel = null;
+        public MainMenu CurrentContentViewModel
         {
             get => _CurrentContentViewModel;
-            set => Set<ViewModelBase>(nameof(CurrentContentViewModel), ref _CurrentContentViewModel, value);
+            set => Set<MainMenu>(nameof(CurrentContentViewModel), ref _CurrentContentViewModel, value);
 
         }
 

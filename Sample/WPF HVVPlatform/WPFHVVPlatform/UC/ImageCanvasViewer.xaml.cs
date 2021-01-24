@@ -32,9 +32,6 @@ namespace WPFHVVPlatform.UC
             }
         }
 
-        private double CustomActualHeight { get; set; }
-        private double CustomActualWidth { get; set; }
-
 
         public ImageCanvasViewer()
         {
@@ -70,19 +67,22 @@ namespace WPFHVVPlatform.UC
                 ImageSource image = e.NewValue as ImageSource;
                 if (image == null) return;
 
-
+                //if (control.ActualWidth == 0 || control.ActualHeight == 0) return;
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
-                control.Zoom = (image.Width > image.Height ? (control.ActualWidth / image.Width) : (control.ActualHeight / image.Height));
-                control.ZoomMax = control.Zoom * 20;
-                control.ZoomMin = control.Zoom / 20;
-                control.ZoomStep = (control.ZoomMax - control.ZoomMin) / 40;
+                //control.Zoom = (image.Width > image.Height ? (control.ActualWidth / image.Width) : (control.ActualHeight / image.Height));
+                //control.ZoomMax = control.Zoom * 20;
+                //control.ZoomMin = control.Zoom / 20;
+                //control.ZoomStep = (control.ZoomMax - control.ZoomMin) / 40;
 
                 control.OutScrollViewer.UpdateLayout();
 
                 control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
                 control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
-              
+
+                //control.Image = image;
+
+
             }
         }
 
@@ -230,7 +230,6 @@ namespace WPFHVVPlatform.UC
         {
             e.Handled = true;
 
-            //var draggableControl = sender as Canvas;
             if (this.IsMouseCaptured == true)
                 return;
 
@@ -298,11 +297,6 @@ namespace WPFHVVPlatform.UC
             this.SelectedItem = null;
             this.IsCanvasCaptured = false;
         }
-
-        //private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        //{
-
-        //}
 
     }
 }

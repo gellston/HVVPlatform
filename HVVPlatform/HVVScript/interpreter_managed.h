@@ -9,7 +9,7 @@
 #include <functional>
 
 #include "object.h"
-
+#include "native_module.hpp"
 
 namespace hv::v1{
 	class pimpl_interpreter;
@@ -37,6 +37,7 @@ namespace hv::v1{
 		std::list<std::string> external_names();
 		std::map<std::string, std::shared_ptr<object>> external_objects();
 
+		std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
 
 		void set_trace_callback(std::function<void(char*)> _callback);
 		void reset_trace_callback();
