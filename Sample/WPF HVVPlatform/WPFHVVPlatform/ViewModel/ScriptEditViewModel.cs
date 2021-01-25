@@ -277,6 +277,7 @@ namespace WPFHVVPlatform.ViewModel
                                     if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
                                     {
                                         TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
+                                        TrackingImagePresenter.Freeze();
                                     }
                                     TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
                                 }
@@ -319,6 +320,8 @@ namespace WPFHVVPlatform.ViewModel
                             count = 0;
                             stacked_time = 0;
                         }
+
+                        GC.Collect();
                     }
 
                     this.IsRunningScript = false;

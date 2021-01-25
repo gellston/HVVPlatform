@@ -252,6 +252,7 @@ namespace WPFHVVPlatform.UC
 
         private void ChildCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            e.Handled = true;
             Point cursorPosition = e.GetPosition(this);
             Canvas canvas = sender as Canvas;
 
