@@ -207,7 +207,7 @@ namespace WPFHVVPlatform.ViewModel
                             {
 
                             }
-                        }, DispatcherPriority.Background);
+                        }, DispatcherPriority.Send);
                     }
                     catch (HV.V1.ScriptError e)
                     {
@@ -222,7 +222,7 @@ namespace WPFHVVPlatform.ViewModel
                             });
 
                             messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
-                        }, DispatcherPriority.Background);
+                        }, DispatcherPriority.Send);
                         
                     }
 
@@ -285,7 +285,7 @@ namespace WPFHVVPlatform.ViewModel
                                 {
 
                                 }
-                            }, DispatcherPriority.Background);
+                            }, DispatcherPriority.Send);
                         }
                         catch (HV.V1.ScriptError e)
                         {
@@ -301,7 +301,7 @@ namespace WPFHVVPlatform.ViewModel
                                 });
 
                                 messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
-                            }, DispatcherPriority.Background);
+                            }, DispatcherPriority.Send);
 
                             break;
                         }
@@ -316,12 +316,12 @@ namespace WPFHVVPlatform.ViewModel
                             {
                                 this.CurrentFPS = count.ToString("F2");
                                 this.CurrentExecutionTime = elapsedMs.ToString() + " ms";
-                            }, DispatcherPriority.Background);
+                            }, DispatcherPriority.Send);
                             count = 0;
                             stacked_time = 0;
                         }
 
-                        GC.Collect();
+       
                     }
 
                     this.IsRunningScript = false;

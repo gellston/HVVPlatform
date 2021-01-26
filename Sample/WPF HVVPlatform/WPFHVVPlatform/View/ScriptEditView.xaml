@@ -16,6 +16,7 @@
              xmlns:converter="clr-namespace:WPFHVVPlatform.Converter"
              xmlns:uc="clr-namespace:WPFHVVPlatform.UC"
              xmlns:viewmodel="clr-namespace:WPFHVVPlatform.ViewModel"
+             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
              mc:Ignorable="d" 
              d:DesignHeight="1024" d:DesignWidth="1280">
 
@@ -133,19 +134,19 @@
 
             </dxb:StatusBarControl>
         </dxb:BarContainerControl>
-        
-        <dxdo:DockLayoutManager FloatingMode="Desktop">
+
+        <dxdo:DockLayoutManager FloatingMode="Desktop" PresentationOptions:Freeze="true">
             <dxdo:LayoutGroup Orientation="Horizontal"
-                              AllowClose="False">
+                              AllowClose="False" PresentationOptions:Freeze="true">
                 <dxdo:LayoutGroup Name="EditPlanel"
                                   Orientation="Vertical"
-                                  AllowClose="False">
+                                  AllowClose="False" PresentationOptions:Freeze="true">
                     <dxdo:LayoutGroup Name="중앙패널"
                                   Orientation="Horizontal"
-                                  AllowClose="False">
+                                  AllowClose="False" PresentationOptions:Freeze="true">
                         <dxdo:LayoutPanel Caption="스크립트"
                                       ItemHeight="*"
-                                      AllowClose="False">
+                                      AllowClose="False" PresentationOptions:Freeze="true">
                             <Grid >
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="27"></RowDefinition>
