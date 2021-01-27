@@ -11,6 +11,17 @@
 HV_CREATE_SHARED_CONVERTER(hv::v1::image);
 HV_CREATE_SHARED_CONVERTER(hv::v1::point);
 
+//static v8::Local<v8::Value> error_test(std::string test) {
+//
+//
+//	auto isolate = v8::Isolate::GetCurrent();
+//	hv::v1::EscapeHandleScope handle_scope(isolate);
+//
+//	auto exception = v8pp::throw_ex(isolate, "test");
+//
+//	return handle_scope.Escape(exception);
+//}
+
 HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 {
 

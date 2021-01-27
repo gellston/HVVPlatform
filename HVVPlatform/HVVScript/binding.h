@@ -57,6 +57,10 @@ namespace hv::v1 {
 
 	using EscapeHandleScope = v8::EscapableHandleScope;
 
+	using HandleScope = v8::HandleScope;
+
+	using  Local = v8::Local<v8::Value>;
+
 	using raw_ptr_trait = v8pp::raw_ptr_traits;
 
 	using shared_ptr_traits = v8pp::shared_ptr_traits;
