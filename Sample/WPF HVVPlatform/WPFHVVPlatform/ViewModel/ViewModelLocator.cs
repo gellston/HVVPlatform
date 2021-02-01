@@ -47,6 +47,22 @@ namespace WPFHVVPlatform.ViewModel
             }
         }
 
+        public ViewModelBase ModulePackageManagementViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
+            }
+        }
+
+        public ViewModelBase ScriptEditViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ScriptEditViewModel>();
+            }
+        }
+
         static public bool InitializeScript()
         {
             bool check = true;

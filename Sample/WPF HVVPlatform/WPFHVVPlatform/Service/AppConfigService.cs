@@ -11,29 +11,29 @@ namespace WPFHVVPlatform.Service
         public AppConfigService()
         {
 
-
-
-            
             if (File.Exists(this.CurrentApplicationSettingPath) == false)
             {
-                Directory.CreateDirectory(this.CurrentApplicationLocation + "Config" + Path.DirectorySeparatorChar);
-                Directory.CreateDirectory(this.CurrentApplicationLocation + "Module" + Path.DirectorySeparatorChar);
+                Directory.CreateDirectory(this.CurrentApplicationPath + "Config" + Path.DirectorySeparatorChar);
+                Directory.CreateDirectory(this.CurrentApplicationPath + "Module" + Path.DirectorySeparatorChar);
 
                 this.ApplicationSetting = new ApplicationSetting()
                 {
-                    ModuleLocation = this.CurrentApplicationLocation + "Module" + Path.DirectorySeparatorChar
+                    ModulePath = this.CurrentApplicationPath + "Module" + Path.DirectorySeparatorChar,
+                    ModuleConfigPath = this.CurrentApplicationPath + "ModuleConfig" + Path.DirectorySeparatorChar,
+                    ModuleUnZipPath = this.CurrentApplicationPath + "ModuleUnzip" + Path.DirectorySeparatorChar,
+                    ModuleThirdPartyDLLPath = this.CurrentApplicationPath + "ModuleThirdParty" + Path.DirectorySeparatorChar,
                 };
             }
         }
 
-        public string CurrentApplicationLocation
+        public string CurrentApplicationPath
         {
             get => AppDomain.CurrentDomain.BaseDirectory;
         }
 
         public string CurrentApplicationSettingPath
         {
-            get => this.CurrentApplicationLocation + "Config" + Path.DirectorySeparatorChar + "config.xml";
+            get => this.CurrentApplicationPath + "Config" + Path.DirectorySeparatorChar + "config.xml";
         }
 
         public ApplicationSetting ApplicationSetting
