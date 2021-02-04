@@ -12,6 +12,9 @@
 #include <vector>
 #include <list>
 
+
+#include <iostream>
+
 namespace hv::v1 {
 
 	class point : public object {
@@ -27,7 +30,6 @@ namespace hv::v1 {
 
 
 		point(std::string name, double x, double y);
-		explicit point(point& copy);
 		~point() override { }
 
 

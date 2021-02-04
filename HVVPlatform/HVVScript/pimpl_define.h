@@ -48,12 +48,12 @@ namespace hv::v1 {
 		}
 	};
 
-	class pimpl_object_hash : public pimpl{
-	public:
-		pimpl_object_hash() {}
-		~pimpl_object_hash() override { }
-		std::map<std::string, std::shared_ptr<object>> _instance;
-	};
+	//class pimpl_object_hash : public pimpl{
+	//public:
+	//	pimpl_object_hash() {}
+	//	~pimpl_object_hash() override { }
+	//	std::map<std::string, std::shared_ptr<object>> _instance;
+	//};
 
 	class pimpl_v8_isolate : public pimpl {
 	public:

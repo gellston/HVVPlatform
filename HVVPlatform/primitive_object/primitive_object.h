@@ -216,7 +216,7 @@ namespace hv::v1 {
 
 		map(std::string name, std::map<std::string, bool>& data);
 		map(std::map<std::string, bool>& data);
-		~map() override { }
+	    ~map() override { }
 
 		std::map<std::string, bool>& data();
 		unsigned int size();

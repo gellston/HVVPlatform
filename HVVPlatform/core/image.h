@@ -34,18 +34,17 @@ namespace hv::v1 {
 		image_data_type _type;
 
 
-		std::list<std::shared_ptr<hv::v1::object>> _draw_objects;
+		std::vector<std::shared_ptr<hv::v1::object>> _draw_objects;
 
 	public:
 
 
 		image(std::string name, unsigned int width, unsigned int height, unsigned int type, double resolution = 1);
 		explicit image(image& copy);
-		~image() override { }
-
+		~image() override { this->_draw_objects.clear(); }
 
 		void register_draw_object(std::shared_ptr<hv::v1::object> _object);
-		std::list<std::shared_ptr<hv::v1::object>> drarw_objects();
+		std::vector<std::shared_ptr<hv::v1::object>> drarw_objects();
 
 
 		std::string to_string() override;

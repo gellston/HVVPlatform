@@ -21,6 +21,8 @@ namespace hv::v1{
 
 	class HVAPI_EXPORT interpreter {
 
+		
+
 	private:
 
 		
@@ -39,7 +41,7 @@ namespace hv::v1{
 		/// <summary>
 		/// pimpl object hash
 		/// </summary>
-		std::shared_ptr<pimpl> _global_object_hash;
+		//std::shared_ptr<pimpl> _global_object_hash;
 
 
 		/// <summary>
@@ -48,9 +50,9 @@ namespace hv::v1{
 		//std::shared_ptr<pimpl> _converter_lambda;
 		std::map<std::string, std::shared_ptr<converter>> _converter_lambda;
 
+		std::shared_ptr <std::map<std::string, std::shared_ptr<object>>> _external_hash_map;
 
-		std::map<std::string, std::shared_ptr<object>> _external_hash_map;
-
+		std::shared_ptr <std::map<std::string, std::shared_ptr<object>>> _global_hash_map;
 			
 
 		/// <summary>
@@ -133,11 +135,11 @@ namespace hv::v1{
 		void clear_external_object();
 
 		std::list<std::string> global_names();
-		std::map<std::string, std::shared_ptr<object>> global_objects();
+		std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> global_objects();
 
 
 		std::list<std::string> external_names();
-		std::map<std::string, std::shared_ptr<object>> external_objects();
+		std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> external_objects();
 
 		std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
 
@@ -147,6 +149,7 @@ namespace hv::v1{
 
 		void set_trace_callback(std::function<void(char *)> _callback);
 		void reset_trace_callback();
+
 		 
 		/// <summary>
 		/// script static functions

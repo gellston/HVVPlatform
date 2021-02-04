@@ -9,7 +9,8 @@
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
     xmlns:viewModel="clr-namespace:WPFHVVPlatform.ViewModel"
     xmlns:view="clr-namespace:WPFHVVPlatform.View"
-    xmlns:model="clr-namespace:WPFHVVPlatform.Model" >
+    xmlns:model="clr-namespace:WPFHVVPlatform.Model"
+    Closed="ThemedWindow_Closed">
     <DockPanel>
 
         <Grid DockPanel.Dock="Top"

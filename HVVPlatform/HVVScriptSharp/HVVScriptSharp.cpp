@@ -129,7 +129,7 @@ void HV::V1::Interpreter::SetV8Flag(System::String^ flag) {
 List<String^>^ HV::V1::Interpreter::GlobalNames::get() {
 	List<System::String^>^ list = gcnew List<System::String^>();
 	auto native_list = this->_instance->global_names();
-	for (auto& element : native_list) {
+	for (auto element : native_list) {
 		list->Add(gcnew System::String(element.c_str()));
 	}
 
@@ -143,26 +143,32 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects
 	auto globals = this->_instance->global_objects();
 	auto casting = this->_casting_pimpl->converter();
 
-	for (auto& [key, val] : globals) {
-		switch (casting[val->type()]) {
+	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
+
+	for (it = globals->begin(); it != globals->end(); it++)
+	{
+		std::string key = it->first;
+		auto native_object = it->second;
+
+		switch (casting[native_object->type()]) {
 
 		case hv::v1::casting::number:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(native_object));
 			break;
 		case hv::v1::casting::image:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(native_object));
 			break;
 		case hv::v1::casting::boolean:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(native_object));
 			break;
 		case hv::v1::casting::string:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(native_object));
 			break;
 		case hv::v1::casting::point:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(native_object));
 			break;
 		default:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(val));
+			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(native_object));
 			break;
 		}
 	}
@@ -183,30 +189,41 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 	auto externals = this->_instance->external_objects();
 	auto casting = this->_casting_pimpl->converter();
 
-	for (auto& [key, val] : externals) {
-		
-		
-		switch (casting[val->type()]) {
+	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
+
+	for (it = externals->begin(); it != externals->end(); it++)
+	{
+		std::string key = it->first;
+		auto native_object = it->second;
+
+		switch (casting[native_object->type()]) {
 
 		case hv::v1::casting::number:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(native_object));
 			break;
 		case hv::v1::casting::image:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(native_object));
 			break;
 		case hv::v1::casting::boolean:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(native_object));
 			break;
 		case hv::v1::casting::string:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(native_object));
 			break;
 		case hv::v1::casting::point:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(native_object));
 			break;
 		default:
-			external_object->Add(gcnew System::String(key.c_str()),  gcnew HV::V1::Object(val));
+			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(native_object));
 			break;
 		}
+	}
+
+
+	for (auto& [key, val] : *externals) {
+		
+		
+		
 	}
 
 	return external_object;
@@ -214,11 +231,19 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 
 Dictionary<System::String^, HV::V1::NativeModule^>^ HV::V1::Interpreter::NativeModules::get(){
 	Dictionary<System::String^, HV::V1::NativeModule^> ^ dictionary = gcnew Dictionary<System::String^, HV::V1::NativeModule^>();
+
+	std::map<std::string, hv::v1::native_module>::iterator it;
 	auto native_modules = this->_instance->native_modules();
 
+	for (it = native_modules->begin(); it != native_modules->end(); it++)
+	{
+		std::string key = it->first;
+		auto native_moudle = it->second;
+		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(native_moudle.file_path.c_str()), System::IntPtr(native_moudle.handle)));
+	}
 
 	for (auto& [key, val] : *native_modules) {
-		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(val.file_path.c_str()), System::IntPtr(val.handle)));
+		
 	}
 
 	return dictionary;
@@ -244,4 +269,9 @@ System::Object^ HV::V1::Interpreter::ExternalData(System::String^ key) {
 
 void HV::V1::Interpreter::Trace(System::String^ data) {
 
+}
+
+
+void HV::V1::Interpreter::ReleaseNativeModules() {
+	this->_instance->release_native_modules();
 }

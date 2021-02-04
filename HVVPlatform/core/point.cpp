@@ -10,7 +10,6 @@ hv::v1::point::point(std::string _name, double _x, double _y) : hv::v1::object(_
 }
 
 
-
 double hv::v1::point::x() {
 	return this->_x;
 }

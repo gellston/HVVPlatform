@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using WPFHVVPlatform.Model;
 using WPFHVVPlatform.Service;
 
@@ -24,11 +25,8 @@ namespace WPFHVVPlatform.ViewModel
         private readonly FileDialogService fileDialogService;
         private readonly MessageDialogService messageDialogService;
         private readonly ScriptFileService scriptFileService;
-
-
-       
         private readonly HV.V1.Interpreter interpreter;
-
+        private readonly AppConfigService appConfigService;
 
 
         private string _trackingName;
@@ -39,26 +37,50 @@ namespace WPFHVVPlatform.ViewModel
         public ScriptEditViewModel(FileDialogService _fileDialogService,
                                    MessageDialogService _messageDialogService,
                                    ScriptFileService _scriptFileService,
+                                   AppConfigService _appConfigService,
                                    HV.V1.Interpreter _interpreter)
         {
 
             this.fileDialogService = _fileDialogService;
             this.messageDialogService = _messageDialogService;
             this.scriptFileService = _scriptFileService;
+            this.appConfigService = _appConfigService;
 
 
             this.interpreter = _interpreter;
             this.interpreter.TraceEvent += Trace;
 
 
-        
 
-
+            MessengerInstance.Register<NotificationMessage>(this, NotifyMessage);
         }
 
         ~ScriptEditViewModel()
         {
             this.interpreter.TraceEvent -= Trace;
+        }
+
+
+        public void NotifyMessage(NotificationMessage message)
+        {
+            if(message.Notification == "ClearNativeModules")
+            {
+
+                this.GlobalCollection.Clear();
+                
+                this.SelectedGlobal = null;
+                this.DetailImageDrawCollection.Clear();
+                this.NativeModuleCollection.Clear();
+
+                System.GC.Collect();
+                System.GC.WaitForPendingFinalizers();
+                System.GC.WaitForFullGCComplete();
+
+                this.interpreter.ReleaseNativeModules();
+
+                if(this.interpreter.NativeModules.Count() > 0)
+                    this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
+             }
         }
 
 
@@ -168,6 +190,9 @@ namespace WPFHVVPlatform.ViewModel
             {
                 if (this.IsRunningScript == true) return;
                 if (this.SelectedScript == null) return;
+
+                this.interpreter.SetModulePath(this.appConfigService.ApplicationSetting.ModuleMainPath);
+
                 await Task.Run(async () =>
                 {
                
@@ -240,6 +265,10 @@ namespace WPFHVVPlatform.ViewModel
 
                 this.IsRunningScript = true;
 
+
+                this.interpreter.SetModulePath(this.appConfigService.ApplicationSetting.ModuleMainPath);
+
+
                 Task.Run(async () =>
                 {
                     var count = 0;
@@ -251,6 +280,7 @@ namespace WPFHVVPlatform.ViewModel
                         var watch = System.Diagnostics.Stopwatch.StartNew();
                         try
                         {
+                           
                             this.interpreter.RunScript(this.SelectedScript.ScriptContent);
 
                             Application.Current.Dispatcher.Invoke(() =>

@@ -104,6 +104,8 @@ namespace HV {
 				}
 			}
 
+			void ReleaseNativeModules();
+
 			/// <summary>
 			/// script static functions
 			/// </summary>

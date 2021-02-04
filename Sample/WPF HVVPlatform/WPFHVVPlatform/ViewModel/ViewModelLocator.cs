@@ -7,16 +7,13 @@ using WPFHVVPlatform.Service;
 using System;
 using System.Runtime.InteropServices;
 
+
 namespace WPFHVVPlatform.ViewModel
 {
     public class ViewModelLocator
     {
         public ViewModelLocator()
         {
-            //if (Nativemethods.AllocConsole() == false)
-            //{
-            //    System.Console.WriteLine("error");
-            //}
 
             if (InitializeScript() == false)
             {
@@ -28,6 +25,7 @@ namespace WPFHVVPlatform.ViewModel
             SimpleIoc.Default.Register<FileDialogService>();
             SimpleIoc.Default.Register<MessageDialogService>();
             SimpleIoc.Default.Register<ScriptFileService>();
+            SimpleIoc.Default.Register<ModulePackageService>();
             
             
             SimpleIoc.Default.Register<MainWindowViewModel>();
@@ -37,6 +35,16 @@ namespace WPFHVVPlatform.ViewModel
 
 
             SimpleIoc.Default.Register<HV.V1.Interpreter>();
+
+
+            
+        }
+
+        ~ViewModelLocator()
+        {
+           
+
+
         }
 
         public ViewModelBase MainWindowViewModel

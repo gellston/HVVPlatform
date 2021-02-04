@@ -11,10 +11,9 @@ namespace WPFHVVPlatform.Model
 
         }
 
-
         public string ModuleName { get; set; }
         public string ModuleModifyDate { get; set; }
-        public string ModuleVersion { get; set; }
+        public int ModuleVersion { get; set; }
         public string ModuleComment { get; set; }
     }
 }

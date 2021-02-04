@@ -43,8 +43,18 @@
             </Button>
             <Button ToolTip="모듈 리로드"
                     Grid.Column="3"
-                    Command="{Binding RelfreshModuleCommand}">
+                    Command="{Binding ReLoadModuleCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Reload.svg'}"></Image>
+            </Button>
+            <Button ToolTip="모듈 정보 초기화"
+                    Grid.Column="4"
+                    Command="{Binding ClearModuleCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ClearAll.svg'}"></Image>
+            </Button>
+            <Button ToolTip="모듈 패키징 시작"
+                    Grid.Column="5"
+                    Command="{Binding PackageModuleCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Shopping_Package.svg'}"></Image>
             </Button>
         </Grid>
         <Grid>
@@ -91,7 +101,7 @@
 
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding ModuleName}"></TextBox>
                 <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding ModuleModifyDate}"></TextBox>
-                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" VerticalContentAlignment="Center" Text="{Binding ModuleMainPath}"></TextBox>
+                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" VerticalContentAlignment="Center" Text="{Binding ModuleMainPath}" IsEnabled="False"></TextBox>
                 <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding ModuleVersion}"></TextBox>
                 <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" Text="모듈 코멘트" 
                          HorizontalAlignment="Stretch" 
@@ -146,6 +156,7 @@
                                  AutoGenerateColumns="None"
                                  ShowAllTableValuesInFilterPopup="False"
                                  ItemsSource="{Binding ModuleConfigCollection}"
+                                 SelectedItem="{Binding SelectedModuleConfig}"
                                  Grid.Row="0">
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn FieldName="이름" Binding="{Binding ModuleName}" IsSmart="False" Width="*"/>
@@ -166,6 +177,7 @@
                                  AutoGenerateColumns="None"
                                  ShowAllTableValuesInFilterPopup="False"
                                  ItemsSource="{Binding ModuleCollection}"
+                                 SelectedItem="{Binding SelectedModule}"
                                  Grid.Row="1">
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn FieldName="모듈이름" Binding="{Binding FileName}" IsSmart="False" Width="*"/>

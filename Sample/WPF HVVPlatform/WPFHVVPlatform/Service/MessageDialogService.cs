@@ -19,6 +19,11 @@ namespace WPFHVVPlatform.Service
    
         }
 
+        ~MessageDialogService()
+        {
+            //notificaitonManager.close
+        }
+
         public void ShowToastErrorMessage(string title, string message)
         {
             notificaitonManager.ShowAsync(new NotificationContent
@@ -28,6 +33,17 @@ namespace WPFHVVPlatform.Service
                 Type = Notifications.Wpf.Core.NotificationType.Error
             });
         }
+
+        public void ShowToastSuccessMessage(string title, string message)
+        {
+            notificaitonManager.ShowAsync(new NotificationContent
+            {
+                Title = title,
+                Message = message,
+                Type = Notifications.Wpf.Core.NotificationType.Success
+            });
+        }
+
 
         public void ShowErrorMessage(string message)
         {

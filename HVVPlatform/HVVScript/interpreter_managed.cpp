@@ -69,14 +69,14 @@ void hv::v1::interpreter_managed::clear_external_data() {
 std::list<std::string> hv::v1::interpreter_managed::global_names() {
 	return this->_pimpl->ptr->global_names();
 }
-std::map<std::string, std::shared_ptr<hv::v1::object>> hv::v1::interpreter_managed::global_objects() {
+std::shared_ptr<std::map<std::string, std::shared_ptr<hv::v1::object>>> hv::v1::interpreter_managed::global_objects() {
 	return this->_pimpl->ptr->global_objects();
 }
 
 std::list<std::string> hv::v1::interpreter_managed::external_names() {
 	return this->_pimpl->ptr->external_names();
 }
-std::map<std::string, std::shared_ptr<hv::v1::object>> hv::v1::interpreter_managed::external_objects() {
+std::shared_ptr<std::map<std::string, std::shared_ptr<hv::v1::object>>> hv::v1::interpreter_managed::external_objects() {
 	return this->_pimpl->ptr->external_objects();
 }
 
@@ -93,6 +93,10 @@ std::shared_ptr<std::map<std::string, hv::v1::native_module>> hv::v1::interprete
 	return this->_pimpl->ptr->native_modules();
 }
 
+void hv::v1::interpreter_managed::release_native_modules() {
+	this->_pimpl->ptr->release_native_modules();
+}
+
 
 
 bool hv::v1::interpreter_managed::init_v8_startup_data(std::string path) {
@@ -107,3 +111,4 @@ bool hv::v1::interpreter_managed::init_v8_engine() {
 void hv::v1::interpreter_managed::set_v8_flag(std::string flag) {
 	hv::v1::interpreter::set_v8_flag(flag);
 }
+

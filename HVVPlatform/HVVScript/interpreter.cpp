@@ -49,6 +49,21 @@ interpreter::~interpreter() {
 
 	this->_interpreter_thread.join();
 
+
+	{
+		std::scoped_lock lock(this->_mtx_event_global_hash);
+		this->_global_hash_map->clear();
+		this->_global_names.clear();
+	}
+	
+
+	{
+		std::scoped_lock lock(this->_mtx_event_external_hash);
+		this->_external_hash_map->clear();
+	}
+
+	
+
 	// global native object deletion
 	for (auto& element : *this->_native_modules) {
 		if (element.second.handle == nullptr) continue;
@@ -58,8 +73,9 @@ interpreter::~interpreter() {
 }
 
 interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
-							_global_object_hash(std::make_shared<pimpl_object_hash>()),
-							_native_modules(std::make_shared<std::map<std::string, hv::v1::native_module>>()),
+						    _global_hash_map(std::make_shared<std::map<std::string, std::shared_ptr<hv::v1::object>>>()),
+					        _external_hash_map(std::make_shared<std::map<std::string, std::shared_ptr<hv::v1::object>>>()),
+						    _native_modules(std::make_shared<std::map<std::string, hv::v1::native_module>>()),
 							_is_thread_running(true),
 							_is_script_running(false),
 							_interpreter_thread(),
@@ -185,10 +201,10 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 
 		// Map
 		try {
-			auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+			
 			auto data = hv::v1::convert_to_object<object>(local_variable);
 			if (data != nullptr) 
-				global_hash->_instance[key] = data;
+				(*_global_hash_map)[key] = data;
 		}
 		catch (std::exception e) {
 		}
@@ -209,12 +225,11 @@ std::list<std::string> interpreter::global_names() {
 	return this->_global_names;
 }
 
-std::map<std::string, std::shared_ptr<object>> interpreter::global_objects() {
+std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> interpreter::global_objects() {
 	std::scoped_lock lock(this->_mtx_event_global_hash);
 
-	auto objects = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
-
-	return objects->_instance;
+	
+	return _global_hash_map;
 }
 
 
@@ -266,8 +281,16 @@ void interpreter::_loop() {
 	while (this->_is_thread_running) {
 
 
+		// 오브젝트 등록을 위해 여기서 멈춰있어야함. 
+		// start signal wait;
+		this->_script_start_wait();
+
+		if (this->_is_thread_running == false)
+			return;
+
+
 		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
-		auto global_hash = extract_pimpl<pimpl_object_hash>(this->_global_object_hash);
+		//auto global_hash = this->_global
 		
 
 
@@ -310,12 +333,6 @@ void interpreter::_loop() {
 	
 
 
-		// 오브젝트 등록을 위해 여기서 멈춰있어야함. 
-		// start signal wait;
-		this->_script_start_wait();
-
-		if (this->_is_thread_running == false)
-			return;
 
 		// exception info clear;
 		this->_clear_error_message();
@@ -373,7 +390,7 @@ void interpreter::_loop() {
 			auto globals = currentContext->Global();
 			auto global_names = globals->GetOwnPropertyNames(currentContext).ToLocalChecked();
 
-			global_hash->_instance.clear();
+			this->_global_hash_map->clear();
 			this->_global_names.clear();
 
 			for (unsigned int i = 0; i < global_names->Length(); i++) {
@@ -413,7 +430,7 @@ void interpreter::_loop() {
 				object* result = (*converter)(local_var);
 				if (result != nullptr) {
 					this->_global_names.push_back(key);
-					global_hash->_instance[key] = std::shared_ptr<object>(result);
+					(*this->_global_hash_map)[key] = std::shared_ptr<object>(result);
 				}
 
 			}
@@ -424,7 +441,8 @@ void interpreter::_loop() {
 		/// 
 		// isolate->_instance->RequestGarbageCollectionForTesting(v8::Isolate::GarbageCollectionType::kFullGarbageCollection);
 
-		//v8pp::cleanup(isolate->_instance);
+		v8pp::cleanup(isolate->_instance);
+	
 		isolate->_instance = nullptr;
 		//std::string const v8_flags = "--expose_gc";
 		//v8::V8::SetFlagsFromString(v8_flags.data(), (int)v8_flags.length());
@@ -507,7 +525,7 @@ bool interpreter::run_file(std::string path) {
 bool interpreter::register_external_object(std::string key, std::shared_ptr<object> data) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	this->_external_hash_map[key] = data;
+	(*this->_external_hash_map)[key] = data;
 
 	return true;
 }
@@ -515,12 +533,12 @@ bool interpreter::register_external_object(std::string key, std::shared_ptr<obje
 std::shared_ptr<object> interpreter::external_object(std::string key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) {
+	if (this->_external_hash_map->find(key) == this->_external_hash_map->end()) {
 		std::shared_ptr<object> null_pointer(nullptr);
 		return null_pointer;
 	}
 
-	auto shared_pointer = this->_external_hash_map[key];
+	auto shared_pointer = (*this->_external_hash_map)[key];
 
 	return shared_pointer;
 }
@@ -529,13 +547,13 @@ std::list<std::string> interpreter::external_names() {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 	std::list<std::string> name_list;
 
-	for (auto& pair : this->_external_hash_map) {
+	for (auto& pair : *this->_external_hash_map) {
 		name_list.push_back(pair.first);
 	}
 
 	return name_list;
 }
-std::map<std::string, std::shared_ptr<object>> interpreter::external_objects() {
+std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> interpreter::external_objects() {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
 	return this->_external_hash_map;
@@ -546,7 +564,7 @@ std::map<std::string, std::shared_ptr<object>> interpreter::external_objects() {
 bool interpreter::check_external_object(std::string key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	if (this->_external_hash_map.find(key) == this->_external_hash_map.end()) return false;
+	if (this->_external_hash_map->find(key) == this->_external_hash_map->end()) return false;
 
 
 	return true;
@@ -555,7 +573,7 @@ bool interpreter::check_external_object(std::string key) {
 void interpreter::clear_external_object() {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	this->_external_hash_map.clear();
+	this->_external_hash_map->clear();
 }
 
 
@@ -572,10 +590,27 @@ bool interpreter::terminate() {
 
 void interpreter::release_native_modules() {
 	// global native object deletion
+	{
+		std::scoped_lock lock(this->_mtx_event_global_hash);
+		this->_global_hash_map->clear();
+		this->_global_names.clear();
+	}
+	{
+		std::scoped_lock lock(this->_mtx_event_external_hash);
+		this->_external_hash_map->clear();
+		this->_global_names.clear();
+	}
+	
+
+	
+
 	for (auto& element : *this->_native_modules) {
 		if (element.second.handle == nullptr) continue;
 		::FreeLibrary(static_cast<HMODULE>(element.second.handle));
 	}
+
+	this->_native_modules->clear();
+
 }
 
 
