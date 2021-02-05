@@ -21,6 +21,33 @@ namespace WPFHVVPlatform.Service
         }
 
 
+        public ObservableCollection<ModuleConfig> LoadAllModuleConfig(string _path)
+        {
+
+
+            ObservableCollection<ModuleConfig> configCollection = new ObservableCollection<ModuleConfig>();
+
+            try
+            {
+                var configs = Directory.GetFiles(_path, "*.json");
+                foreach (var config in configs)
+                {
+                    var jsonContent = File.ReadAllText(config);
+                    var module = JsonSerializer.Deserialize<ModuleConfig>(jsonContent);
+                    configCollection.Add(module);
+                }
+
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+
+            return configCollection;
+        }
+
+
         public bool DeleteAllFiles(string _moduleTempPackagePath)
         {
             if (_moduleTempPackagePath.Length == 0) return false;

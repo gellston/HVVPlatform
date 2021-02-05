@@ -6,6 +6,8 @@ using GalaSoft.MvvmLight;
 using WPFHVVPlatform.Service;
 using System;
 using System.Runtime.InteropServices;
+using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 
 
 namespace WPFHVVPlatform.ViewModel
@@ -37,7 +39,16 @@ namespace WPFHVVPlatform.ViewModel
             SimpleIoc.Default.Register<HV.V1.Interpreter>();
 
 
-            
+
+
+            //미리생성
+            SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
+
+
+
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("UpdateModule"));
+
+
         }
 
         ~ViewModelLocator()

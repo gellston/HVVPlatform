@@ -44,6 +44,7 @@ namespace WPFHVVPlatform.ViewModel
                 this.ModuleCollection.Clear();
                 this.ModuleConfigCollection.Clear();
                 
+                
                 var files = Directory.GetFiles(this.appConfigService.ApplicationSetting.ModulePath, "*.module");
                 foreach(var file in files)
                 {
@@ -59,17 +60,17 @@ namespace WPFHVVPlatform.ViewModel
 
                     foreach(var maindllFile in mainDlls)
                     {
-                        File.Copy(maindllFile, appConfigService.ApplicationSetting.ModuleMainPath + Path.GetFileName(maindllFile));
+                        File.Copy(maindllFile, appConfigService.ApplicationSetting.ModuleMainPath + Path.GetFileName(maindllFile), true);
                     }
 
                     foreach (var dependenDLL in depedentDLLs)
                     {
-                        File.Copy(dependenDLL, appConfigService.ApplicationSetting.ModuleThirdPartyDLLPath + Path.GetFileName(dependenDLL));
+                        File.Copy(dependenDLL, appConfigService.ApplicationSetting.ModuleThirdPartyDLLPath + Path.GetFileName(dependenDLL), true);
                     }
 
                     foreach (var configFile in configFiles)
                     {
-                        File.Copy(configFile, appConfigService.ApplicationSetting.ModuleConfigPath + Path.GetFileName(configFile));
+                        File.Copy(configFile, appConfigService.ApplicationSetting.ModuleConfigPath + Path.GetFileName(configFile), true);
                     }
 
                     this.ModuleCollection.Add(new Module()
@@ -78,6 +79,10 @@ namespace WPFHVVPlatform.ViewModel
                         FileName = Path.GetFileName(file)
                     });
                 }
+
+
+                ModuleConfigCollection = modulePackageService.LoadAllModuleConfig(this.appConfigService.ApplicationSetting.ModuleConfigPath);
+                
             }
         }
 
@@ -266,7 +271,7 @@ namespace WPFHVVPlatform.ViewModel
                     _ModuleConfigCollection = new ObservableCollection<ModuleConfig>();
                 return _ModuleConfigCollection;
             }
-
+            set => Set(ref _ModuleConfigCollection, value);
         }
 
         private ObservableCollection<Module> _ModuleCollection = null;
@@ -278,7 +283,6 @@ namespace WPFHVVPlatform.ViewModel
                     _ModuleCollection = new ObservableCollection<Module>();
                 return _ModuleCollection;
             }
-
         }
 
 
@@ -289,11 +293,11 @@ namespace WPFHVVPlatform.ViewModel
             set => Set(ref _SelectedModule, value);
         }
 
-        private Module _SelectedModuleConfig = null;
-        public Module SelectedModuleConfig
+        private ModuleConfig _SelectedModuleConfig = null;
+        public ModuleConfig SelectedModuleConfig
         {
             get => _SelectedModuleConfig;
-            set => Set(ref _SelectedModule, value);
+            set => Set(ref _SelectedModuleConfig, value);
         }
 
     }

@@ -345,11 +345,13 @@ void interpreter::_loop() {
 		try {
 			if (this->_is_content == false) {
 				this->_is_terminating = true;
+				parent_context.set_lib_path(_script_module_path);
 				auto script_result = parent_context.run_file(this->_script_file_path);
 				this->_is_terminating = false;
 			}
 			else {
 				this->_is_terminating = true;
+				parent_context.set_lib_path(_script_module_path);
 				auto script_result = parent_context.run_script(this->_script_content);
 				this->_is_terminating = false;
 			}

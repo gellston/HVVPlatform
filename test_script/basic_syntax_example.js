@@ -1,4 +1,4 @@
-﻿var core = require("addon_core"); // dll 로드 !!
+﻿var core = require("core"); // dll 로드 !!
 
 var image = new core.image("test", 2020,2020, core.u8_image, 1);
 

@@ -159,15 +159,30 @@
                                  SelectedItem="{Binding SelectedModuleConfig}"
                                  Grid.Row="0">
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="이름" Binding="{Binding ModuleName}" IsSmart="False" Width="*"/>
-                        <dxg:GridColumn FieldName="버전" Binding="{Binding ModuleVersion}" IsSmart="False" Width="*"/>
-                        <dxg:GridColumn FieldName="수정날짜" Binding="{Binding ModuleComment}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="이름" Binding="{Binding ModuleName, Mode=OneWay}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="버전" Binding="{Binding ModuleVersion, Mode=OneWay}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="수정날짜" Binding="{Binding ModuleModifyDate, Mode=OneWay}" IsSmart="False" Width="*"/>
                     </dxg:GridControl.Columns>
                     <dxg:GridControl.View>
                         <dxg:TableView AllowPerPixelScrolling="True" 
                                                ShowTotalSummary="False"
                                                AllowGrouping="True"
                                                AllowScrollToFocusedRow="False">
+                            <dxg:TableView.RowStyle>
+                                <Style TargetType="dxg:RowControl">
+                                    <Setter Property="ToolTipService.ToolTip">
+                                        <Setter.Value>
+                                            <ContentControl Content="{Binding}"  >
+                                                <ContentControl.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <Label Content="{Binding Row.ModuleComment}"/>
+                                                    </DataTemplate>
+                                                </ContentControl.ContentTemplate>
+                                            </ContentControl>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </dxg:TableView.RowStyle>
                         </dxg:TableView>
                     </dxg:GridControl.View>
                 </dxg:GridControl>

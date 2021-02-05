@@ -17,10 +17,12 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
-                  PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+                  PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel"
+                  >
         <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=DrawObjectsCollection, Mode=OneWay}">
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type hv:Point}">
+                    
                     <Grid Name="parent">
                         <Grid.ToolTip>
                             <ToolTip Width="110">
