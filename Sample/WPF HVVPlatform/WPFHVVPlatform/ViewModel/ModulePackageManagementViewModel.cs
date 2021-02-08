@@ -43,6 +43,10 @@ namespace WPFHVVPlatform.ViewModel
                 
                 this.ModuleCollection.Clear();
                 this.ModuleConfigCollection.Clear();
+
+                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleConfigPath);
+                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleMainPath);
+                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleThirdPartyDLLPath);
                 
                 
                 var files = Directory.GetFiles(this.appConfigService.ApplicationSetting.ModulePath, "*.module");
@@ -123,7 +127,11 @@ namespace WPFHVVPlatform.ViewModel
 
                 this.ModuleCollection.Remove(this.SelectedModule);
                 this.SelectedModule = null;
-                    
+
+
+                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "ClearNativeModules"));
+                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "UpdateModule"));
+
             });
         }
 
@@ -170,16 +178,20 @@ namespace WPFHVVPlatform.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                var dependentdll = this.fileDialogService.OpenFile("Script File (.dll)|*.dll");
-                if (dependentdll.Length == 0) return;
+                var dependentdll_list = this.fileDialogService.OpenFiles("Script File (.dll)|*.dll");
+                if (dependentdll_list == null) return;
+                if (dependentdll_list.Length == 0) return;
 
 
-                this.DependentDLLCollection.Add(new DependentDLL()
+                foreach(var dependentdll in dependentdll_list)
                 {
-                    FileName = Path.GetFileName(dependentdll),
-                    FilePath = dependentdll
-                });
+                    this.DependentDLLCollection.Add(new DependentDLL()
+                    {
+                        FileName = Path.GetFileName(dependentdll),
+                        FilePath = dependentdll
+                    });
 
+                }
 
 
             });

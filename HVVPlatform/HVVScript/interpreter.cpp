@@ -31,6 +31,7 @@
 #include "binding.h"
 
 
+
 HV_CREATE_SHARED_CONVERTER(hv::v1::object);
 
 
@@ -359,6 +360,7 @@ void interpreter::_loop() {
 		catch (std::exception e) {
 			this->_set_error_info(e.what(), -1, -1, -1);
 		}
+
 
 		if (try_catch.HasCaught() == true && try_catch.Exception()->IsNullOrUndefined()) {
 			this->_set_error_info("script force stopped", -1, -1, -1);

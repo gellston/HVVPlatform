@@ -163,7 +163,7 @@ namespace WPFHVVPlatform.Service
                 }
 
 
-                var dependentDLL = _moduleTempPackagePath + "dependent";
+                var dependentDLL = _moduleTempPackagePath + "dependent" + Path.DirectorySeparatorChar;
                 Directory.CreateDirectory(dependentDLL);
                 foreach (var file in _dependentCollection)
                 {

@@ -26,3 +26,4 @@ int script_error::end_column() {
 
 	return this->_end_column;
 }
+

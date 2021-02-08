@@ -5,10 +5,14 @@ namespace hv::v1 {
 
 
 	enum image_data_type{
-		u8_image=1,
-		u16_image=2,
-		u32_image=4,
-		u64_image=8,
+		u8c1_image=1,
+		u8c3_image,
+		u16c1_image,
+		u16c3_image,
+		u32c1_image,
+		u32c3_image,
+		u64c1_image,
+		u64c3_image
 	};
 
 

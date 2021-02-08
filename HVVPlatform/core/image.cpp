@@ -19,20 +19,38 @@ hv::v1::image::image(std::string name, unsigned int width, unsigned int height, 
 	unsigned int demension = width * height;
 
 	switch (type) {
-		case hv::v1::image_data_type::u8_image:{
+		case hv::v1::image_data_type::u8c1_image:{
 			this->__data = std::make_shared<std::vector<unsigned char>>(std::vector<unsigned char>(demension));
 			break;
 		}
-		case hv::v1::image_data_type::u16_image: {
+		case hv::v1::image_data_type::u16c1_image: {
 			this->__data = std::make_shared<std::vector<unsigned short>>(std::vector<unsigned short>(demension));
 			break;
 		}
-		case hv::v1::image_data_type::u32_image: {
+		case hv::v1::image_data_type::u32c1_image: {
 			this->__data = std::make_shared<std::vector<unsigned long>>(std::vector<unsigned long>(demension));
 			break;
 		}
-		case hv::v1::image_data_type::u64_image: {
+		case hv::v1::image_data_type::u64c1_image: {
 			this->__data = std::make_shared<std::vector<unsigned  long long>>(std::vector<unsigned long long>(demension));
+			break;
+		}
+
+		// 3Channel
+		case hv::v1::image_data_type::u8c3_image: {
+			this->__data = std::make_shared<std::vector<unsigned char>>(std::vector<unsigned char>(demension * 3));
+			break;
+		}
+		case hv::v1::image_data_type::u16c3_image: {
+			this->__data = std::make_shared<std::vector<unsigned short>>(std::vector<unsigned short>(demension * 3));
+			break;
+		}
+		case hv::v1::image_data_type::u32c3_image: {
+			this->__data = std::make_shared<std::vector<unsigned long>>(std::vector<unsigned long>(demension * 3));
+			break;
+		}
+		case hv::v1::image_data_type::u64c3_image: {
+			this->__data = std::make_shared<std::vector<unsigned  long long>>(std::vector<unsigned long long>(demension * 3));
 			break;
 		}
 		default:
@@ -89,22 +107,22 @@ unsigned int hv::v1::image::size() {
 
 void* hv::v1::image::ptr() {
 	switch (this->_type) {
-		case hv::v1::image_data_type::u8_image:{
+		case hv::v1::image_data_type::u8c1_image:{
 			auto data = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 			return data->data();
 			break;
 		}
-		case hv::v1::image_data_type::u16_image: {
+		case hv::v1::image_data_type::u16c1_image: {
 			auto data = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 			return data->data();
 			break;
 		}
-		case hv::v1::image_data_type::u32_image: {
+		case hv::v1::image_data_type::u32c1_image: {
 			auto data = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 			return data->data();
 			break;
 		}
-		case hv::v1::image_data_type::u64_image: {
+		case hv::v1::image_data_type::u64c1_image: {
 			auto data = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 			return data->data();
 			break;
@@ -136,25 +154,25 @@ bool hv::v1::image::copy(hv::v1::image& data) {
 
 
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		auto target = std::get<std::shared_ptr<std::vector<unsigned char>>>(data.__data);
 		std::copy(std::execution::par_unseq, source->begin(), source->end(), target->begin());
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		auto target = std::get<std::shared_ptr<std::vector<unsigned short>>>(data.__data);
 		std::copy(std::execution::par_unseq, source->begin(), source->end(), target->begin());
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		auto target = std::get<std::shared_ptr<std::vector<unsigned long>>>(data.__data);
 		std::copy(std::execution::par_unseq, source->begin(), source->end(), target->begin());
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		auto target = std::get<std::shared_ptr<std::vector<unsigned long long>>>(data.__data);
 		std::copy(std::execution::par_unseq, source->begin(), source->end(), target->begin());
@@ -171,25 +189,25 @@ bool hv::v1::image::copy(hv::v1::image& data) {
 
 bool hv::v1::image::fill(double value) {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		if (UCHAR_MAX < value || value < 0) return false;
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		std::fill(std::execution::par_unseq, source->begin(), source->end(), static_cast<unsigned char>(value));
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		if (USHRT_MAX < value || value < 0) return false;
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		std::fill(std::execution::par_unseq, source->begin(), source->end(), static_cast<unsigned short>(value));
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		if (ULONG_MAX < value || value < 0) return false;
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		std::fill(std::execution::par_unseq, source->begin(), source->end(), static_cast<unsigned long>(value));
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		if (ULLONG_MAX < value || value < 0) return false;
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		std::fill(std::execution::par_unseq, source->begin(), source->end(), static_cast<unsigned long long>(value));
@@ -203,25 +221,25 @@ bool hv::v1::image::fill(double value) {
 
 double hv::v1::image::reduce() {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		double sum = std::reduce(std::execution::par, source->begin(), source->end(), (double)0);
 		return sum;
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		double sum = std::reduce(std::execution::par, source->begin(), source->end(), (double)0);
 		return sum;
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		double sum = std::reduce(std::execution::par, source->begin(), source->end(), (double)0);
 		return sum;
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		double sum = std::reduce(std::execution::par, source->begin(), source->end(), (double)0);
 		return sum;
@@ -236,7 +254,7 @@ double hv::v1::image::reduce() {
 
 bool hv::v1::image::multiply(double value) {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		unsigned char* pointer = source->data();
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned char& element) {
@@ -244,21 +262,21 @@ bool hv::v1::image::multiply(double value) {
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned short& element) {
 			element = static_cast<unsigned short>(((double)element * value));
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long& element) {
 			element = static_cast<unsigned long>(((double)element * value));
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long long& element) {
 			element = static_cast<unsigned long long>(((double)element * value));
@@ -272,7 +290,7 @@ bool hv::v1::image::multiply(double value) {
 }
 bool hv::v1::image::divide(double value) {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned char& element) {
 			if (element == 0 || value == 0) return;
@@ -280,7 +298,7 @@ bool hv::v1::image::divide(double value) {
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned short& element) {
 			if (element == 0 || value == 0) return;
@@ -288,7 +306,7 @@ bool hv::v1::image::divide(double value) {
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long& element) {
 			if (element == 0 || value == 0) return;
@@ -296,7 +314,7 @@ bool hv::v1::image::divide(double value) {
 		});
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long long& element) {
 			if (element == 0 || value == 0) return;
@@ -313,7 +331,7 @@ bool hv::v1::image::divide(double value) {
 
 bool hv::v1::image::minus(double value) {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		unsigned char* pointer = source->data();
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned char& element) {
@@ -321,21 +339,21 @@ bool hv::v1::image::minus(double value) {
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned short& element) {
 			element = static_cast<unsigned short>(((double)element - value));
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long& element) {
 			element = static_cast<unsigned long>(((double)element - value));
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long long& element) {
 			element = static_cast<unsigned long long>(((double)element - value));
@@ -350,7 +368,7 @@ bool hv::v1::image::minus(double value) {
 
 bool hv::v1::image::add(double value) {
 	switch (this->_type) {
-	case hv::v1::image_data_type::u8_image: {
+	case hv::v1::image_data_type::u8c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned char>>>(this->__data);
 		unsigned char* pointer = source->data();
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned char& element) {
@@ -358,21 +376,21 @@ bool hv::v1::image::add(double value) {
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u16_image: {
+	case hv::v1::image_data_type::u16c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned short>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned short& element) {
 			element = static_cast<unsigned short>(((double)element + value));
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u32_image: {
+	case hv::v1::image_data_type::u32c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long& element) {
 			element = static_cast<unsigned long>(((double)element + value));
 			});
 		break;
 	}
-	case hv::v1::image_data_type::u64_image: {
+	case hv::v1::image_data_type::u64c1_image: {
 		auto source = std::get<std::shared_ptr<std::vector<unsigned long long>>>(this->__data);
 		std::for_each(std::execution::par_unseq, source->begin(), source->end(), [&](unsigned long long& element) {
 			element = static_cast<unsigned long long>(((double)element + value));

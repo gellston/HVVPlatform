@@ -37,7 +37,7 @@ namespace console_test_sharp
             test1.TraceEvent += Trace;
             test1.TraceEvent += Trace2;
 
-            test1.RunFile("C:\\Github\\HVVPlatform\\test_script\\basic_syntax_example.js");
+            test1.RunFile("C:\\Github\\HVVPlatform\\test_script\\opencv.js");
             var globalobject = test1.GlobalObjects;
 
             var image = globalobject.Values.ToList().Where((x) =>

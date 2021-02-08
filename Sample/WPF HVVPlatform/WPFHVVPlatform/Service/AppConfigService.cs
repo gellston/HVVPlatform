@@ -29,6 +29,8 @@ namespace WPFHVVPlatform.Service
             Directory.CreateDirectory(this.ApplicationSetting.ModuleConfigPath);
             Directory.CreateDirectory(this.ApplicationSetting.ModuleMainPath);
             Directory.CreateDirectory(this.ApplicationSetting.ModuleThirdPartyDLLPath);
+
+            Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + this.ApplicationSetting.ModuleThirdPartyDLLPath);
         }
 
         public string CurrentApplicationPath

@@ -47,21 +47,15 @@ int main()
     interpreter1.set_module_path(current_path);
  
     while (true) {
-        interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\basic_syntax_example.js");
+        try {
+            interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\opencv.js");
+        }
+        catch (hv::v1::script_error e) {
+            std::cout << e.what() << std::endl;
+        }
+        
 
-        interpreter1.release_native_modules();
-
-        interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\basic_syntax_example.js");
-
-        interpreter1.release_native_modules();
-
-        interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\basic_syntax_example.js");
-
-        interpreter1.release_native_modules();
-
-        interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\basic_syntax_example.js");
-
-        interpreter1.release_native_modules();
+      
     }
 
 }

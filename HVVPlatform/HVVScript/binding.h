@@ -12,6 +12,7 @@
 #include <v8pp/module.hpp>
 #include <v8pp/class.hpp>
 #include <v8pp/property.hpp>
+#include <v8pp/throw_ex.hpp>
 
 
 #define HV_PLUGIN_INIT V8PP_PLUGIN_INIT 
@@ -61,6 +62,8 @@ namespace hv::v1 {
 
 	using  Local = v8::Local<v8::Value>;
 
+	using  Object = v8::Local<v8::Object>;
+
 	using raw_ptr_trait = v8pp::raw_ptr_traits;
 
 	using shared_ptr_traits = v8pp::shared_ptr_traits;
@@ -84,6 +87,9 @@ namespace hv::v1 {
 
 	using isolate = v8::Isolate;
 
+	static Local throw_ex(hv::v1::isolate* isolate, std::string const& str) {
+		return hv::v1::throw_ex(isolate, str);
+	}
 
 
 };

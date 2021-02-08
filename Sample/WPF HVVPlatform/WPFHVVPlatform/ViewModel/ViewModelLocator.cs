@@ -22,6 +22,10 @@ namespace WPFHVVPlatform.ViewModel
                 System.Console.WriteLine("error");
             }
 
+         
+            
+
+
 
             SimpleIoc.Default.Register<AppConfigService>();
             SimpleIoc.Default.Register<FileDialogService>();
@@ -48,7 +52,7 @@ namespace WPFHVVPlatform.ViewModel
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("UpdateModule"));
 
-
+           
         }
 
         ~ViewModelLocator()
