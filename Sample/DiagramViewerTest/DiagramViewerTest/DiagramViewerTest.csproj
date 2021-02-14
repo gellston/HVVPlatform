@@ -6,8 +6,9 @@
     <RootNamespace>DiagramViewerTest</RootNamespace>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.0-pre-*"/>
+    <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.0-pre-*" />
   </ItemGroup>    
 </Project>
