@@ -1,0 +1,341 @@
+﻿<UserControl x:Class="VisionTool.View.ScriptEditView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisionTool.View"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:UC="clr-namespace:VisionTool.UC"
+             xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:converter="clr-namespace:VisionTool.Converter"
+             xmlns:uc="clr-namespace:VisionTool.UC"
+             xmlns:viewmodel="clr-namespace:VisionTool.ViewModel"
+             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
+             mc:Ignorable="d" 
+             d:DesignHeight="1024" d:DesignWidth="1280">
+
+    <UserControl.Resources>
+        <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
+        <converter:ObjectTypeTriggerConverter x:Key="ObjectTypeTriggerConverter"></converter:ObjectTypeTriggerConverter>
+        <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
+        <converter:BooleanToVisibility x:Key="BooleanToVisibility"></converter:BooleanToVisibility>
+        <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
+    </UserControl.Resources>
+
+
+    <DockPanel>
+
+        <Grid Height="40"
+              DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button ToolTip="새 스크립트"
+                    Grid.Column="0"
+                    Command="{Binding NewScriptFileCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Actions/New.svg'}"></Image>
+            </Button>
+            <Button ToolTip="스크립트 열기"
+                    Grid.Column="1"
+                    Command="{Binding OpenScriptFileCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Actions/Open2.svg'}"></Image>
+            </Button>
+            <Button ToolTip="스크립트 저장"
+                    Grid.Column="2"
+                    Command="{Binding SaveScriptFileCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/save as.svg'}"></Image>
+            </Button>
+            <Button ToolTip="이미지 열기"
+                    Grid.Column="3"
+                    Command="{Binding OpenImageCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/LoadImage.svg'}"></Image>
+            </Button>
+            <Button ToolTip="스크립트 실행"
+                    Grid.Column="4"
+                    Command="{Binding StartRunScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Start.svg'}"></Image>
+            </Button>
+            <Button ToolTip="스크립트 연속 실행"
+                    Grid.Column="5"
+                    Command="{Binding ContinusStartRunScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
+                <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
+            </Button>
+            <Button ToolTip="스크립트 정지"
+                    Grid.Column="6"
+                    Command="{Binding StopScriptCommand}"
+                    IsEnabled="{Binding IsRunningScript}">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
+            </Button>
+            <dxe:FontEdit Grid.Column="7"
+                          Grid.ColumnSpan="2"
+                          EditValue="Consolas"
+                          Name="editFont"
+                          ToolTip="스크립트 폰트"></dxe:FontEdit>
+            <dxe:ComboBoxEdit Grid.Column="9"
+                              SelectedItem="18"
+                              Name="editFontSize"
+                              ToolTip="스크립트 폰트 사이즈">
+                <dxe:ComboBoxEditItem>10</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>11</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>12</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>13</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>14</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>15</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>16</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>17</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>18</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>19</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>20</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>21</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>22</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>23</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>24</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>25</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
+            </dxe:ComboBoxEdit>
+            <dxe:PopupColorEdit Name="fontColor" ToolTip="스크립트 폰트 컬러" Grid.Column="10" Grid.ColumnSpan="2" Color="Black"/>
+            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="#FF1F497D"/>
+            <dx:SimpleButton ToolTip="결과 출력 숨김 (실행 속도 향상)" ButtonKind="Toggle" IsChecked="{Binding IsShowingResult}" Grid.Column="14">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Hide_Chart.svg'}"></Image>
+            </dx:SimpleButton>
+        </Grid>
+        
+        <dxb:BarContainerControl ContainerType="Bottom" DockPanel.Dock="Bottom">
+            <dxb:StatusBarControl Caption="Status Bar">
+                <dxb:BarStaticItem Content="FPS:"/>
+                <dxb:BarStaticItem Content="{Binding CurrentFPS}"/>
+                <dxb:BarStaticItem Content="실행시간:"/>
+                <dxb:BarStaticItem Content="{Binding CurrentExecutionTime}"/>
+
+            </dxb:StatusBarControl>
+        </dxb:BarContainerControl>
+
+        <dxdo:DockLayoutManager FloatingMode="Desktop" PresentationOptions:Freeze="true">
+            <dxdo:LayoutGroup Orientation="Horizontal"
+                              AllowClose="False" PresentationOptions:Freeze="true">
+                <dxdo:LayoutGroup Name="EditPlanel"
+                                  Orientation="Vertical"
+                                  AllowClose="False" PresentationOptions:Freeze="true">
+                    <dxdo:LayoutGroup Name="중앙패널"
+                                  Orientation="Horizontal"
+                                  AllowClose="False" PresentationOptions:Freeze="true">
+                        <dxdo:LayoutPanel Caption="스크립트"
+                                      ItemHeight="*"
+                                      AllowClose="False" PresentationOptions:Freeze="true">
+                            <Grid >
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="27"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <dx:DXTabControl ItemsSource="{Binding ScriptCollection}"
+                                             SelectedItem="{Binding SelectedScript}"
+                                             Margin="0,3,0,0"
+                                             Grid.Row="0"
+                                             Grid.RowSpan="2">
+                                    <dx:DXTabControl.ItemContainerStyle>
+                                        <Style TargetType="dx:DXTabItem">
+                                            <Setter Property="Header" Value="{Binding FileName}"/>
+                                            <Setter Property="ToolTip" Value="{Binding FilePath}"/>
+
+                                        </Style>
+                                    </dx:DXTabControl.ItemContainerStyle>
+
+                                    <dx:DXTabControl.View>
+                                        <dx:TabControlStretchView HideButtonShowMode="InAllTabs "
+                                                                  NewButtonShowMode="NoWhere"/>
+                                    </dx:DXTabControl.View>
+
+                                </dx:DXTabControl>
+                                <UC:BindableAvalonEditor ShowLineNumbers="True"
+                                                         Text="{Binding SelectedScript.ScriptContent}"
+                                                         SyntaxHighlighting="JavaScript"
+                                                         FontFamily="{Binding ElementName=editFont, Path=EditValue}"
+                                                         FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
+                                                         Grid.Row="1"
+                                                         Margin="5">
+                                    <mvvm:Interaction.Behaviors>
+                                        <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
+                                    </mvvm:Interaction.Behaviors>
+                                    <UC:BindableAvalonEditor.Foreground>
+                                        <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
+                                    </UC:BindableAvalonEditor.Foreground>
+                                </UC:BindableAvalonEditor>
+                            </Grid>
+
+                        </dxdo:LayoutPanel>
+                        <dxdo:TabbedGroup Name="ImageList"
+                                          Caption="Side Panel"
+                                          ItemHeight="*"
+                                          ItemWidth="*"
+                                          AllowClose="False">
+                            <dxdo:LayoutPanel Caption="이미지 트랙킹"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <uc:ImageCanvasViewer Image="{Binding TrackingImagePresenter, Mode=OneWay}"
+                                                      Zoom="1"
+                                                      ZoomMin="0.2"
+                                                      ZoomMax="5"
+                                                      ZoomStep="0.5">
+                                    <uc:ImageCanvasViewer.Background>
+                                        <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
+                                    </uc:ImageCanvasViewer.Background>
+                                </uc:ImageCanvasViewer>
+
+                            </dxdo:LayoutPanel>
+                            <dxdo:LayoutPanel Caption="이미지 상세정보"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <uc:ImageCanvasViewer Image="{Binding DetailImagePresenter, Mode=OneWay}"
+                                                      DrawObjectsCollection="{Binding DetailImageDrawCollection, Mode=OneWay}"
+                                                      Zoom="1"
+                                                      ZoomMin="0.2"
+                                                      ZoomMax="5"
+                                                      ZoomStep="0.5">
+                                    <uc:ImageCanvasViewer.Background>
+                                        <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
+                                    </uc:ImageCanvasViewer.Background>
+                                </uc:ImageCanvasViewer>
+                            </dxdo:LayoutPanel>
+                        </dxdo:TabbedGroup>
+                    </dxdo:LayoutGroup>
+                    
+                    <dxdo:LayoutPanel Caption="로그"
+                                      ItemHeight="300"
+                                      AllowClose="False">
+                        <dx:DXTabControl Margin="0,5,0,0">
+                            <dx:DXTabItem Header="에러">
+                                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                                 SelectionMode="Row"
+                                                 AutoGenerateColumns="None"
+                                                 ShowAllTableValuesInFilterPopup="False"
+                                                 ItemsSource="{Binding LogCollection}"
+                                                 >
+                                    <dxg:GridControl.Columns>
+                                        <dxg:GridColumn FieldName="종류" IsSmart="False" Binding="{Binding Path=Type}"/>
+                                        <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Width="*" Binding="{Binding Path=Content}"/>
+                                    </dxg:GridControl.Columns>
+                                    <dxg:GridControl.View>
+                                        <dxg:TableView AllowPerPixelScrolling="True" 
+                                                       ShowTotalSummary="False"
+                                                       AllowGrouping="True"
+                                                       AllowScrollToFocusedRow="False">
+                                        </dxg:TableView>
+
+                                    </dxg:GridControl.View>
+                                </dxg:GridControl>
+                            </dx:DXTabItem>
+                        </dx:DXTabControl>
+                    </dxdo:LayoutPanel>
+                </dxdo:LayoutGroup>
+                
+                <dxdo:TabbedGroup Caption="Side Panel"
+                                  ItemWidth="300"
+                                  AllowClose="False">
+                    <dxdo:LayoutPanel Caption="스크립트 결과"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding GlobalCollection, UpdateSourceTrigger=PropertyChanged}"
+                                         SelectedItem="{Binding SelectedGlobal, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding IsShowingResult, Converter={StaticResource BooleanToVisibility},Mode=OneWay}">
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="이름" IsSmart="False" Binding="{Binding Path=Name}"/>
+                                <dxg:GridColumn FieldName="타입" IsSmart="False" Width="*" Binding="{Binding Path=Type}"/>
+                                <dxg:GridColumn FieldName="값" IsSmart="False" Width="*" Binding="{Binding Path=ToString}"/>
+                            </dxg:GridControl.Columns>
+                            <dxg:GridControl.View>
+                                <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
+                                    <dxg:TableView.RowCellMenuCustomizations>
+                                        <dxb:BarButtonItem Name="trackingItem" Content="이미지 트랙킹">
+                                            <mvvm:Interaction.Behaviors>
+                                                <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.TrackingImageCommand}"></mvvm:EventToCommand>
+                                            </mvvm:Interaction.Behaviors>
+                                        </dxb:BarButtonItem>
+                                        <dxb:BarButtonItem Name="releaseItem" Content="이미지 해제">
+                                            <mvvm:Interaction.Behaviors>
+                                                <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.ReleaseTrackingImageCommand}"></mvvm:EventToCommand>
+                                            </mvvm:Interaction.Behaviors>
+                                        </dxb:BarButtonItem>
+                                        <dxb:BarButtonItem Name="detailItem" Content="이미지 상세 정보 표시">
+                                            <mvvm:Interaction.Behaviors>
+                                                <mvvm:EventToCommand EventName="ItemClick" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.DetailImageShowCommand}"></mvvm:EventToCommand>
+                                            </mvvm:Interaction.Behaviors>
+                                        </dxb:BarButtonItem>
+                                    </dxg:TableView.RowCellMenuCustomizations>
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </dxdo:LayoutPanel>
+                    <dxdo:LayoutPanel Caption="모듈"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding NativeModuleCollection, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding IsShowingResult, Converter={StaticResource BooleanToVisibility},Mode=OneWay}">
+                            <dxg:GridControl.View>
+                                <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
+                                   
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="어드레스" IsSmart="False" Binding="{Binding Path=Handle, Converter={StaticResource IntPtrToStringConverter}, Mode=OneWay}"/>
+                                <dxg:GridColumn FieldName="모듈 경로" IsSmart="False" Width="*" Binding="{Binding Path=FilePath}"/>
+                            </dxg:GridControl.Columns>
+                        </dxg:GridControl>
+                    </dxdo:LayoutPanel>
+                    <dxdo:LayoutPanel Caption="이미지"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <TextBlock Text="구현 준비중입니다." 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"></TextBlock>
+
+                    </dxdo:LayoutPanel>
+                    
+                </dxdo:TabbedGroup>
+            </dxdo:LayoutGroup>
+        </dxdo:DockLayoutManager>
+    </DockPanel>
+</UserControl>

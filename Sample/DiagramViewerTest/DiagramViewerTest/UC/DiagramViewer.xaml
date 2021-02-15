@@ -70,9 +70,10 @@
                             <Path.Data>
                                 <PathGeometry>
                                     <PathFigure StartPoint="{Binding Start.Location.Value}">
-                                        <QuadraticBezierSegment  
+                                        <QuadraticBezierSegment
                                                    Point1="{Binding MidPoint.Value}"
                                                    Point2="{Binding End.Location.Value}" />
+                                        
                                     </PathFigure>
                                 </PathGeometry>
                             </Path.Data>
