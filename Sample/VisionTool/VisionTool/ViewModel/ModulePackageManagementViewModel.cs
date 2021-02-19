@@ -33,6 +33,7 @@ namespace VisionTool.ViewModel
 
 
             MessengerInstance.Register<NotificationMessage>(this, NotifyMessage);
+
         }
 
         public void NotifyMessage(NotificationMessage message)

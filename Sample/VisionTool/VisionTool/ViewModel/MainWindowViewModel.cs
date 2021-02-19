@@ -22,7 +22,8 @@ namespace VisionTool.ViewModel
                                    AppConfigService _appConfigService,
                                    ModulePackageManagementViewModel _modulePackageViewModel,
                                    ApplicationSettingViewModel _applicationSettingViewModel,
-                                   DiagramEditViewModel _diagramEditViewModel)
+                                   DiagramEditViewModel _diagramEditViewModel,
+                                   DiagramPackageManagementViewModel _diagramPackageManagementViewModel)
         {
 
             this.appConfigService = _appConfigService;
@@ -48,6 +49,14 @@ namespace VisionTool.ViewModel
                 Name = "모듈 패키지",
                 ViewModel = _modulePackageViewModel
             });
+
+            this.MainMenuCollection.Add(new MainMenu()
+            {
+                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Icon Builder/Shopping_Box.svg")), 1d, null, null, true),
+                Name = "다이어그램 패키지",
+                ViewModel = _diagramPackageManagementViewModel
+            });
+
 
             this.MainMenuCollection.Add(new MainMenu()
             {

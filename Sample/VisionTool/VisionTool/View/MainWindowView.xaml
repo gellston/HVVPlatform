@@ -121,6 +121,9 @@
                 <DataTemplate DataType="{x:Type viewModel:DiagramEditViewModel}">
                     <view:DiagramEditView></view:DiagramEditView>
                 </DataTemplate>
+                <DataTemplate DataType="{x:Type viewModel:DiagramPackageManagementViewModel}">
+                    <view:DiagramPackageManagementView></view:DiagramPackageManagementView>
+                </DataTemplate>
             </ContentPresenter.Resources>
         </ContentPresenter>
     </DockPanel>

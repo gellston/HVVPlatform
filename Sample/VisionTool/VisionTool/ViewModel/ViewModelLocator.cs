@@ -32,6 +32,9 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<MessageDialogService>();
             SimpleIoc.Default.Register<ScriptFileService>();
             SimpleIoc.Default.Register<ModulePackageService>();
+            SimpleIoc.Default.Register<DiagramPackageService>();
+            SimpleIoc.Default.Register<DiagramEditService>();
+            
             
             
             SimpleIoc.Default.Register<MainWindowViewModel>();
@@ -39,6 +42,7 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<ModulePackageManagementViewModel>();
             SimpleIoc.Default.Register<ApplicationSettingViewModel>();
             SimpleIoc.Default.Register<DiagramEditViewModel>();
+            SimpleIoc.Default.Register<DiagramPackageManagementViewModel>();
 
 
             SimpleIoc.Default.Register<HV.V1.Interpreter>();

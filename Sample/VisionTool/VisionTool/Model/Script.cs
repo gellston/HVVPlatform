@@ -9,7 +9,7 @@ namespace VisionTool.Model
     {
         public Script()
         {
-
+            
         }
 
         public String FileName

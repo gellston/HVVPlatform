@@ -15,5 +15,10 @@ namespace VisionTool.Model
         public string ModuleConfigPath { get; set; }
         public string ModuleMainPath { get; set; }
         public string ModuleThirdPartyDLLPath { get; set; }
+
+
+        public string DiagramPath { get; set; }
+        public string DiagramConfigPath { get; set; }
+
     }
 }

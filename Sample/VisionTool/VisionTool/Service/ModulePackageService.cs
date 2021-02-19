@@ -1,11 +1,12 @@
 ﻿
 using DevExpress.Compression;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using System.Text.Json;
+
 using System.Text.RegularExpressions;
 using VisionTool.Model;
 
@@ -33,7 +34,7 @@ namespace VisionTool.Service
                 foreach (var config in configs)
                 {
                     var jsonContent = File.ReadAllText(config);
-                    var module = JsonSerializer.Deserialize<ModuleConfig>(jsonContent);
+                    var module = JsonConvert.DeserializeObject<ModuleConfig>(jsonContent);
                     configCollection.Add(module);
                 }
 
@@ -186,7 +187,8 @@ namespace VisionTool.Service
 
                 var targetConfigPath = _moduleTempPackagePath + _moduleName + ".json";
 
-                var jsonString = JsonSerializer.Serialize(config);
+                //var jsonString = JsonSerializer.Serialize(config);
+                string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
                 File.WriteAllText(targetConfigPath, jsonString);
 
 

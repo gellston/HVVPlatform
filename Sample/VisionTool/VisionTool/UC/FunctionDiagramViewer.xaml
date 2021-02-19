@@ -5,8 +5,178 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisionTool.UC"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="view"
+             xmlns:model="clr-namespace:VisionTool.Model">
     <DockPanel>
+        <DockPanel.Resources>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+            <CompositeCollection x:Key="compositeCollection">
+                <CollectionContainer Collection="{Binding Path=FunctionCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
+                <CollectionContainer Collection="{Binding Path=ConnectorCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
+                <CollectionContainer Collection="{Binding Path=InputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
+                <CollectionContainer Collection="{Binding Path=OutputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
+            </CompositeCollection>
+        </DockPanel.Resources>
         
+        <ListView DockPanel.Dock="Left"
+                  Width="300"
+                  ItemsSource="{Binding ElementName=view, Path=FunctionCollection}"
+                  Visibility="{Binding ElementName=view, Path=IsShowFunctionPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
+
+        </ListView>
+        
+        <!--수직 쌓기를 위한 Grid-->
+        <ScrollViewer Grid.Column="0"
+                      Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto"
+                      HorizontalContentAlignment="Left"
+                      VerticalContentAlignment="Top">
+
+            <ListBox SelectedItem="{Binding ElementName=view, Path=SelectedDiagram}"
+                     >
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Canvas.Left" Value="{Binding Path=Location.X}"/>
+                        <Setter Property="Canvas.Top" Value="{Binding Path=Location.Y}"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="VerticalContentAlignment" Value="Top"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <ContentPresenter x:Name="Content"/>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Content" Property="Effect">
+                                                <Setter.Value>
+                                                    <DropShadowEffect Color="Gray" ShadowDepth="4" BlurRadius="10"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.Resources>
+                    <DataTemplate DataType="{x:Type model:InputSnapSpot}">
+                        <Thumb IsEnabled="{Binding IsSelected,RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                   Height="30"
+                                   Width="100"
+                                   Margin="-15,-15,0,0">
+                            <Thumb.Template>
+                                <ControlTemplate>
+                                    <Grid Height="30"
+                                              Width="100">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="Red"/>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type model:OutputSnapSpot}">
+                        <Thumb IsEnabled="{Binding IsSelected,RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
+                                   Height="30"
+                                   Width="100"
+                                   Margin="-15,-15,0,0">
+                            <Thumb.Template>
+                                <ControlTemplate>
+                                    <Grid Height="30"
+                                              Width="100">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="30"></ColumnDefinition>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="Red"/>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type model:Function}">
+                        <Grid Width="{Binding Path=Size.Width}"
+                                  Height="{Binding Path=Size.Height}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Border CornerRadius="10"
+                                        Grid.Row="0"
+                                        Grid.RowSpan="2"
+                                        BorderThickness="3"
+                                        BorderBrush="Black"
+                                        >
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding Color, FallbackValue=White}"></SolidColorBrush>
+                                </Border.Background>
+
+                            </Border>
+                            <Thumb Grid.Row="0"
+                                       DragDelta="FunctionThum_DragDelta">
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <TextBlock Text="{Binding Name}" 
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontWeight="Bold"></TextBlock>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.Resources>
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <Border>
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1" Opacity=".3">
+                                    <GradientStop Color="White" Offset="0"/>
+                                    <GradientStop Color="GhostWhite" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <ItemsPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, FallbackValue=1920}"
+                                    Height="{Binding ElementName=view, Path=CanvasHeight, FallbackValue=1920}"
+                                    IsItemsHost="True"
+                                    VerticalAlignment="Top" 
+                                    HorizontalAlignment="Left">
+                            <Canvas.Background>
+                                <VisualBrush TileMode="Tile"
+                                                 Viewport="0,0,25,25" ViewportUnits="Absolute" 
+                                                 Viewbox="0,0,25,25" ViewboxUnits="Absolute">
+                                    <VisualBrush.Visual>
+                                        <Rectangle Stroke="Darkgray" 
+                                                       StrokeThickness="1" 
+                                                       Height="25" 
+                                                       Width="25"
+                                                       StrokeDashArray="5 3"/>
+                                    </VisualBrush.Visual>
+                                </VisualBrush>
+                            </Canvas.Background>
+                        </Canvas>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+                <ListBox.ItemsSource>
+                    <StaticResource ResourceKey="compositeCollection"></StaticResource>
+                </ListBox.ItemsSource>
+
+            </ListBox>
+        </ScrollViewer>
+
     </DockPanel>
 </UserControl>

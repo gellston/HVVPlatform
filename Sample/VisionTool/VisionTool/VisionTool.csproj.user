@@ -22,6 +22,9 @@
     <Compile Update="View\DiagramEditView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\DiagramPackageManagementView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\ModuleLoadingSplashWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -46,6 +49,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\DiagramEditView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DiagramPackageManagementView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\MainWindowView.xaml">
