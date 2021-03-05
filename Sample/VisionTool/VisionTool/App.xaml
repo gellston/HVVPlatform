@@ -7,6 +7,10 @@
     <Application.Resources>
         <ResourceDictionary>
             <viewModel:ViewModelLocator x:Key="ViewModelLocator"></viewModel:ViewModelLocator>
+            <Style TargetType="{x:Type ListBoxItem}">
+                <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+                <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

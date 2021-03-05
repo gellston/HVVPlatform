@@ -22,16 +22,16 @@ HV_CREATE_SHARED_CONVERTER(hv::v1::point);
 //	return handle_scope.Escape(exception);
 //}
 
-HV_PLUGIN_INIT(hv::v1::isolate* isolate)
+HV_PLUGIN_INIT(hv::v1::isolate* _isolate)
 {
 
 	
 
-	hv::v1::EscapeHandleScope scope(isolate);
+	hv::v1::EscapeHandleScope scope(_isolate);
 
 
 
-	hv::v1::class_<hv::v1::image, hv::v1::shared_ptr_traits> image_class(isolate);
+	hv::v1::class_<hv::v1::image, hv::v1::shared_ptr_traits> image_class(_isolate);
 	image_class.ctor<std::string, unsigned int, unsigned int, hv::v1::image_data_type, double>()
 		.auto_wrap_objects(true)
 		.inherit<hv::v1::object>()
@@ -50,7 +50,7 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		
 
 
-	hv::v1::class_<hv::v1::point, hv::v1::shared_ptr_traits> point_class(isolate);
+	hv::v1::class_<hv::v1::point, hv::v1::shared_ptr_traits> point_class(_isolate);
 	point_class.ctor<std::string, double, double>()
 		.auto_wrap_objects(true)
 		.inherit<hv::v1::object>()
@@ -59,7 +59,7 @@ HV_PLUGIN_INIT(hv::v1::isolate* isolate)
 		.set("y", &hv::v1::point::y);
 
 
-	hv::v1::module m(isolate);
+	hv::v1::module m(_isolate);
 	m.set_const("u8c1_image", hv::v1::image_data_type::u8c1_image)
 		.set_const("u16c1_image", hv::v1::image_data_type::u16c1_image)
 		.set_const("u32c1_image", hv::v1::image_data_type::u32c1_image)

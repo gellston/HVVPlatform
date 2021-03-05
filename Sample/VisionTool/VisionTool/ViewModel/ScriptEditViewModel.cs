@@ -22,80 +22,66 @@ namespace VisionTool.ViewModel
     public class ScriptEditViewModel : ViewModelBase
     {
 
-        private readonly FileDialogService fileDialogService;
-        private readonly MessageDialogService messageDialogService;
-        private readonly ScriptFileService scriptFileService;
-        private readonly HV.V1.Interpreter interpreter;
-        private readonly AppConfigService appConfigService;
+        private readonly ScriptControlService scriptControlService;
 
 
-        private string _trackingName;
-        private string _trackingType;
-        private bool _isTracking = false;
 
-
-        public ScriptEditViewModel(FileDialogService _fileDialogService,
-                                   MessageDialogService _messageDialogService,
-                                   ScriptFileService _scriptFileService,
-                                   AppConfigService _appConfigService,
-                                   HV.V1.Interpreter _interpreter)
+        public ScriptEditViewModel(ScriptControlService _scriptControlService)
         {
 
-            this.fileDialogService = _fileDialogService;
-            this.messageDialogService = _messageDialogService;
-            this.scriptFileService = _scriptFileService;
-            this.appConfigService = _appConfigService;
 
+            this.scriptControlService = _scriptControlService;
+            this.LogCollection = this.scriptControlService.ScriptLogCollection;
+            this.GlobalCollection = this.scriptControlService.GlobalCollection;
+            this.NativeModuleCollection = this.scriptControlService.NativeModuleCollection;
 
-            this.interpreter = _interpreter;
-            this.interpreter.TraceEvent += Trace;
+            this.scriptControlService.SetCheckRunning(data => this.IsRunningScript = data );
+            this.scriptControlService.SetCheckCurrentExecutionTime(data => this.CurrentExecutionTime = data);
+            this.scriptControlService.SetCheckCurrentFPS(data => this.CurrentFPS = data);
 
-
-
-            MessengerInstance.Register<NotificationMessage>(this, NotifyMessage);
         }
 
         ~ScriptEditViewModel()
         {
-            this.interpreter.TraceEvent -= Trace;
+            
         }
 
 
-        public void NotifyMessage(NotificationMessage message)
-        {
-            if(message.Notification == "ClearNativeModules")
-            {
+        //public void NotifyMessage(NotificationMessage message)
+        //{
+        //    if(message.Notification == "ClearNativeModules")
+        //    {
 
-                this.GlobalCollection.Clear();
+        //        this.GlobalCollection.Clear();
                 
-                this.SelectedGlobal = null;
-                this.DetailImageDrawCollection.Clear();
-                this.NativeModuleCollection.Clear();
+        //        this.SelectedGlobal = null;
+        //        this.DetailImageDrawCollection.Clear();
+        //        this.NativeModuleCollection.Clear();
 
-                System.GC.Collect();
-                System.GC.WaitForPendingFinalizers();
-                System.GC.WaitForFullGCComplete();
+        //        System.GC.Collect();
+        //        System.GC.WaitForPendingFinalizers();
+        //        System.GC.WaitForFullGCComplete();
 
-                this.interpreter.ReleaseNativeModules();
+        //        this.interpreter.ReleaseNativeModules();
 
-                if(this.interpreter.NativeModules.Count() > 0)
-                    this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
-             }
-        }
+        //        if(this.interpreter.NativeModules.Count() > 0)
+        //            this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
+        //     }
+        //}
 
 
-        private void Trace(string text)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.LogCollection.Insert(0,new Log()
-                {
-                    Type = "스크립트",
-                    Content = text
-                });
-            });
-            Thread.Sleep(1);
-        }
+        //private void Trace(string text)
+        //{
+        //    Application.Current.Dispatcher.Invoke(() =>
+        //    {
+        //        this.LogCollection.Insert(0,new Log()
+        //        {
+        //            Type = "스크립트",
+        //            Content = text
+        //        });
+        //    });
+        //    Thread.Sleep(1);
+        //}
 
         private WriteableBitmap _TrackingImagePresenter = null;
         public WriteableBitmap TrackingImagePresenter
@@ -124,18 +110,8 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
              {
-                 var filePath = this.fileDialogService.OpenFile("Script File (.js)|*.js");
-                 if (filePath.Length == 0) return;
-                 var content = this.scriptFileService.LoadScriptFile(filePath);
-                 var script = new Script()
-                 {
-                     FilePath = filePath,
-                     FileName = Path.GetFileName(filePath),
-                     ScriptContent = content
-                 };
-
+                 var script = this.scriptControlService.GetScriptFromPath();
                  this.ScriptCollection.Add(script);
-                 this.SelectedScript = script;
 
              });
             
@@ -145,14 +121,7 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.ScriptCollection.Add(new Script()
-                {
-                    FileName = "new.js",
-                    ScriptContent = "/* Be the god of coding */",
-                    FilePath = ""
-                });
-
-                //System.Console.WriteLine("test");
+                this.ScriptCollection.Add(this.scriptControlService.CreateNewScript());
             });
         }
 
@@ -160,19 +129,7 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                if (this.SelectedScript == null)
-                    return;
-
-                if(this.SelectedScript.FilePath.Length == 0)
-                {
-                    var filePath = this.fileDialogService.SaveFile("Script File (.js)|*.js");
-                    if (filePath.Length == 0) return;
-                    this.SelectedScript.FilePath = filePath;
-                    this.SelectedScript.FileName = Path.GetFileName(filePath);
-                    RaisePropertyChanged(nameof(SelectedScript));
-                }
-
-                this.scriptFileService.SaveScriptFile(this.SelectedScript.FilePath, this.SelectedScript.ScriptContent);
+                this.scriptControlService.SaveScript(this.SelectedScript);
             });
         }
 
@@ -186,73 +143,9 @@ namespace VisionTool.ViewModel
 
         public ICommand StartRunScriptCommand
         {
-            get => new RelayCommand(async () =>
+            get => new RelayCommand(() =>
             {
-                if (this.IsRunningScript == true) return;
-                if (this.SelectedScript == null) return;
-
-                this.interpreter.SetModulePath(this.appConfigService.ApplicationSetting.ModuleMainPath);
-
-                await Task.Run(async () =>
-                {
-               
-                    this.IsRunningScript = true;
-                    try
-                    {
-                        this.interpreter.RunScript(this.SelectedScript.ScriptContent);
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            this.GlobalCollection.Clear();
-                            this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-
-                            this.NativeModuleCollection.Clear();
-                            this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
-
-                            if (this._isTracking == false) return;
-                            try
-                            {
-                                var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
-                                {
-                                    return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
-                                }).First();
-
-                                var hvImage = new HV.V1.Image(image);
-                                var width = hvImage.Width;
-                                var height = hvImage.Height;
-                                var stride = hvImage.Stride;
-                                var size = hvImage.Size;
-                                if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
-                                {
-                                    TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
-                                }
-                                TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                            }
-                            catch (Exception e)
-                            {
-
-                            }
-                        }, DispatcherPriority.Send);
-                    }
-                    catch (HV.V1.ScriptError e)
-                    {
-                        System.Console.WriteLine(e.Message);
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
-                            this.LogCollection.Add(new Log()
-                            {
-                                Type = "Error",
-                                Content = errorContent
-                            });
-
-                            messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
-                        }, DispatcherPriority.Send);
-                        
-                    }
-
-                    this.IsRunningScript = false;
-                });
+                this.scriptControlService.RunScript(this.SelectedScript.ScriptContent);
             });
         }
 
@@ -260,103 +153,7 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                if (this.IsRunningScript == true) return;
-                if (this.SelectedScript == null) return;
-
-                this.IsRunningScript = true;
-
-
-                this.interpreter.SetModulePath(this.appConfigService.ApplicationSetting.ModuleMainPath);
-
-
-                Task.Run(async () =>
-                {
-                    var count = 0;
-                    var stacked_time = 0.0;
-
-                    while (IsRunningScript)
-                    {
-                        await Task.Delay(10);
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
-                        try
-                        {
-                           
-                            this.interpreter.RunScript(this.SelectedScript.ScriptContent);
-
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                this.GlobalCollection.Clear();
-                                this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
-
-                                this.NativeModuleCollection.Clear();
-                                this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
-
-                                if (this._isTracking == false) return;
-                                try
-                                {
-                                    var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
-                                    {
-                                        return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
-                                    }).First();
-
-                                    var hvImage = new HV.V1.Image(image);
-                                    var width = hvImage.Width;
-                                    var height = hvImage.Height;
-                                    var stride = hvImage.Stride;
-                                    var size = hvImage.Size;
-                                    if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
-                                    {
-                                        TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
-                                        TrackingImagePresenter.Freeze();
-                                    }
-                                    TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                                }
-                                catch (Exception e)
-                                {
-
-                                }
-                            }, DispatcherPriority.Send);
-                        }
-                        catch (HV.V1.ScriptError e)
-                        {
-
-                            System.Console.WriteLine(e.Message);
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
-                                this.LogCollection.Add(new Log()
-                                {
-                                    Type = "Error",
-                                    Content = errorContent
-                                });
-
-                                messageDialogService.ShowToastErrorMessage("스크립트 에러메세지", errorContent);
-                            }, DispatcherPriority.Send);
-
-                            break;
-                        }
-                        
-                        watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
-                        stacked_time += elapsedMs;
-                        count++;
-                        if(stacked_time > 1000)
-                        {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                this.CurrentFPS = count.ToString("F2");
-                                this.CurrentExecutionTime = elapsedMs.ToString() + " ms";
-                            }, DispatcherPriority.Send);
-                            count = 0;
-                            stacked_time = 0;
-                        }
-
-       
-                    }
-
-                    this.IsRunningScript = false;
-                });
-
+                this.scriptControlService.ContinuousRunScript(this.SelectedScript.ScriptContent);
             });
         }
 
@@ -364,8 +161,7 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.interpreter.Terminate();
-                this.IsRunningScript = false;
+                this.scriptControlService.StopScriptRunning();
             });
         }
 
@@ -373,19 +169,19 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                if (this.SelectedGlobal == null) return;
-                if (!this.SelectedGlobal.Type.Contains("image")) return;
+                //if (this.SelectedGlobal == null) return;
+                //if (!this.SelectedGlobal.Type.Contains("image")) return;
 
-                this._trackingType = this.SelectedGlobal.Type;
-                this._trackingName = this.SelectedGlobal.Name;
-                this._isTracking = true;
+                //this._trackingType = this.SelectedGlobal.Type;
+                //this._trackingName = this.SelectedGlobal.Name;
+                //this._isTracking = true;
 
-                var hvImage = new HV.V1.Image(this.SelectedGlobal);
-                if (TrackingImagePresenter == null || TrackingImagePresenter.Width != hvImage.Width || TrackingImagePresenter.Height != hvImage.Height)
-                {
-                    TrackingImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
-                }
-                TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
+                //var hvImage = new HV.V1.Image(this.SelectedGlobal);
+                //if (TrackingImagePresenter == null || TrackingImagePresenter.Width != hvImage.Width || TrackingImagePresenter.Height != hvImage.Height)
+                //{
+                //    TrackingImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
+                //}
+                //TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
             });
         }
 
@@ -393,7 +189,7 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this._isTracking = false;
+                
             });
         }
 
@@ -401,45 +197,33 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                if (this.SelectedGlobal == null) return;
-                if (!this.SelectedGlobal.Type.Contains("image")) return;
+                //if (this.SelectedGlobal == null) return;
+                //if (!this.SelectedGlobal.Type.Contains("image")) return;
 
-                var hvImage = new HV.V1.Image(this.SelectedGlobal);
-                if (DetailImagePresenter == null || DetailImagePresenter.Width != hvImage.Width || DetailImagePresenter.Height != hvImage.Height)
-                {
-                    DetailImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
-                }
-                DetailImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
-                this.DetailImageDrawCollection = new ObservableCollection<HV.V1.Object>(hvImage.DrawObjects);
+                //var hvImage = new HV.V1.Image(this.SelectedGlobal);
+                //if (DetailImagePresenter == null || DetailImagePresenter.Width != hvImage.Width || DetailImagePresenter.Height != hvImage.Height)
+                //{
+                //    DetailImagePresenter = new WriteableBitmap(hvImage.Width, hvImage.Height, 96, 96, PixelFormats.Gray8, null);
+                //}
+                //DetailImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, hvImage.Width, hvImage.Height), hvImage.Ptr(), hvImage.Size, hvImage.Stride);
+                //this.DetailImageDrawCollection = new ObservableCollection<HV.V1.Object>(hvImage.DrawObjects);
             });
         }
 
         private ObservableCollection<Script> _ScriptCollection = null;
         public ObservableCollection<Script> ScriptCollection
         {
-            get
-            {
-                if(_ScriptCollection == null)
-                {
-                    _ScriptCollection = new ObservableCollection<Script>();
-                }
+            get {
+
+                _ScriptCollection ??= new ObservableCollection<Script>();
                 return _ScriptCollection;
             }
+            //set => Set(ref _ScriptCollection, value);
         }
 
-        private ObservableCollection<HV.V1.Object> _GlobalCollection = null;
-        public ObservableCollection<HV.V1.Object> GlobalCollection
-        {
-            get
-            {
-                if (_GlobalCollection == null)
-                {
-                    _GlobalCollection = new ObservableCollection<HV.V1.Object>();
-                }
-                return _GlobalCollection;
-            }
-            set => Set<ObservableCollection<HV.V1.Object>>(nameof(GlobalCollection), ref _GlobalCollection, value);
-        }
+
+        public ObservableCollection<HV.V1.Object> GlobalCollection { get; set; }
+
 
         private ObservableCollection<HV.V1.Object> _DetailImageDrawCollection = null;
         public ObservableCollection<HV.V1.Object> DetailImageDrawCollection
@@ -492,34 +276,9 @@ namespace VisionTool.ViewModel
             set => Set<string>(nameof(CurrentExecutionTime), ref _CurrentExecutionTime, value);
         }
 
+        public ObservableCollection<Log> LogCollection { get; set; }
 
-
-        private ObservableCollection<Log> _LogCollection = null;
-        public ObservableCollection<Log> LogCollection
-        {
-            get
-            {
-                if (_LogCollection == null)
-                {
-                    _LogCollection = new ObservableCollection<Log>();
-                }
-                return _LogCollection;
-            }
-        }
-
-
-        private ObservableCollection<HV.V1.NativeModule> _NativeModuleCollection = null;
-        public ObservableCollection<HV.V1.NativeModule> NativeModuleCollection
-        {
-            get
-            {
-                if (_NativeModuleCollection == null)
-                {
-                    _NativeModuleCollection = new ObservableCollection<HV.V1.NativeModule>();
-                }
-                return _NativeModuleCollection;
-            }
-        }
+        public ObservableCollection<HV.V1.NativeModule> NativeModuleCollection { get; set; }
 
     }
 }

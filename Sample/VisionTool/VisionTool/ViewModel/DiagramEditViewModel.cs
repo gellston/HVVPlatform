@@ -8,21 +8,41 @@ using System.Windows.Input;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GalaSoft.MvvmLight.Messaging;
 using VisionTool.Model;
+using VisionTool.Service;
 
 namespace VisionTool.ViewModel
 {
     public class DiagramEditViewModel : ViewModelBase
     {
 
-        public DiagramEditViewModel()
+        private DiagramPackageService diagramPackageService;
+        private SettingConfigService appConfigService;
+
+        public DiagramEditViewModel(DiagramPackageService _diagramPackageService,
+                                    SettingConfigService _appConfigService)
         {
 
             this.CanvasWidth = 2040;
             this.CanvasHeight = 2040;
 
 
+            this.diagramPackageService = _diagramPackageService;
+            this.appConfigService = _appConfigService;
 
+            MessengerInstance.Register<NotificationMessage>(this, NotifyMessageReloadDiagramCollection);
+        }
+
+        public void NotifyMessageReloadDiagramCollection(NotificationMessage message)
+        {
+            if (message.Notification == "ReloadDiagramCollection")
+            {
+
+                DiagramConfigCollection = diagramPackageService.LoadAllDiagramConfig(this.appConfigService.ApplicationSetting.DiagramConfigPath,
+                                                                                     this.appConfigService.ApplicationSetting.DiagramImagePath);
+
+            }
         }
 
 
@@ -56,15 +76,24 @@ namespace VisionTool.ViewModel
             }
         }
 
-        private ObservableCollection<InputSnapSpot> _OutputSnapSpotCollection = null;
-        public ObservableCollection<InputSnapSpot> OutputSnapSpotCollection
+        private ObservableCollection<OutputSnapSpot> _OutputSnapSpotCollection = null;
+        public ObservableCollection<OutputSnapSpot> OutputSnapSpotCollection
         {
             get
             {
-                _OutputSnapSpotCollection ??= new ObservableCollection<InputSnapSpot>();
+                _OutputSnapSpotCollection ??= new ObservableCollection<OutputSnapSpot>();
                 return _OutputSnapSpotCollection;
             }
         }
+
+        private ObservableCollection<DiagramConfig> _DiagramConfigCollection = null;
+        public ObservableCollection<DiagramConfig> DiagramConfigCollection
+        {
+            get => _DiagramConfigCollection;
+            set => Set(ref _DiagramConfigCollection, value);
+        }
+
+        
 
 
 
@@ -73,12 +102,44 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
 
+                var test_function = new Function()
+                {
+                    Name = "TEST"
+                };
 
-                this.FunctionCollection.Add(new Function()
+                var inputSnapSpot = new InputSnapSpot()
                 {
                     Name = "test",
-                    
-                });
+                    Parent = test_function,
+                    DataType = "Image"
+                };
+
+                inputSnapSpot.Offset.Y = 30;
+                inputSnapSpot.Offset.X = 30;
+
+                
+
+
+                var outputSnapSpot = new OutputSnapSpot()
+                {
+                    Name = "test",
+                    Parent = test_function,
+                    DataType = "Image"
+                };
+
+                outputSnapSpot.Offset.Y = 50;
+                outputSnapSpot.Offset.X = 30;
+
+
+                test_function.Input.Add(inputSnapSpot);
+                test_function.Output.Add(outputSnapSpot);
+
+
+
+                this.FunctionCollection.Add(test_function);
+                this.InputSnapSpotCollection.Add(inputSnapSpot);
+                this.OutputSnapSpotCollection.Add(outputSnapSpot);
+
 
                 var Object = new DiagramConfig()
                 {
@@ -89,19 +150,11 @@ namespace VisionTool.ViewModel
                    
                 };
 
-                Object.FunctionCollection.Add(new Function()
-                {
-                    Name = "test"
-                });
+                Object.FunctionInfo = test_function;
+                Object.InputSnapSpotCollection.Add(inputSnapSpot);
+                Object.OutputSnapSpotCollection.Add(outputSnapSpot);
 
-                Object.InputSnapSpotCollection.Add(new InputSnapSpot()
-                {
-                    Color = Color.FromRgb(255, 255, 255),
-                    Name = "test",
-                    IsConnected = false,
-                    IsNew = false,
-                   
-                });
+                
 
 
                 var jsonString = JsonSerializer.Serialize(Object);

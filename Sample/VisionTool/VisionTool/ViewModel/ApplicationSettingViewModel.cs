@@ -9,8 +9,8 @@ namespace VisionTool.ViewModel
 {
     public class ApplicationSettingViewModel : ViewModelBase
     {
-        private readonly AppConfigService appConfigService;
-        public ApplicationSettingViewModel(AppConfigService _appConfigService)
+        private readonly SettingConfigService appConfigService;
+        public ApplicationSettingViewModel(SettingConfigService _appConfigService)
         {
             this.appConfigService = _appConfigService;
 

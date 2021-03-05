@@ -15,21 +15,15 @@ namespace VisionTool.ViewModel
     public class ModulePackageManagementViewModel : ViewModelBase
     {
 
-        private readonly AppConfigService appConfigService;
-        private readonly ModulePackageService modulePackageService;
-        private readonly MessageDialogService messageDialogService;
-        private readonly FileDialogService fileDialogService;
+        private readonly SettingConfigService appConfigService;
+        private readonly ModuleControlService modulePackageService;
        
 
-        public ModulePackageManagementViewModel(AppConfigService _appConfigService,
-                                                ModulePackageService _modulePackageService,
-                                                MessageDialogService _messageDialogService,
-                                                FileDialogService _fileDialogService)
+        public ModulePackageManagementViewModel(SettingConfigService _appConfigService,
+                                                ModuleControlService _modulePackageService)
         {
             this.appConfigService = _appConfigService;
             this.modulePackageService = _modulePackageService;
-            this.messageDialogService = _messageDialogService;
-            this.fileDialogService = _fileDialogService;
 
 
             MessengerInstance.Register<NotificationMessage>(this, NotifyMessage);
@@ -111,27 +105,27 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                if (this.SelectedModule == null)
-                {
-                    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
-                    return;
-                }
+                //if (this.SelectedModule == null)
+                //{
+                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
+                //    return;
+                //}
                     
-                if(File.Exists(this.SelectedModule.FilePath) == false)
-                {
-                    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
-                    return;
-                }
+                //if(File.Exists(this.SelectedModule.FilePath) == false)
+                //{
+                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
+                //    return;
+                //}
 
 
-                File.Delete(this.SelectedModule.FilePath);
+                //File.Delete(this.SelectedModule.FilePath);
 
-                this.ModuleCollection.Remove(this.SelectedModule);
-                this.SelectedModule = null;
+                //this.ModuleCollection.Remove(this.SelectedModule);
+                //this.SelectedModule = null;
 
 
-                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "ClearNativeModules"));
-                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "UpdateModule"));
+                //MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "ClearNativeModules"));
+                //MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "UpdateModule"));
 
             });
         }
@@ -166,11 +160,11 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                var maindll = this.fileDialogService.OpenFile("Script File (.dll)|*.dll");
-                if (maindll.Length == 0) return;
+                //var maindll = this.fileDialogService.OpenFile("Script File (.dll)|*.dll");
+                //if (maindll.Length == 0) return;
 
 
-                this.ModuleMainPath = maindll;
+                //this.ModuleMainPath = maindll;
 
             });
         }
@@ -179,20 +173,20 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                var dependentdll_list = this.fileDialogService.OpenFiles("Script File (.dll)|*.dll");
-                if (dependentdll_list == null) return;
-                if (dependentdll_list.Length == 0) return;
+                //var dependentdll_list = this.fileDialogService.OpenFiles("Script File (.dll)|*.dll");
+                //if (dependentdll_list == null) return;
+                //if (dependentdll_list.Length == 0) return;
 
 
-                foreach(var dependentdll in dependentdll_list)
-                {
-                    this.DependentDLLCollection.Add(new DependentDLL()
-                    {
-                        FileName = Path.GetFileName(dependentdll),
-                        FilePath = dependentdll
-                    });
+                //foreach(var dependentdll in dependentdll_list)
+                //{
+                //    this.DependentDLLCollection.Add(new DependentDLL()
+                //    {
+                //        FileName = Path.GetFileName(dependentdll),
+                //        FilePath = dependentdll
+                //    });
 
-                }
+                //}
 
 
             });
@@ -203,28 +197,28 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
 
-                this.ModuleModifyDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");
-                bool check = this.modulePackageService.CreateModulePackage(this.ModuleName,
-                                                                           this.ModuleModifyDate,
-                                                                           this.ModuleMainPath,
-                                                                           this.ModuleVersion,
-                                                                           this.ModuleComment,
-                                                                           this.DependentDLLCollection,
-                                                                           this.appConfigService.ApplicationSetting.ModulePath,
-                                                                           this.appConfigService.TempModulePackagePath,
-                                                                           this.appConfigService.SecurityPassword);
+                //this.ModuleModifyDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");
+                //bool check = this.modulePackageService.CreateModulePackage(this.ModuleName,
+                //                                                           this.ModuleModifyDate,
+                //                                                           this.ModuleMainPath,
+                //                                                           this.ModuleVersion,
+                //                                                           this.ModuleComment,
+                //                                                           this.DependentDLLCollection,
+                //                                                           this.appConfigService.ApplicationSetting.ModulePath,
+                //                                                           this.appConfigService.TempModulePackagePath,
+                //                                                           this.appConfigService.SecurityPassword);
 
 
-                if (check == true)
-                {
-                    messageDialogService.ShowToastSuccessMessage("모듈 패키지", "모듈 패키징 완료");
+                //if (check == true)
+                //{
+                //    messageDialogService.ShowToastSuccessMessage("모듈 패키지", "모듈 패키징 완료");
          
-                }
-                else
-                {
-                    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈 패키징 실패");
+                //}
+                //else
+                //{
+                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈 패키징 실패");
                     
-                }
+                //}
 
             });
         }

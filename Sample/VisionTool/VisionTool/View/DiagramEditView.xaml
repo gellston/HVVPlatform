@@ -6,17 +6,50 @@
              xmlns:local="clr-namespace:VisionTool.View"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             xmlns:uc="clr-namespace:VisionTool.UC">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-        </Grid.RowDefinitions>
+             xmlns:uc="clr-namespace:VisionTool.UC"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core">
+
+    <DockPanel>
+        <Grid Height="40"
+              DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성"
+                             Grid.Column="0" ButtonKind="Toggle">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결"
+                             Grid.Column="1" ButtonKind="Toggle">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsShowFunctionPanel, Mode=TwoWay}" ToolTip="다이어그램 종류 뷰"
+                             Grid.Column="2" ButtonKind="Toggle">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/FunctionsStatistical.svg'}"></Image>
+            </dx:SimpleButton>
+
+        </Grid>
+        
+        
         <uc:FunctionDiagramViewer Grid.Row="0" 
                                   FunctionCollection="{Binding Path=FunctionCollection}"
+                                  InputSnapSpotCollection="{Binding Path=InputSnapSpotCollection}"
+                                  OutputSnapSpotCollection="{Binding Path=OutputSnapSpotCollection}"
                                   CanvasWidth="1920"
-                                  CanvasHeight="1920"></uc:FunctionDiagramViewer>
+                                  CanvasHeight="1920"
+                                  x:Name="FunctionDiagramViewer"
+                                  DiagramConfigCollection="{Binding Path=DiagramConfigCollection}"></uc:FunctionDiagramViewer>
         <Button Command="{Binding TestCommand}" Grid.Row="1"></Button>
-    </Grid>
-    
+        
+    </DockPanel>
+
 </UserControl>

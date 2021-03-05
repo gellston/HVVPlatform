@@ -43,5 +43,23 @@ namespace VisionTool.Model
             }
         }
 
+        private string _StartSnapHash;
+
+        public string StartSnapHash
+        {
+            get => _StartSnapHash;
+            set => Set(ref _StartSnapHash, value);
+        }
+
+
+        private string _OutputSnapHash;
+
+        public string OutputSnapHash
+        {
+            get => _OutputSnapHash;
+            set => Set(ref _OutputSnapHash, value);
+        }
+
+
     }
 }

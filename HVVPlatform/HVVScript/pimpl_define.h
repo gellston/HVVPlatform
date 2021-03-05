@@ -31,11 +31,7 @@ namespace hv::v1 {
 		return converted;
 	}
 
-	//class pimpl_object_hash;
-	//class pimpl_v8_isolate;
-	//class pimpl_v8_platform;
-	//class pimpl_converter_lambda;
-	//class pimpl_local_var_implement;
+
 	class pimpl_v8pp_context : public pimpl {
 	private:
 		std::shared_ptr<v8pp::context> _context;
@@ -48,12 +44,6 @@ namespace hv::v1 {
 		}
 	};
 
-	//class pimpl_object_hash : public pimpl{
-	//public:
-	//	pimpl_object_hash() {}
-	//	~pimpl_object_hash() override { }
-	//	std::map<std::string, std::shared_ptr<object>> _instance;
-	//};
 
 	class pimpl_v8_isolate : public pimpl {
 	public:
@@ -78,8 +68,6 @@ namespace hv::v1 {
 			this->_global.Reset(); 
 
 		}
-		///v8::Local<v8::Value> * _local;
-		//v8::CopyablePersistentTraits<v8::Value>::CopyablePersistent _global_persistent;
 		v8::Global<v8::Value> _global;
 		
 		v8::Isolate* _isolate;

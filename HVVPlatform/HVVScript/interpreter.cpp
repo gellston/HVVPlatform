@@ -67,8 +67,8 @@ interpreter::~interpreter() {
 
 	// global native object deletion
 	for (auto& element : *this->_native_modules) {
-		if (element.second.handle == nullptr) continue;
-		::FreeLibrary(static_cast<HMODULE>(element.second.handle));
+		if (element.second._handle == nullptr) continue;
+		::FreeLibrary(static_cast<HMODULE>(element.second._handle));
 	}
 
 }
@@ -214,9 +214,9 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 	}));
 }
 
-void hv::v1::interpreter::trace(std::string input)
+void hv::v1::interpreter::trace(std::string _input)
 {
-	auto u8String = u8string_to_string(input);
+	auto u8String = u8string_to_string(_input);
 	this->_trace_callback((char *)u8String.c_str());
 }
 
@@ -268,12 +268,12 @@ void interpreter::_clear_error_message() {
 	this->_has_error = false;
 	this->_error_message = "";
 }
-void interpreter::_set_error_info(std::string message, int start_col, int end_col, int row) {
+void interpreter::_set_error_info(std::string _message, int _start_col, int _end_col, int _row) {
 	this->_has_error = true;
-	this->_error_message = message;
-	this->_error_start_column = start_col;
-	this->_error_end_column = end_col;
-	this->_error_rows = row;
+	this->_error_message = _message;
+	this->_error_start_column = _start_col;
+	this->_error_end_column = _end_col;
+	this->_error_rows = _row;
 }
 
 
@@ -291,7 +291,6 @@ void interpreter::_loop() {
 
 
 		auto isolate = extract_pimpl<pimpl_v8_isolate>(this->_isolate);
-		//auto global_hash = this->_global
 		
 
 
@@ -460,29 +459,29 @@ void interpreter::_loop() {
 	}
 }
 
-bool interpreter::register_converter(std::string type , converter* _converter) {
-	if (this->_converter_lambda.find(type) != this->_converter_lambda.end()) return false;
+bool interpreter::register_converter(std::string _type , converter* _converter) {
+	if (this->_converter_lambda.find(_type) != this->_converter_lambda.end()) return false;
 
-	this->_converter_lambda[type] = std::shared_ptr<converter>(_converter);
+	this->_converter_lambda[_type] = std::shared_ptr<converter>(_converter);
 
 	return true;
 }
 
-bool interpreter::set_module_path(std::string path) {
+bool interpreter::set_module_path(std::string _path) {
 	if (this->_is_script_running == true) return false;
-	this->_script_module_path = path;
+	this->_script_module_path = _path;
 
 	return true;
 }
 
-bool interpreter::run_script(std::string content) {
+bool interpreter::run_script(std::string _content) {
 
 	/// <summary>
 	/// Break script freezing
 	/// </summary>
 	if (this->_is_script_running == true) return false;
 
-	this->_script_content = content;
+	this->_script_content = _content;
 	this->_is_content = true;
 
 
@@ -499,7 +498,7 @@ bool interpreter::run_script(std::string content) {
 
 	return true;
 }
-bool interpreter::run_file(std::string path) {
+bool interpreter::run_file(std::string _path) {
 	
 
 	/// <summary>
@@ -507,7 +506,7 @@ bool interpreter::run_file(std::string path) {
 	/// </summary>
 	if (this->_is_script_running == true) return false;
 
-	this->_script_file_path = path;
+	this->_script_file_path = _path;
 	this->_is_content = false;
 
 
@@ -526,23 +525,23 @@ bool interpreter::run_file(std::string path) {
 }
 
 
-bool interpreter::register_external_object(std::string key, std::shared_ptr<object> data) {
+bool interpreter::register_external_object(std::string _key, std::shared_ptr<object> _data) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	(*this->_external_hash_map)[key] = data;
+	(*this->_external_hash_map)[_key] = _data;
 
 	return true;
 }
 
-std::shared_ptr<object> interpreter::external_object(std::string key) {
+std::shared_ptr<object> interpreter::external_object(std::string _key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	if (this->_external_hash_map->find(key) == this->_external_hash_map->end()) {
+	if (this->_external_hash_map->find(_key) == this->_external_hash_map->end()) {
 		std::shared_ptr<object> null_pointer(nullptr);
 		return null_pointer;
 	}
 
-	auto shared_pointer = (*this->_external_hash_map)[key];
+	auto shared_pointer = (*this->_external_hash_map)[_key];
 
 	return shared_pointer;
 }
@@ -565,10 +564,10 @@ std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> interpreter::ext
 
 
 
-bool interpreter::check_external_object(std::string key) {
+bool interpreter::check_external_object(std::string _key) {
 	std::scoped_lock lock(this->_mtx_event_external_hash);
 
-	if (this->_external_hash_map->find(key) == this->_external_hash_map->end()) return false;
+	if (this->_external_hash_map->find(_key) == this->_external_hash_map->end()) return false;
 
 
 	return true;
@@ -609,8 +608,8 @@ void interpreter::release_native_modules() {
 	
 
 	for (auto& element : *this->_native_modules) {
-		if (element.second.handle == nullptr) continue;
-		::FreeLibrary(static_cast<HMODULE>(element.second.handle));
+		if (element.second._handle == nullptr) continue;
+		::FreeLibrary(static_cast<HMODULE>(element.second._handle));
 	}
 
 	this->_native_modules->clear();
@@ -632,11 +631,11 @@ void interpreter::reset_trace_callback() {
 }
 
 
-bool interpreter::init_v8_startup_data(std::string path) {
+bool interpreter::init_v8_startup_data(std::string _path) {
 
-	if (path.length() == 0) return false;
+	if (_path.length() == 0) return false;
 
-	v8::V8::InitializeExternalStartupData(static_cast<const char*>(path.c_str()));
+	v8::V8::InitializeExternalStartupData(static_cast<const char*>(_path.c_str()));
 
 	return true;;
 }
@@ -658,11 +657,11 @@ bool interpreter::init_v8_engine() {
 }
 
 
-void interpreter::set_v8_flag(std::string flag) {
+void interpreter::set_v8_flag(std::string _flag) {
 
-	int size = static_cast<int>(flag.length());
+	int size = static_cast<int>(_flag.length());
 
-	v8::V8::SetFlagsFromString(flag.c_str(), size);
+	v8::V8::SetFlagsFromString(_flag.c_str(), size);
 }
 
 

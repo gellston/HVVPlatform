@@ -62,7 +62,17 @@ namespace VisionTool.Model
          
             Location.Value = Point.Add(Parent.Location.Value, new Vector(Offset.X, (Offset.Y)));
         }
-        
-        
+
+
+        private string _ParentFunctionHash;
+
+        public string ParentFunctionHash
+        {
+            get => _ParentFunctionHash;
+            set => Set(ref _ParentFunctionHash, value);
+        }
+
+
+
     }
 }

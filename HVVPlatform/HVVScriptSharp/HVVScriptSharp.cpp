@@ -219,13 +219,6 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 		}
 	}
 
-
-	for (auto& [key, val] : *externals) {
-		
-		
-		
-	}
-
 	return external_object;
 }
 
@@ -239,7 +232,7 @@ Dictionary<System::String^, HV::V1::NativeModule^>^ HV::V1::Interpreter::NativeM
 	{
 		std::string key = it->first;
 		auto native_moudle = it->second;
-		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(native_moudle.file_path.c_str()), System::IntPtr(native_moudle.handle)));
+		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(native_moudle.file_path().c_str()), System::IntPtr(native_moudle.handle())));
 	}
 
 	for (auto& [key, val] : *native_modules) {

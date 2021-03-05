@@ -16,10 +16,10 @@ namespace VisionTool.ViewModel
     public class MainWindowViewModel : ViewModelBase
     {
 
-        private readonly AppConfigService appConfigService;
+        private readonly SettingConfigService appConfigService;
         
         public MainWindowViewModel(ScriptEditViewModel _scriptEditViewModel,
-                                   AppConfigService _appConfigService,
+                                   SettingConfigService _appConfigService,
                                    ModulePackageManagementViewModel _modulePackageViewModel,
                                    ApplicationSettingViewModel _applicationSettingViewModel,
                                    DiagramEditViewModel _diagramEditViewModel,

@@ -6,13 +6,10 @@ using VisionTool.Model;
 
 namespace VisionTool.Service
 {
-    public class AppConfigService
+    public class SettingConfigService
     {
-        public AppConfigService()
+        public SettingConfigService()
         {
-
-
-
 
             if (File.Exists(this.CurrentApplicationSettingFilePath) == false)
             {
@@ -23,9 +20,14 @@ namespace VisionTool.Service
                     ModuleMainPath = this.CurrentApplicationPath + "ModuleMain" + Path.DirectorySeparatorChar,
                     ModuleThirdPartyDLLPath = this.CurrentApplicationPath + "ModuleThirdParty" + Path.DirectorySeparatorChar,
                     DiagramPath = this.CurrentApplicationPath + "Diagram" + Path.DirectorySeparatorChar,
-                    DiagramConfigPath = this.CurrentApplicationPath + "DiagramConfig" + Path.DirectorySeparatorChar
+                    DiagramConfigPath = this.CurrentApplicationPath + "DiagramConfig" + Path.DirectorySeparatorChar,
+                    DiagramImagePath = this.CurrentApplicationPath + "DiagramImage" + Path.DirectorySeparatorChar
                     
                 };
+            }
+            else
+            {
+                // 파일 생성 코드 짜는게 필요함.
             }
 
             Directory.CreateDirectory(this.ApplicationSetting.ModulePath);
@@ -34,6 +36,7 @@ namespace VisionTool.Service
             Directory.CreateDirectory(this.ApplicationSetting.ModuleThirdPartyDLLPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramConfigPath);
+            Directory.CreateDirectory(this.ApplicationSetting.DiagramImagePath);
 
             Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + this.ApplicationSetting.ModuleThirdPartyDLLPath);
         }

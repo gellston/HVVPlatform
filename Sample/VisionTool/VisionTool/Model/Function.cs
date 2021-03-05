@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -34,14 +35,6 @@ namespace VisionTool.Model
         }
 
 
-     
-        private string _Hash;
-
-        public string Hash
-        {
-            get => _Hash;
-            set => Set(ref _Hash, value);
-        }
 
 
         private BindableSize _Size = null;
@@ -54,7 +47,10 @@ namespace VisionTool.Model
             }
         }
 
+        
         private ObservableCollection<InputSnapSpot> _Input = null;
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ObservableCollection<InputSnapSpot> Input
         {
             get
@@ -65,8 +61,10 @@ namespace VisionTool.Model
         }
 
 
-
+        
         private ObservableCollection<OutputSnapSpot> _Output = null;
+        [JsonIgnore]
+        [IgnoreDataMember]
         public ObservableCollection<OutputSnapSpot> Output
         {
             get
@@ -83,5 +81,14 @@ namespace VisionTool.Model
             get => _ScriptContent;
             set => Set(ref _ScriptContent, value);
         }
+
+
+        public void Activate()
+        {
+            this.IsNew = false;
+            this.Input.ToList().ForEach(x => x.IsNew = false);
+            this.Output.ToList().ForEach(x => x.IsNew = false);
+        }
+
     }
 }

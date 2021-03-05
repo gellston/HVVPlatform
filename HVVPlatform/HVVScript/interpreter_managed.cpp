@@ -30,20 +30,20 @@ hv::v1::interpreter_managed::~interpreter_managed() {
 
 }
 
-bool hv::v1::interpreter_managed::set_module_path(std::string path) {
-	return this->_pimpl->ptr->set_module_path(path);
+bool hv::v1::interpreter_managed::set_module_path(std::string _path) {
+	return this->_pimpl->ptr->set_module_path(_path);
 }
-bool hv::v1::interpreter_managed::run_script(std::string content) {
+bool hv::v1::interpreter_managed::run_script(std::string _content) {
 	try {
-		return this->_pimpl->ptr->run_script(content);
+		return this->_pimpl->ptr->run_script(_content);
 	}
 	catch (hv::v1::script_error error) {
 		throw error;
 	}
 }
-bool hv::v1::interpreter_managed::run_file(std::string path) {
+bool hv::v1::interpreter_managed::run_file(std::string _path) {
 	try {
-		return this->_pimpl->ptr->run_file(path);
+		return this->_pimpl->ptr->run_file(_path);
 	}
 	catch (hv::v1::script_error error) {
 		throw error;
@@ -53,14 +53,14 @@ bool hv::v1::interpreter_managed::terminate() {
 	return this->_pimpl->ptr->terminate();
 }
 
-bool hv::v1::interpreter_managed::register_external_data(std::string key, std::shared_ptr<hv::v1::object> data) {
-	return this->_pimpl->ptr->register_external_object(key, data);
+bool hv::v1::interpreter_managed::register_external_data(std::string _key, std::shared_ptr<hv::v1::object> _data) {
+	return this->_pimpl->ptr->register_external_object(_key, _data);
 }
-std::shared_ptr<hv::v1::object> hv::v1::interpreter_managed::external_data(std::string key) {
-	return this->_pimpl->ptr->external_object(key);
+std::shared_ptr<hv::v1::object> hv::v1::interpreter_managed::external_data(std::string _key) {
+	return this->_pimpl->ptr->external_object(_key);
 }
-bool hv::v1::interpreter_managed::check_external_data(std::string key) {
-	return this->_pimpl->ptr->check_external_object(key);
+bool hv::v1::interpreter_managed::check_external_data(std::string _key) {
+	return this->_pimpl->ptr->check_external_object(_key);
 }
 void hv::v1::interpreter_managed::clear_external_data() {
 	return this->_pimpl->ptr->clear_external_object();
@@ -99,8 +99,8 @@ void hv::v1::interpreter_managed::release_native_modules() {
 
 
 
-bool hv::v1::interpreter_managed::init_v8_startup_data(std::string path) {
-	return hv::v1::interpreter::init_v8_startup_data(path);
+bool hv::v1::interpreter_managed::init_v8_startup_data(std::string _path) {
+	return hv::v1::interpreter::init_v8_startup_data(_path);
 }
 void hv::v1::interpreter_managed::init_v8_platform() {
 	hv::v1::interpreter::init_v8_platform();
@@ -108,7 +108,7 @@ void hv::v1::interpreter_managed::init_v8_platform() {
 bool hv::v1::interpreter_managed::init_v8_engine() {
 	return hv::v1::interpreter::init_v8_engine();
 }
-void hv::v1::interpreter_managed::set_v8_flag(std::string flag) {
-	hv::v1::interpreter::set_v8_flag(flag);
+void hv::v1::interpreter_managed::set_v8_flag(std::string _flag) {
+	hv::v1::interpreter::set_v8_flag(_flag);
 }
 

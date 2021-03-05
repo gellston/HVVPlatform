@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisionTool.UC"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
@@ -20,9 +21,61 @@
         </DockPanel.Resources>
         
         <ListView DockPanel.Dock="Left"
-                  Width="300"
-                  ItemsSource="{Binding ElementName=view, Path=FunctionCollection}"
-                  Visibility="{Binding ElementName=view, Path=IsShowFunctionPanel, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  Width="0"
+                  Name="LeftDiagramConfigCollection"
+                  ItemsSource="{Binding ElementName=view, Path=DiagramConfigCollection}"
+                  SelectedItem="{Binding ElementName=view, Path=SelectedDiagramConfig}">
+            
+            <ListView.Resources>
+                <Storyboard x:Key="ShrinkWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
+                                         Duration="0:0:0.5"
+                                         To="0">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Key="EnLargeWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
+                                         Duration="0:0:0.5"
+                                         To="300">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+
+                <DataTemplate DataType="{x:Type model:DiagramConfig}">
+                    <Grid Height="40">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0">
+                            <Image Source="{Binding Path=DiagramImage, FallbackValue={dx:DXImage 'SvgImages/Dashboards/ShowWeightedLegendNone.svg'}}"></Image>
+                        </Button>
+                        <TextBlock Grid.Column="1" Text="{Binding Path=DiagramName}" FontSize="15" TextAlignment="Center"  HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </DataTemplate>
+            </ListView.Resources>
+
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=view, Path=IsShowFunctionPanel}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
 
         </ListView>
         
@@ -35,13 +88,17 @@
                       VerticalContentAlignment="Top">
 
             <ListBox SelectedItem="{Binding ElementName=view, Path=SelectedDiagram}"
-                     >
+                     Name="DiagramList"
+                     PreviewMouseLeftButtonDown="DiagramList_PreviewMouseLeftButtonDown"
+                     PreviewMouseRightButtonDown="DiagramList_PreviewMouseRightButtonDown"
+                     PreviewMouseMove="DiagramList_PreviewMouseMove">
                 <ListBox.ItemContainerStyle>
+
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="Canvas.Left" Value="{Binding Path=Location.X}"/>
                         <Setter Property="Canvas.Top" Value="{Binding Path=Location.Y}"/>
                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                        <Setter Property="VerticalContentAlignment" Value="Top"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -54,6 +111,9 @@
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>
+                                        <DataTrigger Binding="{Binding IsNew}" Value="True">
+                                            <Setter Property="Opacity" Value=".5"/>
+                                        </DataTrigger>
                                     </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Setter.Value>
@@ -74,7 +134,7 @@
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="Red"/>
+                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="#0d47a1" Stroke="Black" StrokeThickness="2"/>
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
                                     </Grid>
                                 </ControlTemplate>
@@ -94,7 +154,7 @@
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="Red"/>
+                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="#ff8f00" Stroke="Black" StrokeThickness="2"/>
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
                                     </Grid>
                                 </ControlTemplate>
@@ -103,7 +163,8 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:Function}">
                         <Grid Width="{Binding Path=Size.Width}"
-                                  Height="{Binding Path=Size.Height}">
+                              Height="{Binding Path=Size.Height}"
+                              x:Name="FunctionGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="20"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
@@ -150,16 +211,16 @@
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, FallbackValue=1920}"
-                                    Height="{Binding ElementName=view, Path=CanvasHeight, FallbackValue=1920}"
-                                    IsItemsHost="True"
-                                    VerticalAlignment="Top" 
-                                    HorizontalAlignment="Left">
+                                Height="{Binding ElementName=view, Path=CanvasHeight, FallbackValue=1920}"
+                                IsItemsHost="True"
+                                VerticalAlignment="Top" 
+                                HorizontalAlignment="Left">
                             <Canvas.Background>
                                 <VisualBrush TileMode="Tile"
                                                  Viewport="0,0,25,25" ViewportUnits="Absolute" 
                                                  Viewbox="0,0,25,25" ViewboxUnits="Absolute">
                                     <VisualBrush.Visual>
-                                        <Rectangle Stroke="Darkgray" 
+                                        <Rectangle Stroke="#b0bec5" 
                                                        StrokeThickness="1" 
                                                        Height="25" 
                                                        Width="25"

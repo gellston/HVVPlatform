@@ -59,5 +59,16 @@ namespace VisionTool.Model
         }
 
 
+        private string _ParentFunctionHash;
+
+        public string ParentFunctionHash
+        {
+            get => _ParentFunctionHash;
+            set => Set(ref _ParentFunctionHash, value);
+        }
+
+
+
+
     }
 }

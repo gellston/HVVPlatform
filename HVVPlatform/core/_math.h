@@ -6,9 +6,9 @@
 #include <cmath>
 
 namespace hv::v1{
-	double round(double data) {
+	double round(double _data) {
 		
-		return std::round(data);
+		return std::round(_data);
 	}
 
 	

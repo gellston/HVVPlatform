@@ -13,10 +13,10 @@ using VisionTool.Model;
 
 namespace VisionTool.Service
 {
-    public class ModulePackageService
+    public class ModuleControlService
     {
 
-        public ModulePackageService()
+        public ModuleControlService()
         {
 
         }

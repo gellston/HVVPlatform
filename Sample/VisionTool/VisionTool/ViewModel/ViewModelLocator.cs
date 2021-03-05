@@ -17,23 +17,23 @@ namespace VisionTool.ViewModel
         public ViewModelLocator()
         {
 
-            if (InitializeScript() == false)
-            {
-                System.Console.WriteLine("error");
-            }
+            //if (InitializeScript() == false)
+            //{
+            //    System.Console.WriteLine("error");
+            //}
 
          
             
 
 
 
-            SimpleIoc.Default.Register<AppConfigService>();
-            SimpleIoc.Default.Register<FileDialogService>();
-            SimpleIoc.Default.Register<MessageDialogService>();
-            SimpleIoc.Default.Register<ScriptFileService>();
-            SimpleIoc.Default.Register<ModulePackageService>();
+            SimpleIoc.Default.Register<SettingConfigService>();
+            //SimpleIoc.Default.Register<FileDialogService>();
+            //SimpleIoc.Default.Register<DialogHelper>();
+            SimpleIoc.Default.Register<ScriptControlService>();
+            SimpleIoc.Default.Register<ModuleControlService>();
             SimpleIoc.Default.Register<DiagramPackageService>();
-            SimpleIoc.Default.Register<DiagramEditService>();
+            //SimpleIoc.Default.Register<DiagramEditService>();
             
             
             
@@ -45,19 +45,23 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<DiagramPackageManagementViewModel>();
 
 
-            SimpleIoc.Default.Register<HV.V1.Interpreter>();
+            //SimpleIoc.Default.Register<HV.V1.Interpreter>();
 
 
 
 
             //미리생성
             SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
-
+            SimpleIoc.Default.GetInstance<DiagramPackageManagementViewModel>();
+            SimpleIoc.Default.GetInstance<DiagramEditViewModel>();
 
 
             Messenger.Default.Send<NotificationMessage>(new NotificationMessage("UpdateModule"));
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("InitialDiagramCollection"));
+            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("ReloadDiagramCollection"));
 
-           
+            
+
         }
 
         ~ViewModelLocator()
@@ -91,25 +95,25 @@ namespace VisionTool.ViewModel
             }
         }
 
-        static public bool InitializeScript()
-        {
-            bool check = true;
-            String currentDirecturoy = AppDomain.CurrentDomain.BaseDirectory;
-            check = HV.V1.Interpreter.InitV8StartupData(currentDirecturoy);
-            HV.V1.Interpreter.InitV8Platform();
-            check = HV.V1.Interpreter.InitV8Engine();
-            HV.V1.Interpreter.SetV8Flag("--use_strict");
-            HV.V1.Interpreter.SetV8Flag("--max_old_space_size=8192");
-            HV.V1.Interpreter.SetV8Flag("--expose_gc");
+        //static public bool InitializeScript()
+        //{
+        //    bool check = true;
+        //    String currentDirecturoy = AppDomain.CurrentDomain.BaseDirectory;
+        //    check = HV.V1.Interpreter.InitV8StartupData(currentDirecturoy);
+        //    HV.V1.Interpreter.InitV8Platform();
+        //    check = HV.V1.Interpreter.InitV8Engine();
+        //    HV.V1.Interpreter.SetV8Flag("--use_strict");
+        //    HV.V1.Interpreter.SetV8Flag("--max_old_space_size=8192");
+        //    HV.V1.Interpreter.SetV8Flag("--expose_gc");
 
-            return check;
-        }
+        //    return check;
+        //}
 
-        static class Nativemethods
-        {
-            [DllImport("kernel32")]
-            public static extern bool AllocConsole();
-        }
+        //static class Nativemethods
+        //{
+        //    [DllImport("kernel32")]
+        //    public static extern bool AllocConsole();
+        //}
 
     }
 }

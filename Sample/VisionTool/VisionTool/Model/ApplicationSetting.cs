@@ -20,5 +20,7 @@ namespace VisionTool.Model
         public string DiagramPath { get; set; }
         public string DiagramConfigPath { get; set; }
 
+        public string DiagramImagePath { get; set; }
+
     }
 }

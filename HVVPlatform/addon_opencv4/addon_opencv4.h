@@ -23,15 +23,15 @@
 //	return handle_scope.Escape(exception);
 //}
 
-HV_PLUGIN_INIT(hv::v1::isolate* isolate)
+HV_PLUGIN_INIT(hv::v1::isolate* _isolate)
 {
 
 
 
-	hv::v1::EscapeHandleScope scope(isolate);
+	hv::v1::EscapeHandleScope scope(_isolate);
 
 
-	hv::v1::module m(isolate);
+	hv::v1::module m(_isolate);
 	m.set("imread", &opencv4::imread);
 	/*
 

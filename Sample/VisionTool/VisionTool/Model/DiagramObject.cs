@@ -56,5 +56,17 @@ namespace VisionTool.Model
                 return _Location;
             }
         }
+
+
+        private string _Hash;
+
+        public string Hash
+        {
+            get => _Hash;
+            set => Set(ref _Hash, value);
+        }
+
+
+
     }
 }
