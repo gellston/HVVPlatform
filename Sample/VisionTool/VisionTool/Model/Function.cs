@@ -22,7 +22,7 @@ namespace VisionTool.Model
             this.Size.Width = 200;
             this.Size.Height = 200;
 
-            this.Location.GridStep = 25;
+            this.Location.GridStep = 10;
 
             this.Location.ValueChanged = RecalculateSnaps;
         }

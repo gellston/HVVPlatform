@@ -7,9 +7,13 @@ namespace VisionTool.Model
 {
     public class Script
     {
-        public Script()
+        public Script(String fileName,
+                      String scriptContent,
+                      String filePath)
         {
-            
+            this.FileName = fileName;
+            this.ScriptContent = scriptContent;
+            this.FilePath = filePath;
         }
 
         public String FileName
@@ -17,7 +21,6 @@ namespace VisionTool.Model
             get;set;
         }
 
-     
         public String ScriptContent
         {
             get;set;

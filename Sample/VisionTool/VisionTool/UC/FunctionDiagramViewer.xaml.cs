@@ -1,9 +1,12 @@
 ﻿using DevExpress.Xpf.CodeView;
+using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +25,172 @@ namespace VisionTool.UC
     /// <summary>
     /// FunctionDiagramViewer.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class FunctionDiagramViewer : UserControl
+    public partial class FunctionDiagramViewer : UserControl, INotifyPropertyChanged
     {
         public FunctionDiagramViewer()
         {
             InitializeComponent();
+
+            //this.ConnectorCollection = new ObservableCollection<Connector>();
+          
+
+        }
+
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            //var newWidthSize = sizeInfo.NewSize.Width;
+            //var newHeightSize = sizeInfo.NewSize.Height;
+
+            //this.CanvasWidth = newWidthSize;
+
+
+            //this.UpdateFunctionDiagramLayout();
+            //this.UpdateConnectorDiagramLayout();
+
+            var newWidthSize = sizeInfo.NewSize.Width;
+            var newHeightSize = sizeInfo.NewSize.Height;
+
+            this.CanvasWidth = newWidthSize;
+
+
+            this.UpdateFunctionDiagramLayout();
+            this.UpdateConnectorDiagramLayout();
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Set<T>(ref T _reference, T _value, [CallerMemberName]string _name = "")
+        {
+            if (!Equals(_reference, _value))
+            {
+                _reference = _value;
+                OnPropertyChanged(_name);
+            }
+        }
+
+        private ICommand _RefreshLayoutCommand = null;
+        public ICommand RefreshLayoutCommand
+        {
+            get
+            {
+                _RefreshLayoutCommand ??= new RelayCommand(() =>
+                {
+                    this.UpdateConnectorDiagramLayout();
+                    this.UpdateFunctionDiagramLayout();
+                });
+
+                return _RefreshLayoutCommand;
+            }
+        }
+
+
+        private ICommand _AddNewFunctionCommand = null;
+        public ICommand AddNewFunctionCommand
+        {
+            get
+            {
+                _AddNewFunctionCommand ??= new RelayCommand(() =>
+                {  
+                    this.IsConnectorCreate = false;
+                    this.IsNoAction = false;
+
+                    var functionConfig = this.SelectedDiagramConfig;
+                    if (functionConfig == null) return;
+
+                    /// Function Part
+                    var function = new Function()
+                    {
+                        Name = functionConfig.FunctionInfo.Name,
+                        Color = functionConfig.FunctionInfo.Color,
+                        IsNew = true,
+                    };
+                    function.Location.X = this.CurrentX;
+                    function.Location.Y = this.CurrentY;
+
+
+                    function.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+
+                    /// InputSnapSpot Part
+                    var inputSnapSpotCollection = new ObservableCollection<InputSnapSpot>();
+                    foreach (var inputSnap in functionConfig.InputSnapSpotCollection)
+                    {
+                        var newInputSnapSpot = new InputSnapSpot(inputSnap.Name, inputSnap.DataType)
+                        {
+                            Color = inputSnap.Color,
+                            Parent = function,
+                            IsConnected = false,
+                            IsNew = true,
+                            ParentFunctionHash = function.Hash
+
+                        };
+                        newInputSnapSpot.Offset.X = inputSnap.Offset.X;
+                        newInputSnapSpot.Offset.Y = inputSnap.Offset.Y;
+                        newInputSnapSpot.IsHighLight = false;
+                        newInputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                        inputSnapSpotCollection.Add(newInputSnapSpot);
+                    }
+
+
+                    var outputSnapSpotCollection = new ObservableCollection<OutputSnapSpot>();
+                    foreach (var outptSnap in functionConfig.OutputSnapSpotCollection)
+                    {
+                        var newOutputSnapSpot = new OutputSnapSpot(outptSnap.Name, outptSnap.DataType)
+                        {
+                            Color = outptSnap.Color,
+                            Parent = function,
+                            IsNew = true,
+                            ParentFunctionHash = function.Hash
+
+                        };
+                        newOutputSnapSpot.Offset.X = outptSnap.Offset.X;
+                        newOutputSnapSpot.Offset.Y = outptSnap.Offset.Y;
+                        newOutputSnapSpot.IsHighLight = false;
+                        newOutputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                        outputSnapSpotCollection.Add(newOutputSnapSpot);
+                    }
+
+                    function.Input.AddRange(inputSnapSpotCollection);
+                    function.Output.AddRange(outputSnapSpotCollection);
+
+
+                    var functionHeight = 30 + (function.Input.Count() + function.Output.Count()) * 30;
+
+                    function.Size.Height = functionHeight;
+
+
+                    function.Location.ValueChanged();
+
+                    this.FunctionCollection.Add(function);
+                    this.InputSnapSpotCollection.AddRange(function.Input);
+                    this.OutputSnapSpotCollection.AddRange(function.Output);
+
+                    function.Activate();
+
+                    //this.SelectedDiagram = function;
+
+                    this.UpdateFunctionDiagramLayout();
+                    this.UpdateConnectorDiagramLayout();
+                    //this.OutterScrollViewer.UpdateLayout();
+
+                });
+
+                return _AddNewFunctionCommand;
+            }
+        }
+
+
+        private bool _ShowMidPoint = false;
+        public bool ShowMidPoint
+        {
+            get => _ShowMidPoint;
+            set => Set(ref _ShowMidPoint, value);
         }
 
 
@@ -49,118 +213,152 @@ namespace VisionTool.UC
             FunctionDiagramViewer control = sender as FunctionDiagramViewer;
             if (control != null)
             {
-                bool isShowFunctionPanel = control.IsShowFunctionPanel;
-                System.Console.WriteLine("IsShowFunctionPanel : " + isShowFunctionPanel);
+                if((bool)e.NewValue == true)
+                    control.IsShowSequencePanel = false;
             }
         }
 
 
-        public static readonly DependencyProperty IsFunctionCreateProperty = DependencyProperty.Register("IsFunctionCreate", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsFunctionCreateChanged));
-        public bool IsFunctionCreate
+        public static readonly DependencyProperty IsShowSequencePanelProperty = DependencyProperty.Register("IsShowSequencePanel", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsShowSequencePanelChanged));
+        public bool IsShowSequencePanel
         {
             get
             {
-                return (bool)GetValue(IsFunctionCreateProperty);
+                return (bool)GetValue(IsShowSequencePanelProperty);
             }
 
             set
             {
-                SetValue(IsFunctionCreateProperty, value);
-
+                SetValue(IsShowSequencePanelProperty, value);
             }
         }
 
-        private static void OnIsFunctionCreateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        private static void OnIsShowSequencePanelChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             FunctionDiagramViewer control = sender as FunctionDiagramViewer;
             if (control != null)
             {
-                bool isNodeCreate = (bool)e.NewValue;
-
-                if (isNodeCreate)
-                {
-                    var functionConfig = control.SelectedDiagramConfig;
-                    if (functionConfig == null) return;
-
-                    /// Function Part
-                    var function = new Function()
-                    {
-                        Name = functionConfig.FunctionInfo.Name,
-                        Color = functionConfig.FunctionInfo.Color,
-                        IsNew = true,
-                    };
-                    function.Location.X = control.CurrentX;
-                    function.Location.Y = control.CurrentY;
-                    function.Size.Width = functionConfig.FunctionInfo.Size.Width;
-                    function.Size.Height = functionConfig.FunctionInfo.Size.Height;
-                    function.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
-
-                    /// InputSnapSpot Part
-                    var inputSnapSpotCollection = new ObservableCollection<InputSnapSpot>();
-                    foreach(var inputSnap in functionConfig.InputSnapSpotCollection)
-                    {
-                        var newInputSnapSpot = new InputSnapSpot()
-                        {
-                            Name = inputSnap.Name,
-                            Color = inputSnap.Color,
-                            DataType = inputSnap.DataType,
-                            Parent = function,
-                            IsConnected = false,
-                            IsNew = true,
-                            ParentFunctionHash = function.Hash
-
-                        };
-                        newInputSnapSpot.Offset.X = inputSnap.Offset.X;
-                        newInputSnapSpot.Offset.Y = inputSnap.Offset.Y;
-                        newInputSnapSpot.IsHighLight = false;
-                        newInputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
-                        inputSnapSpotCollection.Add(newInputSnapSpot);
-                    }
-
-
-                    var outputSnapSpotCollection = new ObservableCollection<OutputSnapSpot>();
-                    foreach (var outptSnap in functionConfig.OutputSnapSpotCollection)
-                    {
-                        var newOutputSnapSpot = new OutputSnapSpot()
-                        {
-                            Name = outptSnap.Name,
-                            Color = outptSnap.Color,
-                            DataType = outptSnap.DataType,
-                            Parent = function,
-                            IsNew = true,
-                            ParentFunctionHash = function.Hash
-
-                        };
-                        newOutputSnapSpot.Offset.X = outptSnap.Offset.X;
-                        newOutputSnapSpot.Offset.Y = outptSnap.Offset.Y;
-                        newOutputSnapSpot.IsHighLight = false;
-                        newOutputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
-                        outputSnapSpotCollection.Add(newOutputSnapSpot);
-                    }
-
-                    function.Input.AddRange(inputSnapSpotCollection);
-                    function.Output.AddRange(outputSnapSpotCollection);
-                    function.Location.ValueChanged();
-
-                    control.FunctionCollection.Add(function);
-                    control.InputSnapSpotCollection.AddRange(function.Input);
-                    control.OutputSnapSpotCollection.AddRange(function.Output);
-
-                    control.SelectedDiagram = function;
-
-                }
-                else
-                {
-                    control.FunctionCollection.Where(node => node.IsNew).ToList().ForEach(node =>
-                    {
-                        node.Input.ToList().ForEach(snap => control.InputSnapSpotCollection.Remove(snap));
-                        node.Output.ToList().ForEach(snap => control.OutputSnapSpotCollection.Remove(snap));
-                        control.FunctionCollection.Remove(node);
-                    });
-
-                }
+                if ((bool)e.NewValue == true)
+                    control.IsShowFunctionPanel = false;
+                
             }
         }
+
+
+        //public static readonly DependencyProperty IsFunctionCreateProperty = DependencyProperty.Register("IsFunctionCreate", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsFunctionCreateChanged));
+        //public bool IsFunctionCreate
+        //{
+        //    get
+        //    {
+        //        return (bool)GetValue(IsFunctionCreateProperty);
+        //    }
+
+        //    set
+        //    {
+        //        SetValue(IsFunctionCreateProperty, value);
+
+        //    }
+        //}
+
+        //private static void OnIsFunctionCreateChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        //{
+        //FunctionDiagramViewer control = sender as FunctionDiagramViewer;
+        //if (control != null)
+        //{
+        //    bool isNodeCreate = (bool)e.NewValue;
+
+        //    if (isNodeCreate)
+        //    {
+        //        control.IsConnectorCreate = false;
+        //        control.IsNoAction = false;
+
+        //        var functionConfig = control.SelectedDiagramConfig;
+        //        if (functionConfig == null) return;
+
+        //        /// Function Part
+        //        var function = new Function()
+        //        {
+        //            Name = functionConfig.FunctionInfo.Name,
+        //            Color = functionConfig.FunctionInfo.Color,
+        //            IsNew = true,
+        //        };
+        //        function.Location.X = control.CurrentX;
+        //        function.Location.Y = control.CurrentY;
+
+
+        //        // function.Size.Width = functionConfig.FunctionInfo.Size.Width;
+        //        //function.Size.Height = functionConfig.FunctionInfo.Size.Height;
+        //        function.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+
+        //        /// InputSnapSpot Part
+        //        var inputSnapSpotCollection = new ObservableCollection<InputSnapSpot>();
+        //        foreach(var inputSnap in functionConfig.InputSnapSpotCollection)
+        //        {
+        //            var newInputSnapSpot = new InputSnapSpot(inputSnap.Name, inputSnap.DataType)
+        //            {
+        //                Color = inputSnap.Color,
+        //                Parent = function,
+        //                IsConnected = false,
+        //                IsNew = true,
+        //                ParentFunctionHash = function.Hash
+
+        //            };
+        //            newInputSnapSpot.Offset.X = inputSnap.Offset.X;
+        //            newInputSnapSpot.Offset.Y = inputSnap.Offset.Y;
+        //            newInputSnapSpot.IsHighLight = false;
+        //            newInputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+        //            inputSnapSpotCollection.Add(newInputSnapSpot);
+        //        }
+
+
+        //        var outputSnapSpotCollection = new ObservableCollection<OutputSnapSpot>();
+        //        foreach (var outptSnap in functionConfig.OutputSnapSpotCollection)
+        //        {
+        //            var newOutputSnapSpot = new OutputSnapSpot(outptSnap.Name, outptSnap.DataType)
+        //            {
+        //                Color = outptSnap.Color,
+        //                Parent = function,
+        //                IsNew = true,
+        //                ParentFunctionHash = function.Hash
+
+        //            };
+        //            newOutputSnapSpot.Offset.X = outptSnap.Offset.X;
+        //            newOutputSnapSpot.Offset.Y = outptSnap.Offset.Y;
+        //            newOutputSnapSpot.IsHighLight = false;
+        //            newOutputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+        //            outputSnapSpotCollection.Add(newOutputSnapSpot);
+        //        }
+
+        //        function.Input.AddRange(inputSnapSpotCollection);
+        //        function.Output.AddRange(outputSnapSpotCollection);
+
+
+        //        var functionHeight = 25 * 2 + (function.Input.Count() + function.Output.Count()) * 35;
+
+        //        function.Size.Height = functionHeight;
+
+
+        //        function.Location.ValueChanged();
+
+        //        control.FunctionCollection.Add(function);
+        //        control.InputSnapSpotCollection.AddRange(function.Input);
+        //        control.OutputSnapSpotCollection.AddRange(function.Output);
+
+        //        control.SelectedDiagram = function;
+
+        //    }
+        //    else
+        //    {
+        //        control.FunctionCollection.Where(node => node.IsNew).ToList().ForEach(node =>
+        //        {
+        //            node.Input.ToList().ForEach(snap => control.InputSnapSpotCollection.Remove(snap));
+        //            node.Output.ToList().ForEach(snap => control.OutputSnapSpotCollection.Remove(snap));
+        //            control.FunctionCollection.Remove(node);
+        //        });
+
+        //    }
+        //}
+        //}
 
         public static readonly DependencyProperty IsConnectorCreateProperty = DependencyProperty.Register("IsConnectorCreate", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsConnectorCreateChanged));
         public bool IsConnectorCreate
@@ -172,12 +370,7 @@ namespace VisionTool.UC
 
             set
             {
-
                 SetValue(IsConnectorCreateProperty, value);
-
-
-    
-
             }
         }
 
@@ -189,9 +382,61 @@ namespace VisionTool.UC
                 bool isConnectorCreate = (bool)e.NewValue;
                 if(isConnectorCreate == true)
                 {
-                    isConnectorCreate = false;
+                    //control.IsFunctionCreate = false;
+                    control.IsNoAction = false;
+                    var connector = new Connector()
+                    {
+                        Name = "Connector" + (control.ConnectorCollection.Count + 1),
+                        IsNew = true,
+                        Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString()
+                    };
+
+                    control.ConnectorCollection.Add(connector);
+                    control.SelectedDiagram = connector;
+
+
+                }
+                else
+                {
+
+                    control.ConnectorCollection.Where(connector => connector.IsNew).ToList().ForEach(connector =>
+                    {
+                        control.ConnectorCollection.Remove(connector);
+                    });
                 }
             }
+        }
+
+
+        public static readonly DependencyProperty IsNoActionProperty = DependencyProperty.Register("IsNoAction", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsNoActionChanged));
+        public bool IsNoAction
+        {
+            get
+            {
+                return (bool)GetValue(IsNoActionProperty);
+            }
+
+            set
+            {
+                SetValue(IsNoActionProperty, value);
+            }
+        }
+
+        private static void OnIsNoActionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            FunctionDiagramViewer control = sender as FunctionDiagramViewer;
+            if (control != null)
+            {
+                bool isNoAction = (bool)e.NewValue;
+                if (isNoAction == true)
+                {
+                    control.IsConnectorCreate = false;
+                    //control.IsFunctionCreate = false;
+
+                }
+               
+            }
+
         }
 
 
@@ -212,20 +457,20 @@ namespace VisionTool.UC
 
         private static void OnSelectedDiagramConfigChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            FunctionDiagramViewer control = sender as FunctionDiagramViewer;
-            if (control != null)
-            {
+            //FunctionDiagramViewer control = sender as FunctionDiagramViewer;
+            //if (control != null)
+            //{
 
-                DiagramConfig oldValue = (DiagramConfig)e.OldValue;
-                DiagramConfig newValue = (DiagramConfig)e.NewValue;
+            //    DiagramConfig oldValue = (DiagramConfig)e.OldValue;
+            //    DiagramConfig newValue = (DiagramConfig)e.NewValue;
 
-                if(newValue != oldValue)
-                {
-                    control.IsFunctionCreate = false;
-                    control.IsFunctionCreate = true;
-                }
+            //    if(newValue != oldValue)
+            //    {
+            //        control.IsFunctionCreate = false;
+            //        control.IsFunctionCreate = true;
+            //    }
 
-            }
+            //}
         }
 
 
@@ -267,7 +512,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty CanvasHeightProperty = DependencyProperty.Register("CanvasHeight", typeof(double), typeof(FunctionDiagramViewer));
+        public static readonly DependencyProperty CanvasHeightProperty = DependencyProperty.Register("CanvasHeight", typeof(double), typeof(FunctionDiagramViewer), new PropertyMetadata(2040.0));
         public double CanvasHeight
         {
             get
@@ -295,7 +540,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty SelectedDiagramProperty = DependencyProperty.Register("SelectedDiagram", typeof(DiagramObject), typeof(FunctionDiagramViewer));
+        public static readonly DependencyProperty SelectedDiagramProperty = DependencyProperty.Register("SelectedDiagram", typeof(DiagramObject), typeof(FunctionDiagramViewer), new PropertyMetadata(OnSelectedDiagramChanged));
         public DiagramObject SelectedDiagram
         {
             get
@@ -306,6 +551,32 @@ namespace VisionTool.UC
             set
             {
                 SetValue(SelectedDiagramProperty, value);
+            }
+        }
+
+
+        private static void OnSelectedDiagramChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            FunctionDiagramViewer control = sender as FunctionDiagramViewer;
+            if (control != null)
+            {
+                control.ShowMidPoint = false;
+
+                DiagramObject newValue = (DiagramObject)e.NewValue;
+
+
+                //if (newValue is InputSnapSpot) 
+                //    return;
+                //if (newValue is OutputSnapSpot) 
+                //    return;
+                
+                if(newValue is Connector)
+                {
+                    var connector = newValue as Connector;
+                    if (connector.Start != null && connector.End != null && connector.MidPoint != null && connector.IsNew == false)
+                        control.ShowMidPoint = true;
+                }
+
             }
         }
 
@@ -433,14 +704,43 @@ namespace VisionTool.UC
             this.CurrentY = e.GetPosition(listbox).Y;
 
 
-            if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew)
+            //if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew)
+            //{
+            //    SelectedDiagram.Location.X = e.GetPosition(listbox).X;
+            //    SelectedDiagram.Location.Y = e.GetPosition(listbox).Y;
+            //}else 
+            
+            if(SelectedDiagram != null && SelectedDiagram is Connector && SelectedDiagram.IsNew)
             {
-                SelectedDiagram.Location.X = e.GetPosition(listbox).X;
-                SelectedDiagram.Location.Y = e.GetPosition(listbox).Y;
+                // InputSnapSpot
+                var snapSpot = GetInputSnapSpotUnderMouse();
+                if (snapSpot == null)
+                    return;
+
+                var connector = SelectedDiagram as Connector;
+                if (connector.Start == null) return;
+
+                if (this.ConnectorCollection.Where(data => data.End == snapSpot && data.IsNew == false).Count() > 0)
+                    return;
+
+                var endSpotIndex = this.FunctionCollection.IndexOf(snapSpot.Parent);
+                var startSpotIndex = this.FunctionCollection.IndexOf(connector.Start.Parent);
+
+                if (startSpotIndex > endSpotIndex)
+                    return;
+
+
+                if (connector.Start.DataType != snapSpot.DataType)
+                    return;
+
+                if(connector.Start != null  && snapSpot.Parent != connector.Start.Parent )
+                {
+                    connector.End = snapSpot;
+                    connector.MidPoint.X = this.CanvasWidth * 0.15;
+                }
             }
 
         }
-
 
 
         public static readonly DependencyProperty CurrentXProperty = DependencyProperty.Register("CurrentX", typeof(double), typeof(FunctionDiagramViewer));
@@ -473,27 +773,69 @@ namespace VisionTool.UC
 
         private void DiagramList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (this.IsFunctionCreate == true)
-            {
-                if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew == true)
-                {
-                    var function = SelectedDiagram as Function;
-                    function.Activate();
-                    IsFunctionCreate = false;
-                    IsFunctionCreate = true;
-                    //SelectedDiagram = null;
-                    e.Handled = true;
-                    return;
-                }
-            }
+            //if (this.IsFunctionCreate == true)
+            //{
+            //    if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew == true)
+            //    {
+            //        var function = SelectedDiagram as Function;
+            //        function.Activate();
+            //        IsFunctionCreate = false;
+            //        IsFunctionCreate = true;
+
+            //        this.UpdateFunctionDiagramLayout();
+
+            //        e.Handled = true;
+            //        return;
+            //    }
+            //}
 
             if (this.IsConnectorCreate == true && this.SelectedDiagram != null)
             {
 
                 var inputSnapSpot = this.GetInputSnapSpotUnderMouse();
                 var outputSnapSpot = this.GetOutputSnapSpotUnderMouse();
+                var connector = SelectedDiagram as Connector;
+
+                if(outputSnapSpot != null && connector is Connector && connector.Start == null)
+                {
+                    connector.Start = outputSnapSpot;
+                    connector.StartSnapHash = outputSnapSpot.Hash;
+
+                    e.Handled = true;
+                    return;
+                }
+
+                if(inputSnapSpot != null && connector is Connector && connector.Start != null && connector.End != null && connector.Start.Parent != connector.End.Parent)
+                {
+                    var startIndex = this.FunctionCollection.IndexOf(connector.Start.Parent);
+                    var endIndex = this.FunctionCollection.IndexOf(connector.End.Parent);
+
+                    if (startIndex >= endIndex)
+                    {
+                        e.Handled = true;
+                        return;
+                    }
+
+                    if(ConnectorCollection.Where(x => x.Start == connector.Start && x.End == connector.End).Count() > 1)
+                    {
+                        ConnectorCollection.Remove(connector);
+                        IsNoAction = true;
+                        return;
+                    }
+
+                    connector.MidPoint.X = this.CanvasWidth * 0.15;
+                    connector.IsNew = false;
 
 
+                    IsConnectorCreate = false;
+                    IsConnectorCreate = true;
+
+                    //this.UpdateDiagramLayout();
+                    //this.UpdateConnectorDiagramLayout();
+
+                    e.Handled = true;
+                    return; 
+                }
 
 
             }
@@ -501,8 +843,84 @@ namespace VisionTool.UC
 
         private void DiagramList_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.IsFunctionCreate = false;
+            //this.IsFunctionCreate = false;
             this.IsConnectorCreate = false;
+            this.IsNoAction = true;
+        }
+
+        private void LineMidPoint_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            var thumb = sender as Thumb;
+            if (thumb == null)
+                return;
+
+            var connector = thumb.DataContext as Connector;
+            if (connector == null)
+                return;
+
+            connector.MidPoint.Value = Point.Add(connector.MidPoint.Value, new Vector(e.HorizontalChange, e.VerticalChange));
+        }
+
+
+        private void UpdateFunctionDiagramLayout()
+        {
+            try
+            {
+                var functionCollection = FunctionCollection;
+                int functionIndex = 0;
+                double yVerticalOffset = 0;
+                if (functionCollection == null) return;
+                double newCanvasHeight = 0;
+                foreach (var function in functionCollection)
+                {
+                    functionIndex++;
+                    function.Location.X = this.CanvasWidth*0.3;
+                    function.Location.Y = 10 + yVerticalOffset;
+                    function.Size.Width = this.CanvasWidth * 0.4;
+
+                    yVerticalOffset = function.Location.Y + function.Size.Height;
+
+                    newCanvasHeight += (10 + function.Size.Height);
+                }
+
+                if (this.CanvasHeight < newCanvasHeight + 10)
+                    this.CanvasHeight = this.CanvasHeight * 2;
+
+                OnPropertyChanged("FunctionCollection");
+
+
+            }
+            catch (Exception error)
+            {
+                System.Console.WriteLine(error.Message);
+            }
+        }
+
+        private void UpdateConnectorDiagramLayout()
+        {
+            try
+            {
+
+                var connectorCollection = ConnectorCollection;
+                if (connectorCollection == null) return;
+
+                foreach (var connector in ConnectorCollection)
+                {
+                    connector.MidPoint.X = this.CanvasWidth * 0.15;
+                }
+                OnPropertyChanged("ConnectorCollection");
+
+            }
+            catch (Exception error)
+            {
+                System.Console.WriteLine(error.Message);
+            }
+        }
+
+        private void DiagramList_SizeChanged(object sender, SizeChangedEventArgs sizeInfo)
+        {
+            
+     
         }
     }
 }

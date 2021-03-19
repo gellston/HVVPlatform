@@ -17,32 +17,20 @@ namespace VisionTool.ViewModel
     public class DiagramEditViewModel : ViewModelBase
     {
 
-        private DiagramPackageService diagramPackageService;
-        private SettingConfigService appConfigService;
+        private DiagramControlService diagramControlService;
 
-        public DiagramEditViewModel(DiagramPackageService _diagramPackageService,
-                                    SettingConfigService _appConfigService)
+        public DiagramEditViewModel(DiagramControlService _diagramControlService)
         {
 
-            this.CanvasWidth = 2040;
-            this.CanvasHeight = 2040;
+            //this.CanvasWidth = 2040;
+            //this.CanvasHeight = 2040;
 
 
-            this.diagramPackageService = _diagramPackageService;
-            this.appConfigService = _appConfigService;
+            this.diagramControlService = _diagramControlService;
+            //this.appConfigService = _appConfigService;
 
-            MessengerInstance.Register<NotificationMessage>(this, NotifyMessageReloadDiagramCollection);
-        }
 
-        public void NotifyMessageReloadDiagramCollection(NotificationMessage message)
-        {
-            if (message.Notification == "ReloadDiagramCollection")
-            {
-
-                DiagramConfigCollection = diagramPackageService.LoadAllDiagramConfig(this.appConfigService.ApplicationSetting.DiagramConfigPath,
-                                                                                     this.appConfigService.ApplicationSetting.DiagramImagePath);
-
-            }
+            this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
         }
 
 
@@ -107,11 +95,9 @@ namespace VisionTool.ViewModel
                     Name = "TEST"
                 };
 
-                var inputSnapSpot = new InputSnapSpot()
+                var inputSnapSpot = new InputSnapSpot("test", "Image")
                 {
-                    Name = "test",
                     Parent = test_function,
-                    DataType = "Image"
                 };
 
                 inputSnapSpot.Offset.Y = 30;
@@ -120,11 +106,9 @@ namespace VisionTool.ViewModel
                 
 
 
-                var outputSnapSpot = new OutputSnapSpot()
+                var outputSnapSpot = new OutputSnapSpot("test", "Image")
                 {
-                    Name = "test",
                     Parent = test_function,
-                    DataType = "Image"
                 };
 
                 outputSnapSpot.Offset.Y = 50;

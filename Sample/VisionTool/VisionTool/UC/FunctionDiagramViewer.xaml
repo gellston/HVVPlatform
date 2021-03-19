@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisionTool.UC"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
@@ -17,16 +19,27 @@
                 <CollectionContainer Collection="{Binding Path=ConnectorCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=InputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=OutputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
+                <ListBoxItem DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" Canvas.Left="{Binding MidPoint.X}" Canvas.Top="{Binding MidPoint.Y}">
+                    <Thumb Name="LineMidPoint" DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" DragDelta="LineMidPoint_DragDelta" Height="10" Width="10"
+                               Background="Red" Visibility="{Binding ElementName=view, Path=ShowMidPoint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Thumb.Template>
+                            <ControlTemplate>
+                                <Ellipse Grid.Column="0" Grid.Row="0" Margin="-7.5,-7.5,0,0" Width="15" Height="15" Fill="Purple" Stroke="Black" StrokeThickness="2"/>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                    </Thumb>
+                </ListBoxItem>
             </CompositeCollection>
         </DockPanel.Resources>
-        
-        <ListView DockPanel.Dock="Left"
-                  Width="0"
-                  Name="LeftDiagramConfigCollection"
-                  ItemsSource="{Binding ElementName=view, Path=DiagramConfigCollection}"
-                  SelectedItem="{Binding ElementName=view, Path=SelectedDiagramConfig}">
-            
-            <ListView.Resources>
+
+
+        <dxg:GridControl Width="0"
+                         ItemsSource="{Binding Path=DiagramConfigCollection, ElementName=view}"
+                         SelectedItem="{Binding Path=SelectedDiagramConfig, ElementName=view}"
+                         SelectionMode="Row"
+                         DockPanel.Dock="Left"
+                         Name="LeftDiagramConfigCollection">
+            <dxg:GridControl.Resources>
                 <Storyboard x:Key="ShrinkWidth">
                     <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
                                          Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
@@ -41,29 +54,42 @@
                     <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
                                          Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
                                          Duration="0:0:0.5"
-                                         To="300">
+                                         To="500">
                         <DoubleAnimation.EasingFunction>
                             <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
                         </DoubleAnimation.EasingFunction>
                     </DoubleAnimation>
                 </Storyboard>
+            </dxg:GridControl.Resources>
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="70" AllowFocus="False">
+                    <dxg:GridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="35" Height="35" Stretch="Uniform"></Image>
+                        </DataTemplate>
+                    </dxg:GridColumn.CellTemplate>
+                </dxg:GridColumn>
+                <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
+                <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+            </dxg:GridControl.Columns>
 
-                <DataTemplate DataType="{x:Type model:DiagramConfig}">
-                    <Grid Height="40">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0">
-                            <Image Source="{Binding Path=DiagramImage, FallbackValue={dx:DXImage 'SvgImages/Dashboards/ShowWeightedLegendNone.svg'}}"></Image>
-                        </Button>
-                        <TextBlock Grid.Column="1" Text="{Binding Path=DiagramName}" FontSize="15" TextAlignment="Center"  HorizontalAlignment="Stretch" VerticalAlignment="Center"></TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ListView.Resources>
+            <dxg:GridControl.View>
+                <dxg:TableView AllowPerPixelScrolling="True" 
+                               ShowTotalSummary="False"
+                               AllowGrouping="True"
+                               AllowScrollToFocusedRow="False"
+                               >
+                    <dxg:TableView.RowCellMenuCustomizations>
+                        <dxb:BarButtonItem Content="Add" Glyph="{dx:DXImage 'SvgImages/Reports/AddCalculatedField.svg'}" Command="{Binding ElementName=view, Path=AddNewFunctionCommand}"/>
+                    </dxg:TableView.RowCellMenuCustomizations>
+                </dxg:TableView>
+            </dxg:GridControl.View>
 
-            <ListView.Style>
-                <Style TargetType="{x:Type ListView}">
+
+            <dxg:GridControl.Style>
+                <Style TargetType="{x:Type dxg:GridControl}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=view, Path=IsShowFunctionPanel}" Value="True">
                             <DataTrigger.EnterActions>
@@ -75,30 +101,27 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </ListView.Style>
+            </dxg:GridControl.Style>
+        </dxg:GridControl>
 
-        </ListView>
-        
-        <!--수직 쌓기를 위한 Grid-->
-        <ScrollViewer Grid.Column="0"
-                      Grid.Row="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto"
-                      HorizontalContentAlignment="Left"
-                      VerticalContentAlignment="Top">
 
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                      VerticalScrollBarVisibility="Auto">
             <ListBox SelectedItem="{Binding ElementName=view, Path=SelectedDiagram}"
                      Name="DiagramList"
                      PreviewMouseLeftButtonDown="DiagramList_PreviewMouseLeftButtonDown"
                      PreviewMouseRightButtonDown="DiagramList_PreviewMouseRightButtonDown"
-                     PreviewMouseMove="DiagramList_PreviewMouseMove">
+                     PreviewMouseMove="DiagramList_PreviewMouseMove" Background="Green"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Top">
                 <ListBox.ItemContainerStyle>
 
                     <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="OverridesDefaultStyle" Value="True"/>
                         <Setter Property="Canvas.Left" Value="{Binding Path=Location.X}"/>
                         <Setter Property="Canvas.Top" Value="{Binding Path=Location.Y}"/>
-                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <!--<Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>-->
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
@@ -123,13 +146,14 @@
                 <ListBox.Resources>
                     <DataTemplate DataType="{x:Type model:InputSnapSpot}">
                         <Thumb IsEnabled="{Binding IsSelected,RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
-                                   Height="30"
-                                   Width="100"
-                                   Margin="-15,-15,0,0">
+                               Height="30"
+                               Width="100"
+                               >
                             <Thumb.Template>
                                 <ControlTemplate>
                                     <Grid Height="30"
-                                              Width="100">
+                                          Width="100"
+                                          Margin="-30,-30,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -144,12 +168,12 @@
                     <DataTemplate DataType="{x:Type model:OutputSnapSpot}">
                         <Thumb IsEnabled="{Binding IsSelected,RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
                                    Height="30"
-                                   Width="100"
-                                   Margin="-15,-15,0,0">
+                                   Width="100">
                             <Thumb.Template>
                                 <ControlTemplate>
                                     <Grid Height="30"
-                                              Width="100">
+                                          Width="100"
+                                          Margin="-30,-30,0,0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
@@ -176,7 +200,7 @@
                                         BorderBrush="Black"
                                         >
                                 <Border.Background>
-                                    <SolidColorBrush Color="{Binding Color, FallbackValue=White}"></SolidColorBrush>
+                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
                                 </Border.Background>
 
                             </Border>
@@ -194,6 +218,78 @@
                             </Thumb>
                         </Grid>
                     </DataTemplate>
+
+                    <DataTemplate DataType="{x:Type model:Connector}">
+                        <Grid>
+                            <Path StrokeThickness="9" Stroke="Black" x:Name="BackgroundLine" Panel.ZIndex="1">
+                                <Path.Data>
+                                    <PathGeometry>
+                                        <PathFigure StartPoint="{Binding Start.Location.Value}">
+                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value}"
+                                                                    Point2="{Binding End.Location.Value}" />
+
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </Path.Data>
+                            </Path>
+                            <Path StrokeThickness="3" x:Name="Line"  Panel.ZIndex="1">
+                                <Path.Stroke>
+                                    <SolidColorBrush Color="{Binding Start.Parent.Color}"/>
+                                </Path.Stroke>
+                                <Path.Data>
+                                    <PathGeometry>
+                                        <PathFigure StartPoint="{Binding Start.Location.Value}">
+                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value}"
+                                                                    Point2="{Binding End.Location.Value}" />
+
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </Path.Data>
+                            </Path>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding End}" Value="{x:Null}">
+                                <Setter TargetName="Line" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="BackgroundLine" Property="Visibility" Value="Collapsed"></Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsNew}" Value="True">
+                                <Setter TargetName="Line" Property="Stroke" Value="Orange"/>
+                                <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
+
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard x:Name="DashAnimation1">
+                                        <Storyboard Duration="00:00:01" RepeatBehavior="Forever">
+                                            <DoubleAnimation From="50" To="0" Storyboard.TargetName="Line" Storyboard.TargetProperty="StrokeDashOffset"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="DashAnimation1"/>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True"></Condition>
+                                    <Condition Binding="{Binding IsNew}" Value="False"></Condition>
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter TargetName="Line" Property="Stroke" Value="Green"/>
+                                    <Setter TargetName="Line" Property="StrokeDashArray" Value="2 3"/>
+                                </MultiDataTrigger.Setters>
+                                <MultiDataTrigger.EnterActions>
+                                    <BeginStoryboard x:Name="DashAnimation2">
+                                        <Storyboard Duration="00:00:01" RepeatBehavior="Forever">
+                                            <DoubleAnimation From="50" To="0" Storyboard.TargetName="Line" Storyboard.TargetProperty="StrokeDashOffset"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiDataTrigger.EnterActions>
+                                <MultiDataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="DashAnimation2"/>
+                                </MultiDataTrigger.ExitActions>
+                            </MultiDataTrigger>
+
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
                 </ListBox.Resources>
                 <ListBox.Template>
                     <ControlTemplate>
@@ -210,21 +306,21 @@
                 </ListBox.Template>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, FallbackValue=1920}"
-                                Height="{Binding ElementName=view, Path=CanvasHeight, FallbackValue=1920}"
-                                IsItemsHost="True"
-                                VerticalAlignment="Top" 
-                                HorizontalAlignment="Left">
+                        <Canvas  Height="{Binding ElementName=view, Path=CanvasHeight, Mode=OneWay}"
+                             Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}"
+                             IsItemsHost="True"
+                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden">
                             <Canvas.Background>
                                 <VisualBrush TileMode="Tile"
-                                                 Viewport="0,0,25,25" ViewportUnits="Absolute" 
-                                                 Viewbox="0,0,25,25" ViewboxUnits="Absolute">
+                                                 Viewport="0,0,10,10" ViewportUnits="Absolute" 
+                                                 Viewbox="0,0,10,10" ViewboxUnits="Absolute">
                                     <VisualBrush.Visual>
                                         <Rectangle Stroke="#b0bec5" 
                                                        StrokeThickness="1" 
-                                                       Height="25" 
-                                                       Width="25"
-                                                       StrokeDashArray="5 3"/>
+                                                       Height="10" 
+                                                       Width="10"
+                                                       StrokeDashArray="1 1"/>
                                     </VisualBrush.Visual>
                                 </VisualBrush>
                             </Canvas.Background>
@@ -238,6 +334,58 @@
 
             </ListBox>
         </ScrollViewer>
+        
+
+
+
+
+        <ListView Width="0"
+                  DockPanel.Dock="Right"
+                  Name="RightSequenceView">
+            <ListView.Resources>
+                <Storyboard x:Key="ShrinkWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
+                                         Duration="0:0:0.5"
+                                         To="0">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Key="EnLargeWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
+                                         Duration="0:0:0.5"
+                                         To="500">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </ListView.Resources>
+
+            <ListView.Style>
+                <Style TargetType="{x:Type ListView}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=view, Path=IsShowSequencePanel}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
+        </ListView>
+        
+        
+       
+        
+
+        
 
     </DockPanel>
 </UserControl>

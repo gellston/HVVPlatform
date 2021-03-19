@@ -7,10 +7,38 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:uc="clr-namespace:VisionTool.UC"
-             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core">
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars">
 
     <DockPanel>
-        <Grid Height="40"
+
+        <dx:UniformStackPanel DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Left" Height="40" ChildSpacing="0" Orientation="Horizontal">
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
+            </dx:SimpleButton>-->
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsShowFunctionPanel, Mode=TwoWay}" ToolTip="다이어그램 종류 뷰" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/FunctionsStatistical.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsShowSequencePanel, Mode=TwoWay}" ToolTip="시퀀스 뷰" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/RichEdit/ViewMergedData.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <Button Command="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}" ToolTip="레이아웃 정리" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
+            </Button>
+        </dx:UniformStackPanel>
+        <!--<Grid Height="40"
               DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"></ColumnDefinition>
@@ -22,30 +50,19 @@
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성"
-                             Grid.Column="0" ButtonKind="Toggle">
-                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
-            </dx:SimpleButton>
 
-            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결"
-                             Grid.Column="1" ButtonKind="Toggle">
-                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
-            </dx:SimpleButton>
+            
 
-            <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsShowFunctionPanel, Mode=TwoWay}" ToolTip="다이어그램 종류 뷰"
-                             Grid.Column="2" ButtonKind="Toggle">
-                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/FunctionsStatistical.svg'}"></Image>
-            </dx:SimpleButton>
 
-        </Grid>
+
+        </Grid>-->
         
         
         <uc:FunctionDiagramViewer Grid.Row="0" 
                                   FunctionCollection="{Binding Path=FunctionCollection}"
                                   InputSnapSpotCollection="{Binding Path=InputSnapSpotCollection}"
                                   OutputSnapSpotCollection="{Binding Path=OutputSnapSpotCollection}"
-                                  CanvasWidth="1920"
-                                  CanvasHeight="1920"
+                                  ConnectorCollection="{Binding Path=ConnectorCollection}"
                                   x:Name="FunctionDiagramViewer"
                                   DiagramConfigCollection="{Binding Path=DiagramConfigCollection}"></uc:FunctionDiagramViewer>
         <Button Command="{Binding TestCommand}" Grid.Row="1"></Button>

@@ -323,13 +323,11 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <uc:FunctionDiagramViewer Grid.Row="1"
+                <uc:FunctionDiagramViewer Grid.Row="0"
                                           IsShowFunctionPanel="False"
                                           InputSnapSpotCollection="{Binding PreviewInputSnapSpotCollection}"
                                           OutputSnapSpotCollection="{Binding PreviewOutputSnapSpotCollection}"
-                                          FunctionCollection="{Binding FunctionCollection}"
-                                          CanvasWidth="1920"
-                                          CanvasHeight="1920" Margin="-4505,117,4505,-117"></uc:FunctionDiagramViewer>
+                                          FunctionCollection="{Binding PreviewFunctionCollection}"></uc:FunctionDiagramViewer>
                 <uc:BindableAvalonEditor Grid.Row="1"
                                          Text="{Binding DiagramScript}"
                                          SyntaxHighlighting="JavaScript"
@@ -349,24 +347,25 @@
                                  AutoGenerateColumns="None"
                                  ShowAllTableValuesInFilterPopup="False"
                                  ItemsSource="{Binding DiagramConfigCollection}"
-                                 SelectedItem="{Binding SelectedDiagramConfig}"
-                                 Grid.Row="0">
+                                 SelectedItem="{Binding SelectedDiagramConfig, Mode=OneWay}"
+                                 Grid.Row="0"
+                                 AllowLiveDataShaping="True"
+                                 >
                     <dxg:GridControl.Columns>
-                        <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay}" IsSmart="False" Width="*" AllowFocus="False"/>
-                        <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, FallbackValue={dx:DXImage 'SvgImages/Dashboards/ShowWeightedLegendNone.svg'}}" Width="*" AllowFocus="False">
+                        <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                        <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="*" AllowFocus="False">
                             <dxg:GridColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Image Source="{Binding Value}" Width="50" Height="50" Stretch="Uniform"></Image>
+                                    <Image Source="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="50" Height="50" Stretch="Uniform"></Image>
                                 </DataTemplate>
                             </dxg:GridColumn.CellTemplate>
                         </dxg:GridColumn>
-                        <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay}" IsSmart="False" Width="*" AllowFocus="False"/>
-                        <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay}" IsSmart="False" Width="*" AllowFocus="False"/>
-                        <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay}" IsSmart="False" Width="*" AllowFocus="False"/>
+                        <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
+                        <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                        <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
                     </dxg:GridControl.Columns>
                     <dxg:GridControl.View>
                         <dxg:CardView ShowTotalSummary="False"
-                                      AllowGrouping="True"
                                       AllowScrollToFocusedRow="False"
                                       CardLayout="Rows"
                                       ShowColumnHeaders="False"

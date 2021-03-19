@@ -9,8 +9,10 @@ namespace VisionTool.Model
     {
 
 
-        public InputSnapSpot()
+        public InputSnapSpot(string _Name, string _DataType)
         {
+            this.Name = _Name;
+            this.DataType = _DataType;
 
         }
 
@@ -40,6 +42,7 @@ namespace VisionTool.Model
         private BindablePoint _offset;
         public BindablePoint Offset
         {
+            set => _offset = value;
             get
             {
                 _offset ??= new BindablePoint();

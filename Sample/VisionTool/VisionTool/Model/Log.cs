@@ -6,9 +6,11 @@ namespace VisionTool.Model
 {
     public class Log
     {
-        public Log()
+        public Log(string type, 
+                   string content)
         {
-
+            this.Type = type;
+            this.Content = content;
         }
         public string Type
         {

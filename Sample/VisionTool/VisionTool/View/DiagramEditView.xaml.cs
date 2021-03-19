@@ -21,6 +21,8 @@ namespace VisionTool.View
         public DiagramEditView()
         {
             InitializeComponent();
+
+            
         }
     }
 }

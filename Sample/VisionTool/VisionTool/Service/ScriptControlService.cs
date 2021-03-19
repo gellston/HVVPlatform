@@ -43,11 +43,7 @@ namespace VisionTool.Service
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                this.ScriptLogCollection.Insert(0, new Log()
-                {
-                    Type = "스크립트",
-                    Content = text
-                });
+                this.ScriptLogCollection.Insert(0, new Log("스크립트", text));
             });
             Thread.Sleep(1);
         }
@@ -63,63 +59,68 @@ namespace VisionTool.Service
 
             }catch(Exception e)
             {
-
+                throw e;
             }
         }
 
         public ObservableCollection<Script> GetScriptsFromFolder()
         {
-            ObservableCollection<Script> collection = new ObservableCollection<Script>();
 
             try
             {
+                ObservableCollection<Script> collection = new ObservableCollection<Script>();
+
                 var path = DialogHelper.OpenFolder();
                 var files = Directory.GetFiles(path, "*.js");
+
                 foreach (var file in files)
                 {
-                    collection.Add(new Script()
-                    {
-                        FileName = Path.GetFileName(file),
-                        ScriptContent = File.ReadAllText(file, Encoding.UTF8),
-                        FilePath = file
-                    });
+                    var script = new Script(Path.GetFileName(file), File.ReadAllText(file, Encoding.UTF8), file);
+                    collection.Add(script);
                 }
+
+                return collection;
+
             }
             catch(Exception e)
             {
                 throw e;
             }
 
-            return collection;
         }
 
         public Script GetScriptFromPath()
         {
-            Script script = new Script();
             try
             {
                 var path = DialogHelper.OpenFile("Script File (.js)|*.js");
                 var context = File.ReadAllText(path, Encoding.UTF8);
-                script.ScriptContent = context;
-                script.FileName = Path.GetFileName(path);
-                script.FilePath = path;
-
-            }catch(Exception e)
-            {
-
+                Script script = new Script(Path.GetFileName(path), context, path);
+                return script;
             }
-
-            return script;
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
         
         public Script CreateNewScript()
         {
-            return new Script()
-            {
-                FileName = "new.js",
-                ScriptContent = "/* Be the god of coding */",
-                FilePath = ""
-            };
+            return new Script("new.js", "/* Be the god of coding */", "");
+        }
+
+        public void ClearNativeModules()
+        {
+            this.NativeModuleCollection.Clear();
+            this.GlobalCollection.Clear();
+            this.interpreter.GlobalObjects.Clear();
+            
+
+            System.GC.Collect();
+            System.GC.WaitForPendingFinalizers();
+            System.GC.WaitForFullGCComplete();
+
+
         }
 
         public bool ContinuousRunScript(string context)
@@ -186,11 +187,7 @@ namespace VisionTool.Service
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
-                            this.ScriptLogCollection.Add(new Log()
-                            {
-                                Type = "Error",
-                                Content = errorContent
-                            });
+                            this.ScriptLogCollection.Add(new Log("Error", errorContent));
                             DialogHelper.ShowToastErrorMessage("스크립트 에러 메세지", errorContent);
                         }, DispatcherPriority.Send);
 
@@ -260,20 +257,23 @@ namespace VisionTool.Service
                         }
                         catch (Exception e)
                         {
-
+                            System.Console.WriteLine(e.Message);
                         }
                     }, DispatcherPriority.Send);
 
                 }
                 catch(HV.V1.ScriptError e)
                 {
-
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
+                        this.ScriptLogCollection.Add(new Log("Error", errorContent));
+                        DialogHelper.ShowToastErrorMessage("스크립트 에러 메세지", errorContent);
+                    }, DispatcherPriority.Send);
                 }
 
                 this.IsRunningScript = false;
             });
-
-            
 
             return true;
         }

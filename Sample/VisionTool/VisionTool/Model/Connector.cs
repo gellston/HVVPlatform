@@ -15,8 +15,8 @@ namespace VisionTool.Model
         }
 
 
-        private InputSnapSpot _Start;
-        public InputSnapSpot Start
+        private OutputSnapSpot _Start;
+        public OutputSnapSpot Start
         {
             get => _Start;
             set => Set(ref _Start, value);

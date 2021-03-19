@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Windows.Input;
+using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -17,72 +18,21 @@ namespace VisionTool.ViewModel
 
         private readonly SettingConfigService appConfigService;
         private readonly ModuleControlService modulePackageService;
-       
+        private readonly ScriptControlService scriptControlService;
 
         public ModulePackageManagementViewModel(SettingConfigService _appConfigService,
-                                                ModuleControlService _modulePackageService)
+                                                ModuleControlService _modulePackageService,
+                                                ScriptControlService _scriptControlService)
         {
             this.appConfigService = _appConfigService;
             this.modulePackageService = _modulePackageService;
+            this.scriptControlService = _scriptControlService;
 
+            this.ModuleCollection = this.modulePackageService.ModuleCollection;
+            this.ModuleConfigCollection = this.modulePackageService.ModuleConfigCollection;
 
-            MessengerInstance.Register<NotificationMessage>(this, NotifyMessage);
+            
 
-        }
-
-        public void NotifyMessage(NotificationMessage message)
-        {
-            if (message.Notification == "UpdateModule")
-            {
-
-                
-                this.ModuleCollection.Clear();
-                this.ModuleConfigCollection.Clear();
-
-                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleConfigPath);
-                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleMainPath);
-                this.modulePackageService.DeleteAllFiles(this.appConfigService.ApplicationSetting.ModuleThirdPartyDLLPath);
-                
-                
-                var files = Directory.GetFiles(this.appConfigService.ApplicationSetting.ModulePath, "*.module");
-                foreach(var file in files)
-                {
-                    this.modulePackageService.DeleteAllFiles(this.appConfigService.TempModulePackagePath);
-                    if (this.modulePackageService.UnzipModule(file, 
-                                                              appConfigService.TempModulePackagePath, 
-                                                              appConfigService.SecurityPassword) == false) continue;
-
-
-                    var mainDlls = Directory.GetFiles(appConfigService.TempModulePackagePath, "*.dll");
-                    var configFiles = Directory.GetFiles(appConfigService.TempModulePackagePath, "*.json");
-                    var depedentDLLs = Directory.GetFiles(appConfigService.TempModulePackagePath + "dependent" + Path.DirectorySeparatorChar , "*.dll");
-
-                    foreach(var maindllFile in mainDlls)
-                    {
-                        File.Copy(maindllFile, appConfigService.ApplicationSetting.ModuleMainPath + Path.GetFileName(maindllFile), true);
-                    }
-
-                    foreach (var dependenDLL in depedentDLLs)
-                    {
-                        File.Copy(dependenDLL, appConfigService.ApplicationSetting.ModuleThirdPartyDLLPath + Path.GetFileName(dependenDLL), true);
-                    }
-
-                    foreach (var configFile in configFiles)
-                    {
-                        File.Copy(configFile, appConfigService.ApplicationSetting.ModuleConfigPath + Path.GetFileName(configFile), true);
-                    }
-
-                    this.ModuleCollection.Add(new Module()
-                    {
-                        FilePath = file,
-                        FileName = Path.GetFileName(file)
-                    });
-                }
-
-
-                ModuleConfigCollection = modulePackageService.LoadAllModuleConfig(this.appConfigService.ApplicationSetting.ModuleConfigPath);
-                
-            }
         }
 
         public ICommand ImportModuleCommand
@@ -105,27 +55,16 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                //if (this.SelectedModule == null)
-                //{
-                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
-                //    return;
-                //}
-                    
-                //if(File.Exists(this.SelectedModule.FilePath) == false)
-                //{
-                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈이 선택되지 않았습니다.");
-                //    return;
-                //}
+                try
+                {
+                    this.modulePackageService.DeleteModule(this.SelectedModule);
+                    this.scriptControlService.ClearNativeModules();
+                    this.modulePackageService.UpdateModuleInfo();
 
-
-                //File.Delete(this.SelectedModule.FilePath);
-
-                //this.ModuleCollection.Remove(this.SelectedModule);
-                //this.SelectedModule = null;
-
-
-                //MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "ClearNativeModules"));
-                //MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "UpdateModule"));
+                }catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
 
             });
         }
@@ -134,9 +73,8 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-
-                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "ClearNativeModules"));
-                MessengerInstance.Send<NotificationMessage>(new NotificationMessage(this, "UpdateModule"));
+                this.scriptControlService.ClearNativeModules();
+                this.modulePackageService.UpdateModuleInfo();
             });
         }
 
@@ -160,11 +98,13 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                //var maindll = this.fileDialogService.OpenFile("Script File (.dll)|*.dll");
-                //if (maindll.Length == 0) return;
-
-
-                //this.ModuleMainPath = maindll;
+                try
+                {
+                    this.ModuleMainPath = this.modulePackageService.GetLibraryFromPath();
+                }catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
 
             });
         }
@@ -173,21 +113,17 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                //var dependentdll_list = this.fileDialogService.OpenFiles("Script File (.dll)|*.dll");
-                //if (dependentdll_list == null) return;
-                //if (dependentdll_list.Length == 0) return;
+
+                try
+                {
+                    this.DependentDLLCollection.Clear();
+                    this.DependentDLLCollection.AddRange(this.modulePackageService.Get3rdLibrariesFromPath());
 
 
-                //foreach(var dependentdll in dependentdll_list)
-                //{
-                //    this.DependentDLLCollection.Add(new DependentDLL()
-                //    {
-                //        FileName = Path.GetFileName(dependentdll),
-                //        FilePath = dependentdll
-                //    });
-
-                //}
-
+                }catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
 
             });
         }
@@ -197,28 +133,24 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
 
-                //this.ModuleModifyDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");
-                //bool check = this.modulePackageService.CreateModulePackage(this.ModuleName,
-                //                                                           this.ModuleModifyDate,
-                //                                                           this.ModuleMainPath,
-                //                                                           this.ModuleVersion,
-                //                                                           this.ModuleComment,
-                //                                                           this.DependentDLLCollection,
-                //                                                           this.appConfigService.ApplicationSetting.ModulePath,
-                //                                                           this.appConfigService.TempModulePackagePath,
-                //                                                           this.appConfigService.SecurityPassword);
+                this.ModuleModifyDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");
 
+                try
+                {
+                    this.modulePackageService.CreateModulePackage(this.ModuleName,
+                                                                  this.ModuleModifyDate,
+                                                                  this.ModuleVersion,
+                                                                  this.ModuleComment,
+                                                                  this.ModuleMainPath,
+                                                                  this.DependentDLLCollection);
 
-                //if (check == true)
-                //{
-                //    messageDialogService.ShowToastSuccessMessage("모듈 패키지", "모듈 패키징 완료");
-         
-                //}
-                //else
-                //{
-                //    messageDialogService.ShowToastErrorMessage("모듈 패키지", "모듈 패키징 실패");
+                    this.modulePackageService.UpdateModuleInfo();
                     
-                //}
+
+                }catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
 
             });
         }
@@ -272,24 +204,15 @@ namespace VisionTool.ViewModel
         private ObservableCollection<ModuleConfig> _ModuleConfigCollection = null;
         public ObservableCollection<ModuleConfig> ModuleConfigCollection
         {
-            get
-            {
-                if (_ModuleConfigCollection == null)
-                    _ModuleConfigCollection = new ObservableCollection<ModuleConfig>();
-                return _ModuleConfigCollection;
-            }
+            get => _ModuleConfigCollection;
             set => Set(ref _ModuleConfigCollection, value);
         }
 
         private ObservableCollection<Module> _ModuleCollection = null;
         public ObservableCollection<Module> ModuleCollection
         {
-            get
-            {
-                if (_ModuleCollection == null)
-                    _ModuleCollection = new ObservableCollection<Module>();
-                return _ModuleCollection;
-            }
+            get => _ModuleCollection;
+            set => Set(ref _ModuleCollection, value);
         }
 
 

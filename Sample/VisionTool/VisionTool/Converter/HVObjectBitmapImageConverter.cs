@@ -76,7 +76,7 @@ namespace VisionTool.Converter
                 }
                 catch(Exception e)
                 {
-
+                    System.Console.WriteLine(e.Message);
                 }
                 finally
                 {

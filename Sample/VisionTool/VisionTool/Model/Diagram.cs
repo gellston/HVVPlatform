@@ -6,9 +6,10 @@ namespace VisionTool.Model
 {
     public class Diagram
     {
-        public Diagram()
+        public Diagram(string fileName, string filePath)
         {
-
+            this.FileName = fileName;
+            this.FilePath = filePath;
         }
 
         public string FileName { get; set; }

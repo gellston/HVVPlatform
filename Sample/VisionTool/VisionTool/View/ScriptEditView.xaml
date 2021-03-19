@@ -30,7 +30,6 @@
 
 
     <DockPanel>
-
         <Grid Height="40"
               DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>
