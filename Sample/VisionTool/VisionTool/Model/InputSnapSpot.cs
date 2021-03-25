@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
+using VisionTool.Model.DiagramProperty;
 
 namespace VisionTool.Model
 {
@@ -37,6 +38,22 @@ namespace VisionTool.Model
         {
             get => _IsConnected;
             set => Set(ref _IsConnected, value);
+        }
+
+
+        private bool _IsProperty = false;
+        public bool IsProperty
+        {
+            get => _IsProperty;
+            set => Set(ref _IsProperty, value);
+        }
+
+
+        private BaseDiagramProperty _DiagramProperty = new EmptyDiagramProperty();
+        public BaseDiagramProperty DiagramProperty
+        {
+            get => _DiagramProperty;
+            set => Set(ref _DiagramProperty, value);
         }
 
         private BindablePoint _offset;

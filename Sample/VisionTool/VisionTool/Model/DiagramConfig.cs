@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using VisionTool.Model.DiagramProperty;
 
 namespace VisionTool.Model
 {
@@ -48,5 +49,7 @@ namespace VisionTool.Model
         public List<InputSnapSpot> InputSnapSpotCollection { get; set; }
 
         public List<OutputSnapSpot> OutputSnapSpotCollection { get; set; }
+        public List<BaseDiagramProperty> FunctionProperties { get; set; }
+
     }
 }

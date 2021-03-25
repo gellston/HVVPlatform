@@ -10,28 +10,78 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
-             xmlns:model="clr-namespace:VisionTool.Model">
+             xmlns:model="clr-namespace:VisionTool.Model"
+             xmlns:property="clr-namespace:VisionTool.Model.DiagramProperty"
+             xmlns:converter="clr-namespace:VisionTool.Converter"
+             xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm">
     <DockPanel>
         <DockPanel.Resources>
+
+            <converter:DiagramOjbectToFunctionConverter x:Key="DiagramOjbectToFunctionConverter"></converter:DiagramOjbectToFunctionConverter>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
+            <converter:FunctionDiagramTypeCheckConverter x:Key="FunctionDiagramTypeCheckConverter"></converter:FunctionDiagramTypeCheckConverter>
             <CompositeCollection x:Key="compositeCollection">
                 <CollectionContainer Collection="{Binding Path=FunctionCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=ConnectorCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=InputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=OutputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
-                <ListBoxItem DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" Canvas.Left="{Binding MidPoint.X}" Canvas.Top="{Binding MidPoint.Y}">
+                <ListBoxItem DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" Canvas.Left="{Binding MidPoint.X, FallbackValue=0}" Canvas.Top="{Binding MidPoint.Y, FallbackValue=0}">
                     <Thumb Name="LineMidPoint" DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" DragDelta="LineMidPoint_DragDelta" Height="10" Width="10"
-                               Background="Red" Visibility="{Binding ElementName=view, Path=ShowMidPoint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                           Visibility="{Binding ElementName=view, Path=ShowMidPoint, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Background="Transparent">
                         <Thumb.Template>
                             <ControlTemplate>
                                 <Ellipse Grid.Column="0" Grid.Row="0" Margin="-7.5,-7.5,0,0" Width="15" Height="15" Fill="Purple" Stroke="Black" StrokeThickness="2"/>
                             </ControlTemplate>
                         </Thumb.Template>
                     </Thumb>
+
+                    <ListBoxItem.Style>
+                        <Style TargetType="ListBoxItem">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=SelectedDiagram, Source={x:Reference view}, Converter={StaticResource FunctionDiagramTypeCheckConverter}}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBoxItem.Style>
                 </ListBoxItem>
             </CompositeCollection>
         </DockPanel.Resources>
 
+        <dx:UniformStackPanel DockPanel.Dock="Top"
+                              Height="40" 
+                              ChildSpacing="0" 
+                              Orientation="Horizontal"
+                              Name="TopControlMenu">
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
+            </dx:SimpleButton>-->
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsShowFunctionPanel, Mode=TwoWay}" ToolTip="다이어그램 종류 뷰" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/FunctionsStatistical.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsShowSequencePanel, Mode=TwoWay}" ToolTip="시퀀스 뷰" ButtonKind="Toggle" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/RichEdit/ViewMergedData.svg'}"></Image>
+            </dx:SimpleButton>
+
+            <Button Command="{Binding ElementName=view, Path=RefreshLayoutCommand}" ToolTip="레이아웃 정리" Width="40">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
+            </Button>
+         
+        </dx:UniformStackPanel>
+        
+        
 
         <dxg:GridControl Width="0"
                          ItemsSource="{Binding Path=DiagramConfigCollection, ElementName=view}"
@@ -54,7 +104,7 @@
                     <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
                                          Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
                                          Duration="0:0:0.5"
-                                         To="500">
+                                         To="400">
                         <DoubleAnimation.EasingFunction>
                             <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
                         </DoubleAnimation.EasingFunction>
@@ -103,6 +153,145 @@
                 </Style>
             </dxg:GridControl.Style>
         </dxg:GridControl>
+
+        <DockPanel Width="0"
+                   DockPanel.Dock="Right"
+                   Name="RightSequenceView">
+            <DockPanel.Resources>
+                <Storyboard x:Key="ShrinkWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
+                                         Duration="0:0:0.5"
+                                         To="0">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Key="EnLargeWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
+                                         Duration="0:0:0.5"
+                                         To="550">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </DockPanel.Resources>
+            
+            <ListView Height="500"
+                      DockPanel.Dock="Bottom"
+                      HorizontalContentAlignment="Stretch"
+                      ItemsSource="{Binding ElementName=view,Path=SelectedInputSnapSpotCollection}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView.Resources>
+
+
+                    <DataTemplate DataType="{x:Type model:InputSnapSpot}">
+                        <DockPanel Height="40" HorizontalAlignment="Stretch">
+                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsProperty, Mode=TwoWay}" DockPanel.Dock="Left">
+                                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Security_Visibility.svg'}"></Image>
+                            </dx:SimpleButton>
+                            <TextBox Text="{Binding Name, Mode=OneWay}" 
+                                 HorizontalAlignment="Stretch" 
+                                 VerticalAlignment="Stretch" 
+                                 HorizontalContentAlignment="Left" 
+                                 VerticalContentAlignment="Center" 
+                                 TextAlignment="Left"
+                                 Width="100"
+                                 DockPanel.Dock="Left"
+                                 IsReadOnly="True"></TextBox>
+                            <ContentPresenter Content="{Binding DiagramProperty}" HorizontalAlignment="Stretch">
+                                <ContentPresenter.Resources>
+                                    <!--데이터 프로퍼티 정의-->
+                                    <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
+                                        <DockPanel>
+                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="지원되지 않는 속성"></TextBox>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
+                                        <DockPanel>
+                                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
+                                                <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                            </dx:SimpleButton>
+                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="BoolDiagramProperty"></TextBox>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
+                                        <DockPanel>
+                                            <Slider Width="100" DockPanel.Dock="Right" Value="{Binding Value, Mode=TwoWay}" Maximum="{Binding MaxValue}" Minimum="{Binding MinValue}" HorizontalAlignment="Left" VerticalAlignment="Center"></Slider>
+                                            <TextBox Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
+                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="ThresholdDiagramProperty"></TextBox>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                    <!--<DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
+                                    <DockPanel>
+                                        <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="지원되지 않는 속성"></TextBox>
+                                    </DockPanel>
+                                </DataTemplate>-->
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </DockPanel>
+                    </DataTemplate>
+
+
+                </ListView.Resources>
+            </ListView>
+
+            <ListView ItemsSource="{Binding ElementName=view, Path=FunctionCollection}"
+                      SelectedItem="{Binding SelectedFunction}"
+                      HorizontalContentAlignment="Stretch"
+                      x:Name="FunctionSequenceListView"
+                      PreviewMouseRightButtonDown="FunctionSequenceListView_PreviewMouseRightButtonDown"
+                      PreviewMouseMove="FunctionSequenceListView_PreviewMouseMove"
+                      PreviewMouseUp="FunctionSequenceListView_PreviewMouseUp"
+                      AllowDrop="True"
+                      PreviewDrop="FunctionSequenceListView_PreviewDrop">
+
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type model:Function}">
+                        <DockPanel Height="40">
+                            <Button Width="40" DockPanel.Dock="Left">
+                                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_ShowScript.svg'}"></Image>
+                            </Button>
+                            <Image Width="30"
+                                   Height="30"
+                                   Source="{dx:DXImage 'SvgImages/PDF Viewer/HandTool.svg'}"
+                                   DockPanel.Dock="Right"></Image>
+                            <TextBox Text="{Binding Name}" 
+                                     HorizontalAlignment="Stretch"                
+                                     VerticalAlignment="Stretch" 
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     TextAlignment="Center"
+                                     IsReadOnly="True"></TextBox>
+
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.Resources>
+            </ListView>
+
+            <DockPanel.Style>
+    
+                <Style TargetType="{x:Type DockPanel}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=view, Path=IsShowSequencePanel}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+ 
+            </DockPanel.Style>
+        </DockPanel>
+
+        
 
 
         <ScrollViewer HorizontalScrollBarVisibility="Hidden"
@@ -158,11 +347,26 @@
                                             <ColumnDefinition Width="30"></ColumnDefinition>
                                             <ColumnDefinition Width="*"></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
-                                        <Ellipse Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="#0d47a1" Stroke="Black" StrokeThickness="2"/>
+                                        <Ellipse Name="InputCircle" Grid.Column="0" Grid.Row="0" Width="15" Height="15" Fill="#0d47a1" Stroke="Black" StrokeThickness="2"/>
                                         <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1"></TextBlock>
                                     </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding IsProperty}" Value="True">
+                                            <Setter TargetName="InputCircle" Property="Fill" Value="Red"></Setter>
+                                        </DataTrigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
+                                
                             </Thumb.Template>
+                            <!--<Thumb.Style>
+                                <Style TargetType="{x:Type Thumb}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsProperty}" Value="True">
+                                            <Setter TargetName="InputCircle" Property="Fill" Value="Red"></Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Thumb.Style>-->
                         </Thumb>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:OutputSnapSpot}">
@@ -306,11 +510,11 @@
                 </ListBox.Template>
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas  Height="{Binding ElementName=view, Path=CanvasHeight, Mode=OneWay}"
-                             Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}"
-                             IsItemsHost="True"
-                             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                             ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                        <Canvas Height="{Binding ElementName=view, Path=CanvasHeight, Mode=OneWay}"
+                                Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}"
+                                IsItemsHost="True"
+                                ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                ScrollViewer.VerticalScrollBarVisibility="Hidden">
                             <Canvas.Background>
                                 <VisualBrush TileMode="Tile"
                                                  Viewport="0,0,10,10" ViewportUnits="Absolute" 
@@ -339,47 +543,7 @@
 
 
 
-        <ListView Width="0"
-                  DockPanel.Dock="Right"
-                  Name="RightSequenceView">
-            <ListView.Resources>
-                <Storyboard x:Key="ShrinkWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
-                                         Duration="0:0:0.5"
-                                         To="0">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-                <Storyboard x:Key="EnLargeWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=RightSequenceView}"
-                                         Duration="0:0:0.5"
-                                         To="500">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-            </ListView.Resources>
 
-            <ListView.Style>
-                <Style TargetType="{x:Type ListView}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=view, Path=IsShowSequencePanel}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
-        </ListView>
         
         
        

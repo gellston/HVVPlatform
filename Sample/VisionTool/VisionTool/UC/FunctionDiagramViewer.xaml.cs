@@ -19,6 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VisionTool.Model;
+using VisionTool.Model.DiagramProperty;
+using VisionTool.Helper;
 
 namespace VisionTool.UC
 {
@@ -134,6 +136,7 @@ namespace VisionTool.UC
                         newInputSnapSpot.Offset.Y = inputSnap.Offset.Y;
                         newInputSnapSpot.IsHighLight = false;
                         newInputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                        newInputSnapSpot.DiagramProperty = inputSnap.DiagramProperty.Clone() as BaseDiagramProperty;
                         inputSnapSpotCollection.Add(newInputSnapSpot);
                     }
 
@@ -147,7 +150,7 @@ namespace VisionTool.UC
                             Parent = function,
                             IsNew = true,
                             ParentFunctionHash = function.Hash
-
+                            
                         };
                         newOutputSnapSpot.Offset.X = outptSnap.Offset.X;
                         newOutputSnapSpot.Offset.Y = outptSnap.Offset.Y;
@@ -156,13 +159,24 @@ namespace VisionTool.UC
                         outputSnapSpotCollection.Add(newOutputSnapSpot);
                     }
 
+
+
+                    //var functionPropertyCollection = new ObservableCollection<BaseDiagramProperty>();
+                    //var functionPropertyies = Helper.Extensions.Clone(functionConfig.FunctionProperties.ToList());
+                    //foreach (var property in functionPropertyies)
+                    //{
+                    //    //property.ParentFunctionHash = function.Hash;
+                    //    property.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                    //    //functionPropertyCollection.Add(property);
+                    //}
+
                     function.Input.AddRange(inputSnapSpotCollection);
                     function.Output.AddRange(outputSnapSpotCollection);
+                    //function.FunctionProperties.AddRange(functionPropertyCollection);
 
+                    //var functionHeight = 30 + (function.Input.Count() + function.Output.Count()) * 30;
 
-                    var functionHeight = 30 + (function.Input.Count() + function.Output.Count()) * 30;
-
-                    function.Size.Height = functionHeight;
+                    //function.Size.Height = functionHeight;
 
 
                     function.Location.ValueChanged();
@@ -178,6 +192,9 @@ namespace VisionTool.UC
                     this.UpdateFunctionDiagramLayout();
                     this.UpdateConnectorDiagramLayout();
                     //this.OutterScrollViewer.UpdateLayout();
+
+
+                    OnPropertyChanged("FunctionCollection");
 
                 });
 
@@ -213,8 +230,8 @@ namespace VisionTool.UC
             FunctionDiagramViewer control = sender as FunctionDiagramViewer;
             if (control != null)
             {
-                if((bool)e.NewValue == true)
-                    control.IsShowSequencePanel = false;
+               // if((bool)e.NewValue == true)
+                //    control.IsShowSequencePanel = false;
             }
         }
 
@@ -238,11 +255,28 @@ namespace VisionTool.UC
             FunctionDiagramViewer control = sender as FunctionDiagramViewer;
             if (control != null)
             {
-                if ((bool)e.NewValue == true)
-                    control.IsShowFunctionPanel = false;
+                //if ((bool)e.NewValue == true)
+               //     control.IsShowFunctionPanel = false;
                 
             }
         }
+
+
+        //public static readonly DependencyProperty IsShowTopPanelProperty = DependencyProperty.Register("IsShowTopPanel", typeof(bool), typeof(FunctionDiagramViewer));
+        //public bool IsShowTopPanel
+        //{
+        //    get
+        //    {
+        //        return (bool)GetValue(IsShowTopPanelProperty);
+        //    }
+
+        //    set
+        //    {
+        //        SetValue(IsShowTopPanelProperty, value);
+        //    }
+        //}
+
+
 
 
         //public static readonly DependencyProperty IsFunctionCreateProperty = DependencyProperty.Register("IsFunctionCreate", typeof(bool), typeof(FunctionDiagramViewer), new PropertyMetadata(OnIsFunctionCreateChanged));
@@ -476,6 +510,29 @@ namespace VisionTool.UC
 
 
 
+
+
+
+        public static readonly DependencyProperty SelectedFunctionProperty = DependencyProperty.Register("SelectedFunction", typeof(Function), typeof(FunctionDiagramViewer));
+        public Function SelectedFunction
+        {
+            get
+            {
+                return (Function)GetValue(SelectedFunctionProperty);
+            }
+
+            set
+            {
+                SetValue(SelectedFunctionProperty, value);
+            }
+        }
+
+
+
+
+
+
+
         public static readonly DependencyProperty DiagramConfigCollectionProperty = DependencyProperty.Register("DiagramConfigCollection", typeof(ObservableCollection<DiagramConfig>), typeof(FunctionDiagramViewer));
         public ObservableCollection<DiagramConfig> DiagramConfigCollection
         {
@@ -540,6 +597,42 @@ namespace VisionTool.UC
             }
         }
 
+        /*
+        private static void FunctionCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+           // var calendar = d as RadCalendar;
+
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                // Unsubscribe from CollectionChanged on the old collection
+                coll.CollectionChanged -= FunctionCollectinItemChanged;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<Function>)e.NewValue;
+                //calendar.DayTemplateSelector = new SpecialDaySelector(coll, GetSpecialDayTemplate(d));
+                // Subscribe to CollectionChanged on the new collection
+                coll.CollectionChanged += FunctionCollectinItemChanged;
+               
+            }
+        }
+
+
+        private static void FunctionCollectinItemChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ObservableCollection<Function> collection = sender as ObservableCollection<Function>;
+            
+            //if(control != null)
+            //{
+            //    control.UpdateFunctionDiagramLayout();
+           // }
+
+
+        }*/
+
+
         public static readonly DependencyProperty SelectedDiagramProperty = DependencyProperty.Register("SelectedDiagram", typeof(DiagramObject), typeof(FunctionDiagramViewer), new PropertyMetadata(OnSelectedDiagramChanged));
         public DiagramObject SelectedDiagram
         {
@@ -577,7 +670,22 @@ namespace VisionTool.UC
                         control.ShowMidPoint = true;
                 }
 
+                if (newValue is Function)
+                {
+                    var function = newValue as Function;
+                    control.SelectedInputSnapSpotCollection = function.Input;
+                }
+
+
             }
+        }
+
+
+        private ObservableCollection<InputSnapSpot> _SelectedInputSnapSpotCollection = null;
+        public ObservableCollection<InputSnapSpot> SelectedInputSnapSpotCollection
+        {
+            get => _SelectedInputSnapSpotCollection;
+            set => Set(ref _SelectedInputSnapSpotCollection, value);
         }
 
         //private static void OnFunctionCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -878,10 +986,17 @@ namespace VisionTool.UC
                     function.Location.Y = 10 + yVerticalOffset;
                     function.Size.Width = this.CanvasWidth * 0.4;
 
+                    var functionHeight = 30 + (function.Input.Count() + function.Output.Count()) * 30;
+                    function.Size.Height = functionHeight;
+
+
                     yVerticalOffset = function.Location.Y + function.Size.Height;
 
                     newCanvasHeight += (10 + function.Size.Height);
                 }
+
+                
+
 
                 if (this.CanvasHeight < newCanvasHeight + 10)
                     this.CanvasHeight = this.CanvasHeight * 2;
@@ -908,6 +1023,25 @@ namespace VisionTool.UC
                 {
                     connector.MidPoint.X = this.CanvasWidth * 0.15;
                 }
+
+
+                List<Connector> functionList = new List<Connector>();
+                this.ConnectorCollection.ToList().ForEach((connector) =>
+                {
+                    if (connector.IsNew == true) return;
+                    var startIndex = this.FunctionCollection.IndexOf(connector.Start.Parent);
+                    var endIndex = this.FunctionCollection.IndexOf(connector.End.Parent);
+
+                    if(startIndex > endIndex)
+                    {
+                        functionList.Add(connector);
+                    }
+                });
+
+                functionList.ForEach(data => this.ConnectorCollection.Remove(data));
+
+
+
                 OnPropertyChanged("ConnectorCollection");
 
             }
@@ -917,10 +1051,112 @@ namespace VisionTool.UC
             }
         }
 
-        private void DiagramList_SizeChanged(object sender, SizeChangedEventArgs sizeInfo)
+        private bool _IsDragging = false;
+        private Image _dragSource = null;
+
+        private void FunctionSequenceListView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
-     
+            ListView listview = sender as ListView;
+
+            if (listview != null)
+            {
+                UIElement element = listview.InputHitTest(e.GetPosition(listview)) as UIElement;
+                if (element is Image)
+                {
+                    var dataContext = ((Image)element).DataContext as Function;
+                    if (dataContext != null)
+                    {
+                        _dragSource = element as Image;
+                        _IsDragging = true;
+                        return;
+                    }
+
+                    
+
+                }
+            }
+            _IsDragging = false;
+            _dragSource = null;
+
+        }
+
+        private void FunctionSequenceListView_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            ListView listview = sender as ListView;
+            if (listview != null && _IsDragging && _dragSource != null && (Keyboard.GetKeyStates(Key.LeftShift) & KeyStates.Down) > 0)
+            {
+                // set the data to be dragged
+
+                var dataContext = _dragSource.DataContext as Function;
+                // do drag drop
+                DragDrop.DoDragDrop(_dragSource, dataContext, DragDropEffects.Move);
+    
+
+                _IsDragging = false;
+                _dragSource = null;
+            }
+        }
+
+        private void FunctionSequenceListView_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //ListView listview = sender as ListView;
+            //if (listview != null && _IsDragging && _dragSource != null)
+            //{
+            //    UIElement element = listview.InputHitTest(e.GetPosition(listview)) as UIElement;
+            //    if (element is Image)
+            //    {
+            //        var dataContext = ((Image)element).DataContext as Function;
+            //        if (dataContext != null)
+            //        {
+            //            _dragSource = element as Image;
+            //        }
+
+
+
+            //    }
+            //}
+
+            _IsDragging = false;
+            _dragSource = null;
+        }
+
+        private void FunctionSequenceListView_PreviewDrop(object sender, DragEventArgs e)
+        {
+            ListView listview = sender as ListView;
+            if (listview != null && _IsDragging && _dragSource != null)
+            {
+                UIElement element = listview.InputHitTest(e.GetPosition(listview)) as UIElement;
+                if (element is Image)
+                {
+                    var targetContext = ((Image)element).DataContext as Function;
+                    if (targetContext != null)
+                    {
+                        var targetElement = element as Image;
+                        var targetFunction = targetElement.DataContext as Function;
+
+                        var sourceFunction = e.Data.GetData(typeof(Function)) as Function;
+
+
+                        var sourceIndex = this.FunctionCollection.IndexOf(sourceFunction);
+                        var targetIndex = this.FunctionCollection.IndexOf(targetFunction);
+
+                        if(sourceIndex != targetIndex)
+                        {
+                            this.FunctionCollection[targetIndex] = sourceFunction;
+                            this.FunctionCollection[sourceIndex] = targetFunction;
+                            this.UpdateFunctionDiagramLayout();
+                            this.UpdateConnectorDiagramLayout();
+                        }
+
+                    }
+
+
+
+                }
+            }
+            _IsDragging = false;
+            _dragSource = null;
+
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
+using VisionTool.Model.DiagramProperty;
 
 namespace VisionTool.Model
 {
@@ -71,6 +72,18 @@ namespace VisionTool.Model
             {
                 _Output ??= new ObservableCollection<OutputSnapSpot>();
                 return _Output;
+            }
+        }
+
+        private ObservableCollection<BaseDiagramProperty> _FunctionProperties = null;
+        [JsonIgnore]
+        [IgnoreDataMember]
+        public ObservableCollection<BaseDiagramProperty> FunctionProperties
+        {
+            get
+            {
+                _FunctionProperties ??= new ObservableCollection<BaseDiagramProperty>();
+                return _FunctionProperties;
             }
         }
 

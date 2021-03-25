@@ -11,57 +11,64 @@
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxxtra="clr-namespace:DevExpress.XtraEditors;assembly=DevExpress.Data.v20.2"
-             Name="view">
+             xmlns:property="clr-namespace:VisionTool.Model.DiagramProperty"
+             xmlns:converter="clr-namespace:VisionTool.Converter"
+             x:Name="view">
     <DockPanel>
 
-        <Grid Height="40"
-              DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <DockPanel.Resources>
+            <converter:DiagramPropertyToStringConverter x:Key="DiagramPropertyToStringConverter"></converter:DiagramPropertyToStringConverter>
+        </DockPanel.Resources>
+
+        <dx:UniformStackPanel DockPanel.Dock="Top"
+                              Height="40" 
+                              ChildSpacing="0" 
+                              Orientation="Horizontal"
+                              Name="TopControlMenu">
             <Button ToolTip="다이어그램 임포트"
                     Grid.Column="0"
-                    Command="{Binding ImportDiagramCommand}">
+                    Command="{Binding ImportDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'Images/Support/PackageProduct_32x32.png'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 수정"
                     Grid.Column="1"
-                    Command="{Binding ModifyDiagramCommand}">
+                    Command="{Binding ModifyDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 삭제"
                     Grid.Column="2"
-                    Command="{Binding DeleteDiagramCommand}">
+                    Command="{Binding DeleteDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Dashboards/Delete.svg'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 리로드"
                     Grid.Column="3"
-                    Command="{Binding ReloadDiagramCommand}">
+                    Command="{Binding ReloadDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Reload.svg'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 정보 초기화"
                     Grid.Column="4"
-                    Command="{Binding ClearDiagramCommand}">
+                    Command="{Binding ClearDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ClearAll.svg'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 랜더링 미리 보기"
                     Grid.Column="5"
-                    Command="{Binding DiagramRenderingCommand}">
+                    Command="{Binding DiagramRenderingCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Pivot_Printing_Preview.svg'}"></Image>
             </Button>
             <Button ToolTip="다이어그램 패키징 시작"
                     Grid.Column="6"
-                    Command="{Binding PackageDiagramCommand}">
+                    Command="{Binding PackageDiagramCommand}"
+                    Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Shopping_Package.svg'}"></Image>
             </Button>
-        </Grid>
+        </dx:UniformStackPanel>
+
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -69,127 +76,79 @@
                 <ColumnDefinition Width="430"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-
-
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="40"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="40"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Grid.Row="0" ToolTip="다이어그램 이름">
-                    <Image Source="{dx:DXImage 'SvgImages/Dashboards/RenameDataSource.svg'}"></Image>
-                </Button>
-                <Button Grid.Column="0" Grid.Row="1" ToolTip="다이어그램 업데이트 날짜">
-                    <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/LongDate.svg'}"></Image>
-                </Button>
-                <Button Grid.Column="0" Grid.Row="2" ToolTip="작성자 이름">
-                    <Image Source="{dx:DXImage 'SvgImages/XAF/FilterEditor_User.svg'}"></Image>
-                </Button>
-                <Button Grid.Column="0" Grid.Row="3" ToolTip="다이어그램 모듈 버전">
-                    <Image Source="{dx:DXImage 'Images/Support/Version_32x32.png'}"></Image>
-                </Button>
-                <Button Grid.Column="0" Grid.Row="4" ToolTip="다이어그램 컬러">
-                    <Image Source="{dx:DXImage 'SvgImages/Dashboards/EditColors.svg'}"></Image>
-                </Button>
-
-                <Button Grid.Column="0" Grid.Row="7" ToolTip="다이어그램 코멘트">
-                    <Image Source="{dx:DXImage 'Images/Comments/ShowHideComment_32x32.png'}"></Image>
-                </Button>
-
-                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramName}"></TextBox>
-                <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramEditDate}"></TextBox>
-                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramWriter}"></TextBox>
-                <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Text="{Binding DiagramVersion}"></TextBox>
-                <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" Text="다이어그램 코멘트" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-
-                <dxe:PopupColorEdit Color="{Binding DiagramColor, Mode=TwoWay, FallbackValue=White}" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalContentAlignment="Center"/>
-                <TextBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Text="{Binding DiagramComment}"/>
-
-                <Grid Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="40"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Grid.Row="5" ToolTip="다이어그램 너비">
-                        <Image Source="{dx:DXImage 'SvgImages/Dashboards/GridColumnWidth.svg'}"></Image>
+            
+            
+            
+            <!--LeftMenu-->
+            <DockPanel Grid.Column="0">
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="다이어그램 이름" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/Dashboards/RenameDataSource.svg'}"></Image>
                     </Button>
-                    <Button Grid.Column="3" Grid.Row="6" ToolTip="다이어그램 높이">
-                        <Image Source="{dx:DXImage 'SvgImages/Scheduling/CellsAutoHeight.svg'}"></Image>
+                    <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramName}"></TextBox>
+                </DockPanel>
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="다이어그램 업데이트 날짜" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/LongDate.svg'}"></Image>
                     </Button>
-                    <Slider Value="{Binding DiagramWidth}" Grid.Column="1" Minimum="100" Maximum="700" IsSnapToTickEnabled="True" TickFrequency="25" Name="DiagramWidthSlider"></Slider>
-                    <Slider Value="{Binding DiagramHeight}" Grid.Column="4" Minimum="100"  Maximum="700" IsSnapToTickEnabled="True" TickFrequency="25" Name="DiagramHeightSlider"></Slider>
-                    <TextBox Grid.Column="2" IsEnabled="False" Text="{Binding DiagramWidth}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                    <TextBox Grid.Column="5" IsEnabled="False" Text="{Binding DiagramHeight}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                </Grid>
+                    <TextBox IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramEditDate}"></TextBox>
+                </DockPanel>
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="작성자 이름" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/FilterEditor_User.svg'}"></Image>
+                    </Button>
+                    <TextBox HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Text="{Binding DiagramWriter}"></TextBox>
+                </DockPanel>
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="다이어그램 모듈 버전" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'Images/Support/Version_32x32.png'}"></Image>
+                    </Button>
+                    <TextBox IsEnabled="False" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  Text="{Binding DiagramVersion}"></TextBox>
+                </DockPanel>
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="다이어그램 컬러" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/Dashboards/EditColors.svg'}"></Image>
+                    </Button>
+                    <dxe:PopupColorEdit Color="{Binding DiagramColor, Mode=TwoWay, FallbackValue=White}" HorizontalContentAlignment="Center"/>
+                </DockPanel>
 
 
-
-                <Grid Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid Grid.Column="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
+                <!--출력 노드 추가-->
+                <DockPanel DockPanel.Dock="Bottom"
+                           Height="200">
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="40"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-
-
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
                         <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
                             <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Label.svg'}"></Image>
                         </Button>
                         <TextBox Grid.Column="1"
-                                 Grid.ColumnSpan="3"
-                                 Text="컬럼을 추가하세요"
+                                 Text="출력 노드를 추가하세요"
                                  HorizontalContentAlignment="Center"
                                  VerticalContentAlignment="Center"
                                  IsEnabled="False">
 
                         </TextBox>
-                        <Button Grid.Column="4" Grid.Row="0" ToolTip="입력 추가" Command="{Binding AddInputDataCommand}">
+                        <Button Grid.Column="3" Grid.Row="0" ToolTip="출력 추가" Command="{Binding AddOutputDataCommand}">
                             <Image Source="{dx:DXImage 'SvgImages/RichEdit/AddParagraphToTableOfContents.svg'}"></Image>
                         </Button>
-
                         <dxg:GridControl EnableSmartColumnsGeneration="False"
                                          SelectionMode="Row"
                                          AutoGenerateColumns="None"
                                          ShowAllTableValuesInFilterPopup="False"
-                                         ItemsSource="{Binding InputSnapSpotCollection}"
-                                         SelectedItem="{Binding SelectedInputSnapSpot}"
+                                         ItemsSource="{Binding OutputSnapSpotCollection}"
+                                         SelectedItem="{Binding SelectedOutputSnapSpot}"
                                          Grid.Column="0"
                                          Grid.Row="1"
-                                         Grid.ColumnSpan="5"
+                                         Grid.ColumnSpan="3"
                                          >
-
-
-
                             <dxg:GridControl.Columns>
                                 <dxg:GridColumn FieldName="Name" IsSmart="False" Width="*">
                                     <dxg:GridColumn.EditSettings>
@@ -209,129 +168,291 @@
                                                AllowScrollToFocusedRow="False"
                                                >
                                     <dxg:TableView.RowCellMenuCustomizations>
-                                        <dxb:BarButtonItem Content="Delete" Glyph="{dx:DXImage 'SvgImages/RichEdit/DeleteTable.svg'}" Command="{Binding ElementName=view, Path=DataContext.DeleteInputCommand}"/>
-                                    </dxg:TableView.RowCellMenuCustomizations>
-                                </dxg:TableView>
-                            </dxg:GridControl.View>
-                        </dxg:GridControl>
-                    </Grid>
-
-
-
-                    <Grid Grid.Column="1">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
-                            <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Label.svg'}"></Image>
-                        </Button>
-                        <TextBox Grid.Column="1"
-                                 Grid.ColumnSpan="3"
-                                 Text="컬럼을 추가하세요"
-                                 HorizontalContentAlignment="Center"
-                                 VerticalContentAlignment="Center"
-                                 IsEnabled="False">
-
-                        </TextBox>
-                        <Button Grid.Column="4" Grid.Row="0" ToolTip="입력 추가" Command="{Binding AddOutputDataCommand}">
-                            <Image Source="{dx:DXImage 'SvgImages/RichEdit/AddParagraphToTableOfContents.svg'}"></Image>
-                        </Button>
-
-                        <dxg:GridControl EnableSmartColumnsGeneration="False"
-                                         SelectionMode="Row"
-                                         AutoGenerateColumns="None"
-                                         ShowAllTableValuesInFilterPopup="False"
-                                         ItemsSource="{Binding OutputSnapSpotCollection}"
-                                         SelectedItem="{Binding SelectedOutputSnapSpot}"
-                                         Grid.Column="0"
-                                         Grid.Row="1"
-                                         Grid.ColumnSpan="5">
-
-                            <dxg:GridControl.Columns>
-                                <dxg:GridColumn FieldName="Name" IsSmart="False" Width="*">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:TextEditSettings></dxe:TextEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="DataType" SortFieldName="" IsSmart="False"  Width="*">
-                                    <dxg:GridColumn.EditSettings>
-                                        <dxe:ComboBoxEditSettings ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramDataType}" IsTextEditable="False"></dxe:ComboBoxEditSettings>
-                                    </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
-                            </dxg:GridControl.Columns>
-                            <dxg:GridControl.View>
-                                <dxg:TableView AllowPerPixelScrolling="True" 
-                                           ShowTotalSummary="False"
-                                           AllowGrouping="True"
-                                           AllowScrollToFocusedRow="False">
-                                    <dxg:TableView.RowCellMenuCustomizations>
                                         <dxb:BarButtonItem Content="Delete" Glyph="{dx:DXImage 'SvgImages/RichEdit/DeleteTable.svg'}" Command="{Binding ElementName=view, Path=DataContext.DeleteOutputCommand}"/>
                                     </dxg:TableView.RowCellMenuCustomizations>
                                 </dxg:TableView>
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
+                </DockPanel>
+
+
+                <DockPanel DockPanel.Dock="Bottom">
+                    <Grid Height="40"
+                          DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button  ToolTip="데이터 타입" Grid.Column="0">
+                            <Image Source="{dx:DXImage 'SvgImages/Dashboards/Images.svg'}"></Image>
+                        </Button>
+                        <TextBox Grid.Column="1"
+                                 Text="노드 속성 기본값을 수정하세요."
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 IsEnabled="False">
+                        </TextBox>
+                    </Grid>
+
+                    <ContentPresenter Content="{Binding Path=SelectedInputSnapSpot.DiagramProperty}">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
+                                <DockPanel Height="40" HorizontalAlignment="Stretch">
+                                    <Button Width="40" DockPanel.Dock="Left">
+                                        <Image Source="{dx:DXImage 'SvgImages/Snap/CalcBool.svg'}"></Image>
+                                    </Button>
+                                    <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
+                                        <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                    </dx:SimpleButton>
+                                    <TextBox IsReadOnly="True" Text="BoolDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
+                                <DockPanel Height="40" HorizontalAlignment="Stretch">
+                                    <Button Width="40" DockPanel.Dock="Left">
+                                        <Image Source="{dx:DXImage 'SvgImages/Reports/GaugeStyleLinearHorizontal.svg'}"></Image>
+                                    </Button>
+                                    <TextBox Width="100" DockPanel.Dock="Right" Text="{Binding MaxValue, Mode=TwoWay}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+                                    <TextBox Width="80" DockPanel.Dock="Right" Text="Max Value"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+
+                                    <TextBox Width="100" DockPanel.Dock="Right" Text="{Binding MinValue, Mode=TwoWay}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+                                    <TextBox Width="80" DockPanel.Dock="Right" Text="Min Value"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+                                    <TextBox IsReadOnly="True" Text="ThresholdDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
+                                <DockPanel Height="40" HorizontalAlignment="Stretch">
+                                    <Button Width="40" DockPanel.Dock="Left">
+                                        <Image Source="{dx:DXImage 'SvgImages/Snap/EmptyTableRowSeparatorList.svg'}"></Image>
+                                    </Button>
+
+                                    <TextBox IsReadOnly="True" Text="상수 편집을 지원하지 않는 속성입니다." HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
+                </DockPanel>
+
+                <!--입력 노드 추가--> 
+                <DockPanel>
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="40"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="40"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
-
-                        <Button Grid.Column="0" Grid.Row="0" ToolTip="다이어그램 이미지">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
                             <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Label.svg'}"></Image>
                         </Button>
                         <TextBox Grid.Column="1"
-                                 Grid.ColumnSpan="3"
-                                 Text="이미지를 추가하세요"
+                                 Text="입력 노드를 추가하세요"
                                  HorizontalContentAlignment="Center"
                                  VerticalContentAlignment="Center"
                                  IsEnabled="False">
 
                         </TextBox>
-                        <Button Grid.Column="4" Grid.Row="0" ToolTip="입력 추가" Command="{Binding AddImageCommand}">
+                        <Button Grid.Column="3" Grid.Row="0" ToolTip="입력 추가" Command="{Binding AddInputDataCommand}">
                             <Image Source="{dx:DXImage 'SvgImages/RichEdit/AddParagraphToTableOfContents.svg'}"></Image>
                         </Button>
-                        <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Source="{Binding Path=DiagramImage, FallbackValue={dx:DXImage 'SvgImages/Dashboards/ShowWeightedLegendNone.svg'}}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               Width="100"
-                               Height="100">
-                        </Image>
-
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding InputSnapSpotCollection}"
+                                         SelectedItem="{Binding SelectedInputSnapSpot}"
+                                         Grid.Column="0"
+                                         Grid.Row="1"
+                                         Grid.ColumnSpan="3"
+                                         >
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="Name" IsSmart="False" Width="*">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:TextEditSettings></dxe:TextEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="DataType" IsSmart="False"  Width="*">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:ComboBoxEditSettings ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramDataType}" IsTextEditable="False"></dxe:ComboBoxEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn FieldName="DiagramProperty">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:ComboBoxEditSettings ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramPropertyDataType}"></dxe:ComboBoxEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
+                            <dxg:GridControl.View>
+                                <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False"
+                                               >
+                                    <dxg:TableView.RowCellMenuCustomizations>
+                                        <dxb:BarButtonItem Content="Delete" Glyph="{dx:DXImage 'SvgImages/RichEdit/DeleteTable.svg'}" Command="{Binding ElementName=view, Path=DataContext.DeleteInputCommand}"/>
+                                    </dxg:TableView.RowCellMenuCustomizations>
+                                </dxg:TableView>
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
                     </Grid>
-                </Grid>
+                </DockPanel>
 
-            </Grid>
+                
+
+                <!--상수 노드 추가--><!--
+                <DockPanel DockPanel.Dock="Top">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
+                            <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Label.svg'}"></Image>
+                        </Button>
+                        <TextBox Grid.Column="1"
+                                 Text="함수 상수를 추가해주세요."
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 IsEnabled="False">
+
+                        </TextBox>
+                        <ComboBox Grid.Column="2" 
+                                  Grid.Row="0" 
+                                  HorizontalContentAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  SelectedItem="{Binding SelectedDiagramPropertyDataType}"
+                                  ItemsSource="{Binding DiagramPropertyDataType}"></ComboBox>
+                        <Button Grid.Column="3" Grid.Row="0" ToolTip="출력 추가" Command="{Binding AddFunctionPropertyCommand}">
+                            <Image Source="{dx:DXImage 'SvgImages/RichEdit/AddParagraphToTableOfContents.svg'}"></Image>
+                        </Button>
+                        <ListView Grid.Column="0" 
+                                  Grid.Row="1" 
+                                  Grid.ColumnSpan="4"
+                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ItemsSource="{Binding PreviewFunctionPropertyCollection}"
+                                  SelectedItem="{Binding SelectedFunctionProperty}"
+                                  HorizontalContentAlignment="Stretch"
+                                  x:Name="FunctionPropertyList">
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete" Command="{Binding Path=DeleteFunctionPropertyCommand}"  />
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                            <ListView.Resources>
+                                <DataTemplate DataType="{x:Type property:BoolFunctionProperty}">
+                                    <DockPanel Height="40" HorizontalAlignment="Stretch">
+                                        <Button Width="40" DockPanel.Dock="Left">
+                                            <Image Source="{dx:DXImage 'SvgImages/Snap/CalcBool.svg'}"></Image>
+                                        </Button>
+                                        
+                                        <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
+                                            <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                        </dx:SimpleButton>
+                                        <TextBox Text="{Binding Name, Mode=TwoWay}" 
+                                                 HorizontalAlignment="Stretch" 
+                                                 VerticalAlignment="Stretch" 
+                                                 HorizontalContentAlignment="Left" 
+                                                 VerticalContentAlignment="Center" 
+                                                 TextAlignment="Left"></TextBox>
+                                        
+                                    </DockPanel>
+                                </DataTemplate>
+                                <DataTemplate DataType="{x:Type property:ThresholdFunctionProperty}">
+                                    <DockPanel Height="40" HorizontalAlignment="Stretch">
+                                        <Button Width="40" DockPanel.Dock="Left">
+                                            <Image Source="{dx:DXImage 'SvgImages/Reports/GaugeStyleLinearHorizontal.svg'}"></Image>
+                                        </Button>
+                                        
+                                        <TextBox Width="80" DockPanel.Dock="Right" Text="{Binding MaxValue, Mode=TwoWay}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+                                        <TextBox Width="80" DockPanel.Dock="Right" Text="{Binding MinValue, Mode=TwoWay}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
+                                        <TextBox Text="{Binding Name, Mode=TwoWay}" 
+                                                 HorizontalAlignment="Stretch" 
+                                                 VerticalAlignment="Stretch" 
+                                                 HorizontalContentAlignment="Left" 
+                                                 VerticalContentAlignment="Center" 
+                                                 TextAlignment="Left"></TextBox>
+                                    </DockPanel>
+                                </DataTemplate>
+                            </ListView.Resources>
+                        </ListView>
+          
+                    </Grid>
+                </DockPanel>-->
+
+
+
+
+
+
+
+            </DockPanel>
+
 
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="1.5*"></RowDefinition>
+                    <RowDefinition Height="0.8*"></RowDefinition>
+                    <RowDefinition Height="0.8*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <uc:FunctionDiagramViewer Grid.Row="0"
                                           IsShowFunctionPanel="False"
                                           InputSnapSpotCollection="{Binding PreviewInputSnapSpotCollection}"
                                           OutputSnapSpotCollection="{Binding PreviewOutputSnapSpotCollection}"
-                                          FunctionCollection="{Binding PreviewFunctionCollection}"></uc:FunctionDiagramViewer>
+                                          FunctionCollection="{Binding PreviewFunctionCollection}"
+                                          CanvasWidth="{Binding CanvasWidth, Mode=OneWayToSource}"
+                                          CanvasHeight="{Binding CanvasHeight, Mode=OneWayToSource}"></uc:FunctionDiagramViewer>
                 <uc:BindableAvalonEditor Grid.Row="1"
                                          Text="{Binding DiagramScript}"
                                          SyntaxHighlighting="JavaScript"
                                          ShowLineNumbers="True"></uc:BindableAvalonEditor>
+
+                <DockPanel Grid.Row="2">
+                    <TextBox Height="40" DockPanel.Dock="Top" IsEnabled="False" Text="다이어그램 코멘트" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox DockPanel.Dock="Top" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Text="{Binding DiagramComment}"/>
+                </DockPanel>
+
+
+                <DockPanel Grid.Row="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="40"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
+                            <Image Source="{dx:DXImage 'SvgImages/Dashboards/Images.svg'}"></Image>
+                        </Button>
+                        <TextBox Grid.Column="1"
+                                 Text="다이어그램 아이콘 이미지를 선택하세요."
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 IsEnabled="False">
+
+                        </TextBox>
+                        <Button Grid.Column="3" Grid.Row="0" ToolTip="이미지 열기" Command="{Binding AddImageCommand}">
+                            <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/LoadImage.svg'}"></Image>
+                        </Button>
+                        <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Source="{Binding DiagramImage}"></Image>
+
+                    </Grid>
+                </DockPanel>
+
             </Grid>
 
 
@@ -342,11 +463,38 @@
                     <RowDefinition Height="*"></RowDefinition>
 
                 </Grid.RowDefinitions>
-                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                <dxg:GridControl ItemsSource="{Binding DiagramConfigCollection, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                                 SelectedItem="{Binding SelectedDiagramConfig, Mode=OneWay}"
+                                 SelectionMode="Row">
+
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="70" AllowFocus="False">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="35" Height="35" Stretch="Uniform"></Image>
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                        <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
+                        <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                        <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                    </dxg:GridControl.Columns>
+
+                    <dxg:GridControl.View>
+                        <dxg:TableView AllowPerPixelScrolling="True" 
+                               ShowTotalSummary="False"
+                               AllowGrouping="True"
+                               AllowScrollToFocusedRow="False"
+                               >
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+                <!--<dxg:GridControl EnableSmartColumnsGeneration="False"
                                  SelectionMode="Row"
                                  AutoGenerateColumns="None"
                                  ShowAllTableValuesInFilterPopup="False"
-                                 ItemsSource="{Binding DiagramConfigCollection}"
+                                 ItemsSource="{Binding DiagramConfigCollection, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                                  SelectedItem="{Binding SelectedDiagramConfig, Mode=OneWay}"
                                  Grid.Row="0"
                                  AllowLiveDataShaping="True"
@@ -372,8 +520,10 @@
                                       ShowCardExpandButton="False"
                                       dx:ExpandHelper.IsExpanded="True"
                                       FixedSize="200"
-                                      MinFixedSize="200">
-                            <!--<dxg:CardView.CardStyle>
+                                      MinFixedSize="200"
+                                      EnableImmediatePosting="True"
+                                      ImmediateUpdateRowPosition="True">
+                            --><!--<dxg:CardView.CardStyle>
                                 <Style TargetType="dxg:RowControl">
                                     <Setter Property="ToolTipService.ToolTip">
                                         <Setter.Value>
@@ -387,10 +537,10 @@
                                         </Setter.Value>
                                     </Setter>
                                 </Style>
-                            </dxg:CardView.CardStyle>-->
+                            </dxg:CardView.CardStyle>--><!--
                         </dxg:CardView>
                     </dxg:GridControl.View>
-                </dxg:GridControl>
+                </dxg:GridControl>-->
 
                 <dxg:GridControl EnableSmartColumnsGeneration="False"
                                  SelectionMode="Row"

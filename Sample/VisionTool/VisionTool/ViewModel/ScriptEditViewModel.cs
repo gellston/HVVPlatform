@@ -110,8 +110,17 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
              {
-                 var script = this.scriptControlService.GetScriptFromPath();
-                 this.ScriptCollection.Add(script);
+
+                 try
+                 {
+                     var script = this.scriptControlService.GetScriptFromPath();
+                     this.ScriptCollection.Add(script);
+                 }
+                 catch(Exception e)
+                 {
+                     System.Console.WriteLine(e.Message);
+                 }
+                 
 
              });
             
@@ -129,7 +138,16 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.scriptControlService.SaveScript(this.SelectedScript);
+
+                try
+                {
+                    this.scriptControlService.SaveScript(this.SelectedScript);
+                }
+                catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
+                
             });
         }
 

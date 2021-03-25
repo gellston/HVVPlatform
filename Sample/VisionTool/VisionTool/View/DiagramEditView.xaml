@@ -13,14 +13,14 @@
 
     <DockPanel>
 
-        <dx:UniformStackPanel DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Left" Height="40" ChildSpacing="0" Orientation="Horizontal">
+        <!--<dx:UniformStackPanel DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Left" Height="40" ChildSpacing="0" Orientation="Horizontal">
             <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
             </dx:SimpleButton>
 
-            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
+            --><!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
-            </dx:SimpleButton>-->
+            </dx:SimpleButton>--><!--
 
             <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
@@ -37,7 +37,7 @@
             <Button Command="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}" ToolTip="레이아웃 정리" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
             </Button>
-        </dx:UniformStackPanel>
+        </dx:UniformStackPanel>-->
         <!--<Grid Height="40"
               DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>

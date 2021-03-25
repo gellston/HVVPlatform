@@ -14,6 +14,7 @@ using DevExpress.Xpf.Core.Native;
 using VisionTool.Helper;
 using System.Windows.Media;
 using DevExpress.Xpf.CodeView;
+using VisionTool.Model.DiagramProperty;
 
 namespace VisionTool.Service
 {
@@ -24,10 +25,25 @@ namespace VisionTool.Service
 
         public DiagramControlService(SettingConfigService _settingConfigService)
         {
+
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+
+
             this.settingConfigService = _settingConfigService;
 
 
             this.DiagramDataType.Add("image");
+
+
+            this.DiagramPropertyDataType.Add(new EmptyDiagramProperty());
+            this.DiagramPropertyDataType.Add(new BoolDiagramProperty());
+            this.DiagramPropertyDataType.Add(new ThresholdDiagramProperty());
+
+
             this.UpdateDiagramInfo();
         }
 
@@ -49,6 +65,21 @@ namespace VisionTool.Service
         public OutputSnapSpot CreateOutputSnapSpot()
         {
             return new OutputSnapSpot("", "");
+        }
+
+
+        public BaseDiagramProperty CreateFunctionProperty(string name)
+        {
+            try
+            {
+                Type type = Type.GetType(name);
+                return (BaseDiagramProperty)Activator.CreateInstance(type);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
         }
 
 
@@ -84,6 +115,17 @@ namespace VisionTool.Service
             }
         }
 
+        private ObservableCollection<BaseDiagramProperty> _DiagramPropertyDataType = null;
+        public ObservableCollection<BaseDiagramProperty> DiagramPropertyDataType
+        {
+            get
+            {
+                _DiagramPropertyDataType ??= new ObservableCollection<BaseDiagramProperty>();
+                return _DiagramPropertyDataType;
+            }
+        }
+
+
 
 
         private ObservableCollection<InputSnapSpot> _PreviewInputSnapSpotCollection = null;
@@ -106,6 +148,16 @@ namespace VisionTool.Service
             }
         }
 
+        private ObservableCollection<BaseDiagramProperty> _PreviewFunctionPropertyCollection = null;
+        public ObservableCollection<BaseDiagramProperty> PreviewFunctionPropertyCollection
+        {
+            get
+            {
+                _PreviewFunctionPropertyCollection ??= new ObservableCollection<BaseDiagramProperty>();
+                return _PreviewFunctionPropertyCollection;
+            }
+        }
+
 
         private ObservableCollection<Function> _PreviewFunctionCollection = null;
         public ObservableCollection<Function> PreviewFunctionCollection
@@ -124,24 +176,26 @@ namespace VisionTool.Service
             this.PreviewFunctionCollection.Clear();
             this.PreviewInputSnapSpotCollection.Clear();
             this.PreviewOutputSnapSpotCollection.Clear();
+            this.PreviewFunctionPropertyCollection.Clear();
+            
         }
 
 
         public void RenderFunction(ObservableCollection<InputSnapSpot> _inputSnapSpot,
                                    ObservableCollection<OutputSnapSpot> _outputSnapSpot,
+                                   double _canvasWidth,
+                                   double _canvasHeight,
                                    string _diagramName,
-                                   double _diagramWidth,
-                                   double _diagramHeight,
                                    Color _diagramColor)
         {
 
 
 
-            if (_inputSnapSpot.Count() == 0)
-                throw new Exception("Input node is not exists");
+            if ((_inputSnapSpot.Count() + _outputSnapSpot.Count() + PreviewFunctionPropertyCollection.Count()) == 0)
+                throw new Exception("Node and property is not exists");
 
-            if (_outputSnapSpot.Count() == 0)
-                throw new Exception("Output node is not exists");
+            //if (_outputSnapSpot.Count() == 0)
+            //    throw new Exception("Output node is not exists");
 
 
             if (_inputSnapSpot.ToList().Exists(x => x.Name.Length == 0 || x.DataType.Length == 0))
@@ -154,6 +208,9 @@ namespace VisionTool.Service
             if (this.DiagramConfigCollection.ToList().Exists(x => x.DiagramName == _diagramName))
                 throw new Exception("Diagram name is already exists");
 
+            if (_diagramName.Length == 0)
+                throw new Exception("Name is not exists");
+
 
 
             var inputNodeNames = _inputSnapSpot.Select(x => x.Name).ToList();
@@ -162,6 +219,10 @@ namespace VisionTool.Service
 
             var outputNodeNames = _outputSnapSpot.Select(x => x.Name).ToList();
             var distinctOutputNodeNames = outputNodeNames.Distinct().ToList();
+
+
+            //var functionProperties = this.PreviewFunctionPropertyCollection.Select(x => x.Name).ToList();
+            //var distinctFunctionProperties = functionProperties.Distinct().ToList();
 
             bool duplicatesInputCheck = false;
             distinctInputNodeNames.ForEach(distinctInputName =>
@@ -187,6 +248,19 @@ namespace VisionTool.Service
             }
 
 
+            /*
+            bool duplicatesFunctionPropertiesCheck = false;
+            distinctFunctionProperties.ForEach(distinctFunctionName =>
+            {
+                if (functionProperties.Where(outputNodeName => outputNodeName == distinctFunctionName).Count() > 1)
+                    duplicatesOutputCheck = true;
+            });
+            if (duplicatesFunctionPropertiesCheck == true)
+            {
+                throw new Exception("Duplicated function property exists");
+            }*/
+
+
 
 
             var function = new Function()
@@ -197,8 +271,8 @@ namespace VisionTool.Service
 
             function.Location.X = 100;
             function.Location.Y = 100;
-            function.Size.Width = _diagramWidth;
-            function.Size.Height = _diagramHeight;
+            function.Size.Width = 0;
+            function.Size.Height = 0;
 
             int count = 0;
             double lastOffsetY = 0;
@@ -233,7 +307,14 @@ namespace VisionTool.Service
             this.PreviewInputSnapSpotCollection.AddRange(_inputSnapSpot);
             this.PreviewOutputSnapSpotCollection.AddRange(_outputSnapSpot);
 
-            
+            function.Location.X = _canvasWidth * 0.3;
+            function.Location.Y = 10;
+            function.Size.Width = _canvasWidth * 0.4;
+
+            var functionHeight = 30 + (function.Input.Count() + function.Output.Count()) * 30;
+            function.Size.Height = functionHeight;
+
+
             this.PreviewFunctionCollection.Add(function);
 
         }
@@ -304,15 +385,16 @@ namespace VisionTool.Service
 
 
         public void CreateDiagramPackage(string _diagramName,
-                                        string _diagramWriter,
-                                        int _diagramVersion,
-                                        string _diagramComment,
-                                        Function _function,
-                                        ObservableCollection<InputSnapSpot> _inputCollection,
-                                        ObservableCollection<OutputSnapSpot> _outputCollection,
-                                        string _diagramImagePath,
-                                        double _diagramWidth,
-                                        double _diagramHeight)
+                                         string _diagramWriter,
+                                         int _diagramVersion,
+                                         string _diagramComment,
+                                         Function _function,
+                                         ObservableCollection<InputSnapSpot> _inputCollection,
+                                         ObservableCollection<OutputSnapSpot> _outputCollection,
+                                         ObservableCollection<BaseDiagramProperty> _functionPropertyCollection,
+                                         string _diagramImagePath,
+                                         double _diagramWidth,
+                                         double _diagramHeight)
         {
             try
             {
@@ -354,11 +436,19 @@ namespace VisionTool.Service
                     DiagramImageName = _diagramName + ".jpg",
                     FunctionInfo = _function,
                     InputSnapSpotCollection = _inputCollection.ToList(),
-                    OutputSnapSpotCollection = _outputCollection.ToList()
+                    OutputSnapSpotCollection = _outputCollection.ToList(),
+                    FunctionProperties = _functionPropertyCollection.ToList()
 
                 };
 
-                
+                JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+
+               // string jsonfunctionPropertiesContext = JsonConvert.SerializeObject(config, Formatting.Indented, );
+
+
 
 
                 var targetConfigPath = this.settingConfigService.TempDiagramPackagePath + _diagramName + ".json";

@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight.Messaging;
 using VisionTool.Model;
 using VisionTool.Service;
 using OpenCvSharp;
+using VisionTool.Model.DiagramProperty;
 
 namespace VisionTool.ViewModel
 {
@@ -42,11 +43,12 @@ namespace VisionTool.ViewModel
             this.DiagramDataType = this.diagramControlService.DiagramDataType;
             this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
             this.DiagramCollection = this.diagramControlService.DiagramCollection;
+            this.DiagramPropertyDataType = this.diagramControlService.DiagramPropertyDataType;
 
             this.PreviewFunctionCollection = this.diagramControlService.PreviewFunctionCollection;
             this.PreviewInputSnapSpotCollection = this.diagramControlService.PreviewInputSnapSpotCollection;
             this.PreviewOutputSnapSpotCollection = this.diagramControlService.PreviewOutputSnapSpotCollection;
-
+            this.PreviewFunctionPropertyCollection = this.diagramControlService.PreviewFunctionPropertyCollection;
         }
 
         public ICommand ImportDiagramCommand
@@ -107,9 +109,9 @@ namespace VisionTool.ViewModel
                 {
                     this.diagramControlService.RenderFunction(this.InputSnapSpotCollection,
                                                               this.OutputSnapSpotCollection,
+                                                              this.CanvasWidth,
+                                                              this.CanvasHeight,
                                                               this.DiagramName,
-                                                              this.DiagramWidth,
-                                                              this.DiagramHeight,
                                                               this.DiagramColor);
                 }
                 catch (Exception e)
@@ -131,9 +133,9 @@ namespace VisionTool.ViewModel
 
                     this.diagramControlService.RenderFunction(this.InputSnapSpotCollection,
                                                               this.OutputSnapSpotCollection,
+                                                              this.CanvasWidth,
+                                                              this.CanvasHeight,
                                                               this.DiagramName,
-                                                              this.DiagramWidth,
-                                                              this.DiagramHeight,
                                                               this.DiagramColor);
 
                 }
@@ -153,11 +155,14 @@ namespace VisionTool.ViewModel
                                                                     this.PreviewFunctionCollection[0],
                                                                     this.PreviewInputSnapSpotCollection,
                                                                     this.PreviewOutputSnapSpotCollection,
+                                                                    this.PreviewFunctionPropertyCollection,
                                                                     this.DiagramImagePath,
                                                                     100,
                                                                     100);
                     this.diagramControlService.UpdateDiagramInfo();
-
+                    //this.diagramControlService.UpdateDiagramInfo();
+                    this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
+                   
                     RaisePropertyChanged("DiagramConfigCollection");
 
                 }
@@ -192,6 +197,13 @@ namespace VisionTool.ViewModel
             }
         }
 
+        private ObservableCollection<BaseDiagramProperty> _PreviewFunctionPropertyCollection = null;
+        public ObservableCollection<BaseDiagramProperty> PreviewFunctionPropertyCollection
+        {
+            get => _PreviewFunctionPropertyCollection;
+            set => Set(ref _PreviewFunctionPropertyCollection, value);
+        }
+
         private ObservableCollection<InputSnapSpot> _PreviewInputSnapSpotCollection = null;
         public ObservableCollection<InputSnapSpot> PreviewInputSnapSpotCollection
         {
@@ -218,11 +230,7 @@ namespace VisionTool.ViewModel
         private ObservableCollection<DiagramConfig> _DiagramConfigCollection = null;
         public ObservableCollection<DiagramConfig> DiagramConfigCollection
         {
-            get
-            {
-                _DiagramConfigCollection ??= new ObservableCollection<DiagramConfig>();
-                return _DiagramConfigCollection;
-            }
+            get => _DiagramConfigCollection;
             set => Set(ref _DiagramConfigCollection, value);
         }
 
@@ -294,18 +302,21 @@ namespace VisionTool.ViewModel
             set => Set(ref _DiagramComment, value);
         }
 
-        private double _DiagramWidth = 250;
-        public double DiagramWidth
+        
+        
+        private double _CanvasWidth = 0;
+        public double CanvasWidth
         {
-            get => _DiagramWidth;
-            set => Set(ref _DiagramWidth, value);
+            get => _CanvasWidth;
+            set => Set(ref _CanvasWidth, value);
         }
 
-        private double _DiagramHeight = 250;
-        public double DiagramHeight
+
+        private double _CanvasHeight = 0;
+        public double CanvasHeight
         {
-            get => _DiagramHeight;
-            set => Set(ref _DiagramHeight, value);
+            get => _CanvasHeight;
+            set => Set(ref _CanvasHeight, value);
         }
 
 
@@ -331,6 +342,22 @@ namespace VisionTool.ViewModel
             set => Set(ref _SelectedOutputDataType, value);
         }
 
+
+        private string _SelectedDiagramPropertyDataType = "";
+        public string SelectedDiagramPropertyDataType
+        {
+            get => _SelectedDiagramPropertyDataType;
+            set => Set(ref _SelectedDiagramPropertyDataType, value);
+        }
+
+        private ObservableCollection<BaseDiagramProperty> _DiagramPropertyDataType = null;
+        public ObservableCollection<BaseDiagramProperty> DiagramPropertyDataType
+        {
+            get => _DiagramPropertyDataType;
+            set => Set(ref _DiagramPropertyDataType, value);
+        }
+
+
         public ICommand AddInputDataCommand
         {
             get => new RelayCommand(() =>
@@ -347,6 +374,24 @@ namespace VisionTool.ViewModel
                 this.OutputSnapSpotCollection.Add(this.diagramControlService.CreateOutputSnapSpot());
             });
         }
+
+        public ICommand AddFunctionPropertyCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                try
+                {
+                    var functionProperty = this.diagramControlService.CreateFunctionProperty("VisionTool.Model.FunctionProperty." + this.SelectedDiagramPropertyDataType);
+                    this.PreviewFunctionPropertyCollection.Add(functionProperty);
+                }
+                catch(Exception e)
+                {
+                    System.Console.WriteLine(e.Message);
+                }
+            });
+        }
+
+
 
         public ICommand AddImageCommand
         {
@@ -398,6 +443,13 @@ namespace VisionTool.ViewModel
             get => _SelectedOutputSnapSpot;
         }
 
+        public BaseDiagramProperty _SelectedFunctionProperty = null;
+        public BaseDiagramProperty SelectedFunctionProperty
+        {
+            set => Set(ref _SelectedFunctionProperty, value);
+            get => _SelectedFunctionProperty;
+        }
+
 
 
         public ICommand DeleteOutputCommand
@@ -417,6 +469,20 @@ namespace VisionTool.ViewModel
             {
                 if (this.SelectedInputSnapSpot != null)
                     this.InputSnapSpotCollection.Remove(SelectedInputSnapSpot);
+            });
+
+        }
+
+        public ICommand DeleteFunctionPropertyCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                var result = this.SelectedFunctionProperty.ToString();
+                if (this.SelectedFunctionProperty != null)
+                    this.PreviewFunctionPropertyCollection.Remove(SelectedFunctionProperty);
+
+
+                
             });
 
         }
