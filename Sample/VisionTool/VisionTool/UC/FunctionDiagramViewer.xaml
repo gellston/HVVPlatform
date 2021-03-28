@@ -49,110 +49,7 @@
             </CompositeCollection>
         </DockPanel.Resources>
 
-        <dx:UniformStackPanel DockPanel.Dock="Top"
-                              Height="40" 
-                              ChildSpacing="0" 
-                              Orientation="Horizontal"
-                              Name="TopControlMenu">
 
-            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
-            </dx:SimpleButton>
-
-            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
-            </dx:SimpleButton>-->
-
-            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
-            </dx:SimpleButton>
-
-            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsShowFunctionPanel, Mode=TwoWay}" ToolTip="다이어그램 종류 뷰" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/FunctionsStatistical.svg'}"></Image>
-            </dx:SimpleButton>
-
-            <dx:SimpleButton IsChecked="{Binding ElementName=view, Path=IsShowSequencePanel, Mode=TwoWay}" ToolTip="시퀀스 뷰" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/RichEdit/ViewMergedData.svg'}"></Image>
-            </dx:SimpleButton>
-
-            <Button Command="{Binding ElementName=view, Path=RefreshLayoutCommand}" ToolTip="레이아웃 정리" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
-            </Button>
-         
-        </dx:UniformStackPanel>
-        
-        
-
-        <dxg:GridControl Width="0"
-                         ItemsSource="{Binding Path=DiagramConfigCollection, ElementName=view}"
-                         SelectedItem="{Binding Path=SelectedDiagramConfig, ElementName=view}"
-                         SelectionMode="Row"
-                         DockPanel.Dock="Left"
-                         Name="LeftDiagramConfigCollection">
-            <dxg:GridControl.Resources>
-                <Storyboard x:Key="ShrinkWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
-                                         Duration="0:0:0.5"
-                                         To="0">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-                <Storyboard x:Key="EnLargeWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=LeftDiagramConfigCollection}"
-                                         Duration="0:0:0.5"
-                                         To="400">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-            </dxg:GridControl.Resources>
-            <dxg:GridControl.Columns>
-                <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="70" AllowFocus="False">
-                    <dxg:GridColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="35" Height="35" Stretch="Uniform"></Image>
-                        </DataTemplate>
-                    </dxg:GridColumn.CellTemplate>
-                </dxg:GridColumn>
-                <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
-                <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
-                <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
-                <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
-            </dxg:GridControl.Columns>
-
-            <dxg:GridControl.View>
-                <dxg:TableView AllowPerPixelScrolling="True" 
-                               ShowTotalSummary="False"
-                               AllowGrouping="True"
-                               AllowScrollToFocusedRow="False"
-                               >
-                    <dxg:TableView.RowCellMenuCustomizations>
-                        <dxb:BarButtonItem Content="Add" Glyph="{dx:DXImage 'SvgImages/Reports/AddCalculatedField.svg'}" Command="{Binding ElementName=view, Path=AddNewFunctionCommand}"/>
-                    </dxg:TableView.RowCellMenuCustomizations>
-                </dxg:TableView>
-            </dxg:GridControl.View>
-
-
-            <dxg:GridControl.Style>
-                <Style TargetType="{x:Type dxg:GridControl}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding ElementName=view, Path=IsShowFunctionPanel}" Value="True">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </dxg:GridControl.Style>
-        </dxg:GridControl>
 
         <DockPanel Width="0"
                    DockPanel.Dock="Right"
@@ -172,73 +69,15 @@
                     <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
                                          Storyboard.Target="{Binding ElementName=RightSequenceView}"
                                          Duration="0:0:0.5"
-                                         To="550">
+                                         To="230">
                         <DoubleAnimation.EasingFunction>
                             <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
                         </DoubleAnimation.EasingFunction>
                     </DoubleAnimation>
                 </Storyboard>
             </DockPanel.Resources>
-            
-            <ListView Height="500"
-                      DockPanel.Dock="Bottom"
-                      HorizontalContentAlignment="Stretch"
-                      ItemsSource="{Binding ElementName=view,Path=SelectedInputSnapSpotCollection}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.VerticalScrollBarVisibility="Visible">
-                <ListView.Resources>
 
 
-                    <DataTemplate DataType="{x:Type model:InputSnapSpot}">
-                        <DockPanel Height="40" HorizontalAlignment="Stretch">
-                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsProperty, Mode=TwoWay}" DockPanel.Dock="Left">
-                                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Security_Visibility.svg'}"></Image>
-                            </dx:SimpleButton>
-                            <TextBox Text="{Binding Name, Mode=OneWay}" 
-                                 HorizontalAlignment="Stretch" 
-                                 VerticalAlignment="Stretch" 
-                                 HorizontalContentAlignment="Left" 
-                                 VerticalContentAlignment="Center" 
-                                 TextAlignment="Left"
-                                 Width="100"
-                                 DockPanel.Dock="Left"
-                                 IsReadOnly="True"></TextBox>
-                            <ContentPresenter Content="{Binding DiagramProperty}" HorizontalAlignment="Stretch">
-                                <ContentPresenter.Resources>
-                                    <!--데이터 프로퍼티 정의-->
-                                    <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
-                                        <DockPanel>
-                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="지원되지 않는 속성"></TextBox>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
-                                        <DockPanel>
-                                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
-                                                <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
-                                            </dx:SimpleButton>
-                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="BoolDiagramProperty"></TextBox>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
-                                        <DockPanel>
-                                            <Slider Width="100" DockPanel.Dock="Right" Value="{Binding Value, Mode=TwoWay}" Maximum="{Binding MaxValue}" Minimum="{Binding MinValue}" HorizontalAlignment="Left" VerticalAlignment="Center"></Slider>
-                                            <TextBox Width="100" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
-                                            <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="ThresholdDiagramProperty"></TextBox>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                    <!--<DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
-                                    <DockPanel>
-                                        <TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="지원되지 않는 속성"></TextBox>
-                                    </DockPanel>
-                                </DataTemplate>-->
-                                </ContentPresenter.Resources>
-                            </ContentPresenter>
-                        </DockPanel>
-                    </DataTemplate>
-
-
-                </ListView.Resources>
-            </ListView>
 
             <ListView ItemsSource="{Binding ElementName=view, Path=FunctionCollection}"
                       SelectedItem="{Binding SelectedFunction}"
@@ -274,7 +113,7 @@
             </ListView>
 
             <DockPanel.Style>
-    
+
                 <Style TargetType="{x:Type DockPanel}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding ElementName=view, Path=IsShowSequencePanel}" Value="True">
@@ -287,11 +126,9 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
- 
+
             </DockPanel.Style>
         </DockPanel>
-
-        
 
 
         <ScrollViewer HorizontalScrollBarVisibility="Hidden"

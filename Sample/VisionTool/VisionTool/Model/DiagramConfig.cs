@@ -30,6 +30,8 @@ namespace VisionTool.Model
         public int DiagramVersion { get; set; }
         public string DiagramComment { get; set; }
 
+        public string DiagramScript { get; set; }
+
         [JsonIgnore]
         [IgnoreDataMember]
         public ImageSource DiagramImage {
@@ -49,7 +51,7 @@ namespace VisionTool.Model
         public List<InputSnapSpot> InputSnapSpotCollection { get; set; }
 
         public List<OutputSnapSpot> OutputSnapSpotCollection { get; set; }
-        public List<BaseDiagramProperty> FunctionProperties { get; set; }
+        //public List<BaseDiagramProperty> FunctionProperties { get; set; }
 
     }
 }

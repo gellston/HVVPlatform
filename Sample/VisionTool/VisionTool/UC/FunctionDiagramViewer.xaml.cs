@@ -112,12 +112,13 @@ namespace VisionTool.UC
                         Name = functionConfig.FunctionInfo.Name,
                         Color = functionConfig.FunctionInfo.Color,
                         IsNew = true,
+                        ScriptContent = functionConfig.DiagramScript
                     };
                     function.Location.X = this.CurrentX;
                     function.Location.Y = this.CurrentY;
 
 
-                    function.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                    function.Hash = DateTime.Now.ToString("_yyyy_HH_mm_dd_HH_MM_ss_fff_") + Guid.NewGuid().ToString("N");
 
                     /// InputSnapSpot Part
                     var inputSnapSpotCollection = new ObservableCollection<InputSnapSpot>();
@@ -135,7 +136,7 @@ namespace VisionTool.UC
                         newInputSnapSpot.Offset.X = inputSnap.Offset.X;
                         newInputSnapSpot.Offset.Y = inputSnap.Offset.Y;
                         newInputSnapSpot.IsHighLight = false;
-                        newInputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                        newInputSnapSpot.Hash = DateTime.Now.ToString("_yyyy_HH_mm_dd_HH_MM_ss_fff_") + Guid.NewGuid().ToString("N");
                         newInputSnapSpot.DiagramProperty = inputSnap.DiagramProperty.Clone() as BaseDiagramProperty;
                         inputSnapSpotCollection.Add(newInputSnapSpot);
                     }
@@ -155,7 +156,7 @@ namespace VisionTool.UC
                         newOutputSnapSpot.Offset.X = outptSnap.Offset.X;
                         newOutputSnapSpot.Offset.Y = outptSnap.Offset.Y;
                         newOutputSnapSpot.IsHighLight = false;
-                        newOutputSnapSpot.Hash = DateTime.Today.ToString("yyyy-HH-mm-dd HH:MM:ss:fff ") + Guid.NewGuid().ToString();
+                        newOutputSnapSpot.Hash = DateTime.Now.ToString("_yyyy_HH_mm_dd_HH_MM_ss_fff_") + Guid.NewGuid().ToString("N");
                         outputSnapSpotCollection.Add(newOutputSnapSpot);
                     }
 

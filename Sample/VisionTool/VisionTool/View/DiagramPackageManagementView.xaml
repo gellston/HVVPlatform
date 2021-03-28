@@ -244,6 +244,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="40"></RowDefinition>
+                            <RowDefinition Height="40"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Button Grid.Column="0" Grid.Row="0" ToolTip="데이터 타입">
@@ -259,6 +260,13 @@
                         <Button Grid.Column="3" Grid.Row="0" ToolTip="입력 추가" Command="{Binding AddInputDataCommand}">
                             <Image Source="{dx:DXImage 'SvgImages/RichEdit/AddParagraphToTableOfContents.svg'}"></Image>
                         </Button>
+                        <ComboBox Grid.Row="1"
+                                  Grid.Column="0"
+                                  Grid.ColumnSpan="3"
+                                  ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramPropertyDataType}"
+                                  HorizontalContentAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  SelectedItem="{Binding SelectedDiagramPropertyDataType}"></ComboBox>
                         <dxg:GridControl EnableSmartColumnsGeneration="False"
                                          SelectionMode="Row"
                                          AutoGenerateColumns="None"
@@ -266,7 +274,7 @@
                                          ItemsSource="{Binding InputSnapSpotCollection}"
                                          SelectedItem="{Binding SelectedInputSnapSpot}"
                                          Grid.Column="0"
-                                         Grid.Row="1"
+                                         Grid.Row="2"
                                          Grid.ColumnSpan="3"
                                          >
                             <dxg:GridControl.Columns>
@@ -280,11 +288,11 @@
                                         <dxe:ComboBoxEditSettings ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramDataType}" IsTextEditable="False"></dxe:ComboBoxEditSettings>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="DiagramProperty">
+                                <!--<dxg:GridColumn FieldName="DiagramProperty">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:ComboBoxEditSettings ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramPropertyDataType}"></dxe:ComboBoxEditSettings>
                                     </dxg:GridColumn.EditSettings>
-                                </dxg:GridColumn>
+                                </dxg:GridColumn>-->
                             </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView AllowPerPixelScrolling="True" 

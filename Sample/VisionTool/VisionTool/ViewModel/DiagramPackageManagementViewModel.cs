@@ -44,6 +44,7 @@ namespace VisionTool.ViewModel
             this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
             this.DiagramCollection = this.diagramControlService.DiagramCollection;
             this.DiagramPropertyDataType = this.diagramControlService.DiagramPropertyDataType;
+            this.SelectedDiagramPropertyDataType = this.DiagramPropertyDataType[0];
 
             this.PreviewFunctionCollection = this.diagramControlService.PreviewFunctionCollection;
             this.PreviewInputSnapSpotCollection = this.diagramControlService.PreviewInputSnapSpotCollection;
@@ -148,10 +149,12 @@ namespace VisionTool.ViewModel
 
                 try
                 {
+                    this.PreviewFunctionCollection[0].ScriptContent = this.DiagramScript;
                     this.diagramControlService.CreateDiagramPackage(this.DiagramName,
                                                                     this.DiagramWriter,
                                                                     this.DiagramVersion,
                                                                     this.DiagramComment,
+                                                                    this.DiagramScript,
                                                                     this.PreviewFunctionCollection[0],
                                                                     this.PreviewInputSnapSpotCollection,
                                                                     this.PreviewOutputSnapSpotCollection,
@@ -343,12 +346,12 @@ namespace VisionTool.ViewModel
         }
 
 
-        private string _SelectedDiagramPropertyDataType = "";
-        public string SelectedDiagramPropertyDataType
-        {
-            get => _SelectedDiagramPropertyDataType;
-            set => Set(ref _SelectedDiagramPropertyDataType, value);
-        }
+        //private string _SelectedDiagramPropertyDataType = "";
+        //public string SelectedDiagramPropertyDataType
+        //{
+        //    get => _SelectedDiagramPropertyDataType;
+        //    set => Set(ref _SelectedDiagramPropertyDataType, value);
+        //}
 
         private ObservableCollection<BaseDiagramProperty> _DiagramPropertyDataType = null;
         public ObservableCollection<BaseDiagramProperty> DiagramPropertyDataType
@@ -357,12 +360,20 @@ namespace VisionTool.ViewModel
             set => Set(ref _DiagramPropertyDataType, value);
         }
 
+        private BaseDiagramProperty _SelectedDiagramPropertyDataType = null;
+        public BaseDiagramProperty SelectedDiagramPropertyDataType
+        {
+            get => _SelectedDiagramPropertyDataType;
+            set => Set(ref _SelectedDiagramPropertyDataType, value);
+        }
+
 
         public ICommand AddInputDataCommand
         {
             get => new RelayCommand(() =>
             {
-                this.InputSnapSpotCollection.Add(this.diagramControlService.CreateInputSnapSpot());
+                var cloneProperty = (BaseDiagramProperty)this.SelectedDiagramPropertyDataType.Clone();
+                this.InputSnapSpotCollection.Add(this.diagramControlService.CreateInputSnapSpot(cloneProperty));
             });
         }
 

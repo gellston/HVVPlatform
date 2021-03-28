@@ -36,7 +36,7 @@ namespace VisionTool.Service
             this.settingConfigService = _settingConfigService;
 
 
-            this.DiagramDataType.Add("image");
+            this.DiagramDataType.Add("number");
 
 
             this.DiagramPropertyDataType.Add(new EmptyDiagramProperty());
@@ -60,6 +60,14 @@ namespace VisionTool.Service
         public InputSnapSpot CreateInputSnapSpot()
         {
             return new InputSnapSpot("", "");
+        }
+
+        public InputSnapSpot CreateInputSnapSpot(BaseDiagramProperty property)
+        {
+            return new InputSnapSpot("", "")
+            {
+                DiagramProperty = property
+            };
         }
 
         public OutputSnapSpot CreateOutputSnapSpot()
@@ -388,6 +396,7 @@ namespace VisionTool.Service
                                          string _diagramWriter,
                                          int _diagramVersion,
                                          string _diagramComment,
+                                         string _diagramScript,
                                          Function _function,
                                          ObservableCollection<InputSnapSpot> _inputCollection,
                                          ObservableCollection<OutputSnapSpot> _outputCollection,
@@ -437,7 +446,8 @@ namespace VisionTool.Service
                     FunctionInfo = _function,
                     InputSnapSpotCollection = _inputCollection.ToList(),
                     OutputSnapSpotCollection = _outputCollection.ToList(),
-                    FunctionProperties = _functionPropertyCollection.ToList()
+                    DiagramScript = _diagramScript
+                    //FunctionProperties = _functionPropertyCollection.ToList()
 
                 };
 

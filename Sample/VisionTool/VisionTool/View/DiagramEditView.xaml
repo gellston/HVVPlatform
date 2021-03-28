@@ -9,18 +9,27 @@
              xmlns:uc="clr-namespace:VisionTool.UC"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
              xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
-             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars">
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+             xmlns:model="clr-namespace:VisionTool.Model"
+             xmlns:property="clr-namespace:VisionTool.Model.DiagramProperty"
+             xmlns:UC="clr-namespace:VisionTool.UC">
 
     <DockPanel>
 
-        <!--<dx:UniformStackPanel DockPanel.Dock="Top" VerticalAlignment="Center" HorizontalAlignment="Left" Height="40" ChildSpacing="0" Orientation="Horizontal">
+        <dx:UniformStackPanel DockPanel.Dock="Top"
+                              Height="40" 
+                              ChildSpacing="0" 
+                              Orientation="Horizontal"
+                              Name="TopControlMenu">
+
             <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
             </dx:SimpleButton>
 
-            --><!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
+            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
-            </dx:SimpleButton>--><!--
+            </dx:SimpleButton>-->
 
             <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsConnectorCreate, Mode=TwoWay}" ToolTip="커넥터 연결" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ChangeConnectorType.svg'}"></Image>
@@ -37,35 +46,171 @@
             <Button Command="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}" ToolTip="레이아웃 정리" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
             </Button>
-        </dx:UniformStackPanel>-->
-        <!--<Grid Height="40"
-              DockPanel.Dock="Top">
+
+            <Button Content="T" Command="{Binding TestCommand}" ToolTip="코드 생성 테스트" Width="40">
+            </Button>
+
+        </dx:UniformStackPanel>
+
+        <Grid Width="0"
+              DockPanel.Dock="Left"
+              x:Name="LeftMenu">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.Resources>
+                <Storyboard x:Key="ShrinkWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftMenu}"
+                                         Duration="0:0:0.5"
+                                         To="0">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+                <Storyboard x:Key="EnLargeWidth">
+                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
+                                         Storyboard.Target="{Binding ElementName=LeftMenu}"
+                                         Duration="0:0:0.5"
+                                         To="320">
+                        <DoubleAnimation.EasingFunction>
+                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
+                        </DoubleAnimation.EasingFunction>
+                    </DoubleAnimation>
+                </Storyboard>
+            </Grid.Resources>
+
+
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ElementName=FunctionDiagramViewer, Path=IsShowFunctionPanel}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+
+
+            <dxg:GridControl ItemsSource="{Binding Path=DiagramConfigCollection, ElementName=FunctionDiagramViewer}"
+                             SelectedItem="{Binding Path=SelectedDiagramConfig, ElementName=FunctionDiagramViewer}"
+                             SelectionMode="Row"
+                             Grid.Row="0"
+                             Name="LeftDiagramConfigCollection">
+                <dxg:GridControl.Resources>
+
+                </dxg:GridControl.Resources>
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="아이콘" IsSmart="False" Binding="{Binding DiagramImage, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Width="70" AllowFocus="False">
+                        <dxg:GridColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="35" Height="35" Stretch="Uniform"></Image>
+                            </DataTemplate>
+                        </dxg:GridColumn.CellTemplate>
+                    </dxg:GridColumn>
+                    <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                    <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
+                    <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                    <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
+                </dxg:GridControl.Columns>
+
+                <dxg:GridControl.View>
+                    <dxg:TableView AllowPerPixelScrolling="True" 
+                               ShowTotalSummary="False"
+                               AllowGrouping="True"
+                               AllowScrollToFocusedRow="False"
+                               >
+                        <dxg:TableView.RowCellMenuCustomizations>
+                            <dxb:BarButtonItem Content="Add" Glyph="{dx:DXImage 'SvgImages/Reports/AddCalculatedField.svg'}" Command="{Binding ElementName=FunctionDiagramViewer, Path=AddNewFunctionCommand}"/>
+                        </dxg:TableView.RowCellMenuCustomizations>
+                    </dxg:TableView>
+                </dxg:GridControl.View>
+            </dxg:GridControl>
+
+            <ListView Grid.Row="1"
+                      HorizontalContentAlignment="Stretch"
+                      ItemsSource="{Binding ElementName=FunctionDiagramViewer,Path=SelectedInputSnapSpotCollection}"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ListView.Resources>
+                    <DataTemplate DataType="{x:Type model:InputSnapSpot}">
+                        <DockPanel Height="40" HorizontalAlignment="Stretch">
+                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsProperty, Mode=TwoWay}" DockPanel.Dock="Left">
+                                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Security_Visibility.svg'}"></Image>
+                            </dx:SimpleButton>
+                            <TextBox Text="{Binding Name, Mode=OneWay}" 
+                                 HorizontalAlignment="Stretch" 
+                                 VerticalAlignment="Stretch" 
+                                 HorizontalContentAlignment="Left" 
+                                 VerticalContentAlignment="Center" 
+                                 TextAlignment="Left"
+                                 Width="80"
+                                 DockPanel.Dock="Left"
+                                 IsReadOnly="True"></TextBox>
+                            <ContentPresenter Content="{Binding DiagramProperty}" HorizontalAlignment="Stretch">
+                                <ContentPresenter.Resources>
+                                    <!--데이터 프로퍼티 정의-->
+                                    <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
+                                        <DockPanel>
+                                            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="지원되지 않는 속성"></TextBlock>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
+                                        <DockPanel>
+                                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
+                                                <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                            </dx:SimpleButton>
+                                            <TextBlock></TextBlock>
+                                            <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="불 변수"></TextBox>-->
+                                        </DockPanel>
+                                    </DataTemplate>
+                                    <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
+                                        <DockPanel>
+                                            <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
+                                            <Slider DockPanel.Dock="Right" Value="{Binding Value, Mode=TwoWay}" Width="80" IsSnapToTickEnabled="True" Maximum="{Binding MaxValue}" Minimum="{Binding MinValue}" HorizontalAlignment="Left" VerticalAlignment="Center"></Slider>
+                                            <TextBlock></TextBlock>
+                                            <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="경계 값"></TextBox>-->
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.Resources>
+            </ListView>
+        </Grid>
+
+
+
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            
+            <uc:FunctionDiagramViewer Grid.Column="0"
+                                      FunctionCollection="{Binding Path=FunctionCollection}"
+                                      InputSnapSpotCollection="{Binding Path=InputSnapSpotCollection}"
+                                      OutputSnapSpotCollection="{Binding Path=OutputSnapSpotCollection}"
+                                      ConnectorCollection="{Binding Path=ConnectorCollection}"
+                                      x:Name="FunctionDiagramViewer"
+                                      DiagramConfigCollection="{Binding Path=DiagramConfigCollection}"></uc:FunctionDiagramViewer>
+            <UC:BindableAvalonEditor ShowLineNumbers="True"
+                                     Text="{Binding FullScript}"
+                                     SyntaxHighlighting="JavaScript"
+                                     Grid.Column="1">
 
-
-
-        </Grid>-->
+            </UC:BindableAvalonEditor>
+        </Grid>
         
-        
-        <uc:FunctionDiagramViewer Grid.Row="0" 
-                                  FunctionCollection="{Binding Path=FunctionCollection}"
-                                  InputSnapSpotCollection="{Binding Path=InputSnapSpotCollection}"
-                                  OutputSnapSpotCollection="{Binding Path=OutputSnapSpotCollection}"
-                                  ConnectorCollection="{Binding Path=ConnectorCollection}"
-                                  x:Name="FunctionDiagramViewer"
-                                  DiagramConfigCollection="{Binding Path=DiagramConfigCollection}"></uc:FunctionDiagramViewer>
-        <Button Command="{Binding TestCommand}" Grid.Row="1"></Button>
+ 
         
     </DockPanel>
 

@@ -33,6 +33,7 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<ScriptControlService>();
             SimpleIoc.Default.Register<ModuleControlService>();
             SimpleIoc.Default.Register<DiagramControlService>();
+            SimpleIoc.Default.Register<SequenceControlService>();
             //SimpleIoc.Default.Register<DiagramEditService>();
             
             

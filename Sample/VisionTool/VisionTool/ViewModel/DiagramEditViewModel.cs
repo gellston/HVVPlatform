@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Windows.Input;
@@ -18,18 +19,15 @@ namespace VisionTool.ViewModel
     {
 
         private DiagramControlService diagramControlService;
+        private SequenceControlService sequenceControlService;
+       
 
-        public DiagramEditViewModel(DiagramControlService _diagramControlService)
+        public DiagramEditViewModel(DiagramControlService _diagramControlService,
+                                    SequenceControlService _sequenceControlService)
         {
 
-            //this.CanvasWidth = 2040;
-            //this.CanvasHeight = 2040;
-
-
             this.diagramControlService = _diagramControlService;
-            //this.appConfigService = _appConfigService;
-
-
+            this.sequenceControlService = _sequenceControlService;
             this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
         }
 
@@ -89,61 +87,16 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-
-                var test_function = new Function()
+                try
                 {
-                    Name = "TEST"
-                };
-
-                var inputSnapSpot = new InputSnapSpot("test", "Image")
+                    this.sequenceControlService.ScriptGeneration(this.FunctionCollection.ToList(), this.ConnectorCollection.ToList());
+                    this.FullScript = this.sequenceControlService.FullScriptContent;
+                    var list = this.sequenceControlService.SequencePages;
+                }catch(Exception e)
                 {
-                    Parent = test_function,
-                };
-
-                inputSnapSpot.Offset.Y = 30;
-                inputSnapSpot.Offset.X = 30;
-
+                    System.Console.WriteLine(e.Message);
+                }
                 
-
-
-                var outputSnapSpot = new OutputSnapSpot("test", "Image")
-                {
-                    Parent = test_function,
-                };
-
-                outputSnapSpot.Offset.Y = 50;
-                outputSnapSpot.Offset.X = 30;
-
-
-                test_function.Input.Add(inputSnapSpot);
-                test_function.Output.Add(outputSnapSpot);
-
-
-
-                this.FunctionCollection.Add(test_function);
-                this.InputSnapSpotCollection.Add(inputSnapSpot);
-                this.OutputSnapSpotCollection.Add(outputSnapSpot);
-
-
-                var Object = new DiagramConfig()
-                {
-                    DiagramName = "test",
-                    DiagramModifyDate = "2020-09-120",
-                    DiagramComment = "test!!!Asdfasdfasdf",
-                    DiagramVersion = 1,
-                   
-                };
-
-                Object.FunctionInfo = test_function;
-                Object.InputSnapSpotCollection.Add(inputSnapSpot);
-                Object.OutputSnapSpotCollection.Add(outputSnapSpot);
-
-                
-
-
-                var jsonString = JsonSerializer.Serialize(Object);
-                System.Console.WriteLine("test");
-                File.WriteAllText("d://test.json", jsonString);
 
             });
         }
@@ -161,6 +114,14 @@ namespace VisionTool.ViewModel
         {
             get => _CanvasHeight;
             set => Set(ref _CanvasHeight, value);
+        }
+
+
+        private string _FullScript = "";
+        public string FullScript
+        {
+            get => _FullScript;
+            set => Set(ref _FullScript, value);
         }
 
     }

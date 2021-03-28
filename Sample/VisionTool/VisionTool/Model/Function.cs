@@ -94,7 +94,34 @@ namespace VisionTool.Model
             get => _ScriptContent;
             set => Set(ref _ScriptContent, value);
         }
+        /*
+        public string GenerateFullScript()
+        {
+            string fullScript = this.ScriptContent;
+            int index = 0;
+            foreach(var input in this.Input)
+            {
+                index++;
+                fullScript = fullScript.Replace("###input_name" + index, input.Hash);
+                var check = "";
+                if (input.IsProperty == true)
+                    check = "true";
+                else check = "false";
 
+                fullScript = fullScript.Replace("###input_check" + index, check);
+                fullScript = fullScript.Replace("###input_value" + index, input.DiagramProperty.ToCode());
+            }
+
+
+            index = 0;
+            foreach (var output in this.Output)
+            {
+                index++;
+                fullScript = fullScript.Replace("###output_name" + index, output.Hash);
+            }
+            return fullScript;
+        }
+        */
 
         public void Activate()
         {
