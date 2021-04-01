@@ -8,7 +8,7 @@ using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using VisionTool.Model;
+using Model;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel
@@ -63,7 +63,7 @@ namespace VisionTool.ViewModel
 
                 }catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
             });
@@ -103,7 +103,7 @@ namespace VisionTool.ViewModel
                     this.ModuleMainPath = this.modulePackageService.GetLibraryFromPath();
                 }catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
             });
@@ -122,7 +122,7 @@ namespace VisionTool.ViewModel
 
                 }catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
             });
@@ -149,7 +149,7 @@ namespace VisionTool.ViewModel
 
                 }catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
             });

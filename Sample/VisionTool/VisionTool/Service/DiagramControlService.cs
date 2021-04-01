@@ -7,14 +7,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using VisionTool.Model;
+using Model;
 using OpenCvSharp;
 using DevExpress.Xpf.Core;
 using DevExpress.Xpf.Core.Native;
 using VisionTool.Helper;
 using System.Windows.Media;
 using DevExpress.Xpf.CodeView;
-using VisionTool.Model.DiagramProperty;
+using Model.DiagramProperty;
 
 namespace VisionTool.Service
 {
@@ -349,7 +349,7 @@ namespace VisionTool.Service
                 }
                 catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }
 
@@ -370,7 +370,7 @@ namespace VisionTool.Service
                     }
                     catch(Exception e)
                     {
-                        System.Console.WriteLine(e.Message);
+                        System.Diagnostics.Debug.WriteLine(e.Message);
                         module.DiagramImage = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Dashboards/ShowWeightedLegendNone.svg")), 1d, null, null, true);
                     }
 
@@ -385,7 +385,7 @@ namespace VisionTool.Service
                 }
                 catch (Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }
         }
@@ -429,7 +429,7 @@ namespace VisionTool.Service
                 }
                 catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
                 var currentDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");

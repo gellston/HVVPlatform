@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +23,8 @@ namespace console_test_sharp
 
         static void Main(string[] args)
         {
+
+
             String currentDirecturoy = AppDomain.CurrentDomain.BaseDirectory;
 
 
@@ -37,16 +40,10 @@ namespace console_test_sharp
             test1.TraceEvent += Trace;
             test1.TraceEvent += Trace2;
 
-            test1.RunFile("C:\\Github\\HVVPlatform\\test_script\\opencv.js");
+            test1.RunScript("var test  = 1;");
             var globalobject = test1.GlobalObjects;
 
-            var image = globalobject.Values.ToList().Where((x) =>
-            {
-                return x is HV.V1.Image;
-            }).First();
-
-            var hvImage = new HV.V1.Image(image);
-            var drawObjects = hvImage.DrawObjects;
+            
         }
     }
 }

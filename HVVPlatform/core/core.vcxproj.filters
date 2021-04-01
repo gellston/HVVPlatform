@@ -24,9 +24,6 @@
     <ClInclude Include="point.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="function.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="_math.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>

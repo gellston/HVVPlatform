@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using VisionTool.Model;
+using Model;
 
 namespace VisionTool.Service
 {
@@ -20,6 +20,7 @@ namespace VisionTool.Service
         private Action<bool> isRunningAction;
         private Action<string> currentFPSAction;
         private Action<string> currentExecutiontimeAction;
+        private Action<int> currentErrorLineAction;
 
         public ScriptControlService(SettingConfigService _settingConfigService)
         {
@@ -37,6 +38,13 @@ namespace VisionTool.Service
 
             this.interpreter = new HV.V1.Interpreter();
             this.interpreter.TraceEvent += Trace;
+
+            
+        }
+
+        ~ScriptControlService()
+        {
+            this.interpreter.TraceEvent -= Trace;
         }
 
         private void Trace(string text)
@@ -183,12 +191,14 @@ namespace VisionTool.Service
                     catch (HV.V1.ScriptError e)
                     {
 
-                        System.Console.WriteLine(e.Message);
+                        System.Diagnostics.Debug.WriteLine(e.Message);
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
                             this.ScriptLogCollection.Add(new Log("Error", errorContent));
+                            this.currentErrorLineAction.Invoke(e.Line());
                             DialogHelper.ShowToastErrorMessage("스크립트 에러 메세지", errorContent);
+                            
                         }, DispatcherPriority.Send);
 
                         break;
@@ -257,7 +267,7 @@ namespace VisionTool.Service
                         }
                         catch (Exception e)
                         {
-                            System.Console.WriteLine(e.Message);
+                            System.Diagnostics.Debug.WriteLine(e.Message);
                         }
                     }, DispatcherPriority.Send);
 
@@ -268,6 +278,7 @@ namespace VisionTool.Service
                     {
                         string errorContent = string.Format("Error Line:{0}, Column({1},{2})\n{3}", e.Line(), e.StartColumn(), e.EndColumn(), e.Message);
                         this.ScriptLogCollection.Add(new Log("Error", errorContent));
+                        this.currentErrorLineAction.Invoke(e.Line());
                         DialogHelper.ShowToastErrorMessage("스크립트 에러 메세지", errorContent);
                     }, DispatcherPriority.Send);
                 }
@@ -326,6 +337,12 @@ namespace VisionTool.Service
         {
             this.currentFPSAction += check;
         }
+
+        public void SetCheckCurrentErrorLine(Action<int> check)
+        {
+            this.currentErrorLineAction += check;
+        }
+
 
 
         private bool _IsRunningScript = false;

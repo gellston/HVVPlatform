@@ -1,13 +1,6 @@
 #pragma once
 
-
-
-
-
-
 #include "Object.h"
-
-
 
 using namespace System;
 using namespace System::Collections;
@@ -28,6 +21,7 @@ namespace HV {
 			String(System::String^ Name, System::String^ data);
 			String(System::String^ data);
 			String(HV::V1::Object^ object);
+			String(hv::v1::object* object);
 			~String();
 			!String();
 

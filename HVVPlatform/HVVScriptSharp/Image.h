@@ -2,6 +2,7 @@
 
 
 #include "Object.h"
+
 #include "DataType.h"
 
 
@@ -28,6 +29,7 @@ namespace HV {
 
 			Image(std::shared_ptr<hv::v1::object>& object);
 			Image(HV::V1::Object^ object);
+			Image(hv::v1::object* object);
 			~Image();
 			!Image();
 

@@ -19,7 +19,7 @@ namespace VisionTool.ViewModel
 
             //if (InitializeScript() == false)
             //{
-            //    System.Console.WriteLine("error");
+            //    System.Diagnostics.Debug.WriteLine("error");
             //}
 
          

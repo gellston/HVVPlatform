@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using GalaSoft.MvvmLight;
-using VisionTool.Model;
+using Model;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel

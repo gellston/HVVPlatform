@@ -12,19 +12,25 @@
 
 
 HV::V1::Boolean::Boolean(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
-	this->_instance = object;
+
 }
 
-HV::V1::Boolean::Boolean(bool data) {
-	this->_instance = new hv::v1::boolean(data);
+HV::V1::Boolean::Boolean(bool data) : HV::V1::Object(new hv::v1::boolean(data)) {
+	//this->_instance = new hv::v1::boolean(data);
+
+	//HV::V1::Object()
 }
 
-HV::V1::Boolean::Boolean(String^ name, bool data){
-	this->_instance = new hv::v1::boolean(msclr::interop::marshal_as<std::string>(name), data);
+HV::V1::Boolean::Boolean(String^ name, bool data) : HV::V1::Object(new hv::v1::boolean(msclr::interop::marshal_as<std::string>(name), data)){
+	
 }
 
-HV::V1::Boolean::Boolean(HV::V1::Object^ object){
-	this->_instance = object->_instance.get();
+HV::V1::Boolean::Boolean(HV::V1::Object^ object) : HV::V1::Object(object){
+
+}
+
+HV::V1::Boolean::Boolean(hv::v1::object* object) : HV::V1::Object(object) {
+
 }
 
 HV::V1::Boolean::~Boolean() {

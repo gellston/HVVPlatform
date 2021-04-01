@@ -12,19 +12,23 @@
 
 
 HV::V1::String::String(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
-	this->_instance = object;
+
 }
 
-HV::V1::String::String(System::String^ data) {
-	this->_instance = new hv::v1::string(msclr::interop::marshal_as<std::string>(data));
+HV::V1::String::String(System::String^ data) : HV::V1::Object(new hv::v1::string(msclr::interop::marshal_as<std::string>(data))) {
+
 }
 
-HV::V1::String::String(System::String^ name, System::String^ data) {
-	this->_instance = new hv::v1::string(msclr::interop::marshal_as<std::string>(name), msclr::interop::marshal_as<std::string>(data));
+HV::V1::String::String(System::String^ name, System::String^ data) : HV::V1::Object(new hv::v1::string(msclr::interop::marshal_as<std::string>(name), msclr::interop::marshal_as<std::string>(data))) {
+
 }
 
-HV::V1::String::String(HV::V1::Object^ object) {
-	this->_instance = object->_instance.get();
+HV::V1::String::String(HV::V1::Object^ object) : HV::V1::Object(object) {
+
+}
+
+HV::V1::String::String(hv::v1::object* object) : HV::V1::Object(object) {
+
 }
 
 HV::V1::String::~String() {

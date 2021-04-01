@@ -19,6 +19,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Diagnostics.EventLog" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="HVVScriptSharp">
       <HintPath>..\x64\Debug\HVVScriptSharp.dll</HintPath>
     </Reference>

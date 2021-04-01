@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text.RegularExpressions;
 using VisionTool.Helper;
-using VisionTool.Model;
+using Model;
 
 
 namespace VisionTool.Service
@@ -64,7 +64,7 @@ namespace VisionTool.Service
             }
             catch(Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 throw e;
             }
             
@@ -119,7 +119,7 @@ namespace VisionTool.Service
                     }
                     catch(Exception e)
                     {
-                        System.Console.WriteLine(e.Message);
+                        System.Diagnostics.Debug.WriteLine(e.Message);
                         continue;
                     }
 
@@ -149,14 +149,14 @@ namespace VisionTool.Service
                 }
                 catch (Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
                 FileSystemHelper.DeleteFiles(this.settingConfigService.TempModulePackagePath);
             }
             catch(Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
 
         }

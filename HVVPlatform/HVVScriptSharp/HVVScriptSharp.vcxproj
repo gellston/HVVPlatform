@@ -132,7 +132,7 @@
     <ClInclude Include="Exception.h" />
     <ClInclude Include="HVVScriptSharp.h" />
     <ClInclude Include="Image.h" />
-    <ClInclude Include="mananged_shared_ptr.h" />
+    <ClInclude Include="managed_shared_ptr.h" />
     <ClInclude Include="NativeModule.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />

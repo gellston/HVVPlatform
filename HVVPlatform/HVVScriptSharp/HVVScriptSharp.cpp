@@ -11,13 +11,16 @@
 // Managed Header
 #include "HVVScriptSharp.h"
 #include "Exception.h"
-#include "Object.h"
 #include "Boolean.h"
 #include "Number.h"
 #include "Image.h"
 #include "String.h"
 #include "Point.h"
 
+
+
+using namespace System::Reflection;
+using namespace System::Diagnostics;
 
 namespace hv::v1 {
 
@@ -138,8 +141,6 @@ List<String^>^ HV::V1::Interpreter::GlobalNames::get() {
 
 Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
 	auto global_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
-
-
 	auto globals = this->_instance->global_objects();
 	auto casting = this->_casting_pimpl->converter();
 
@@ -150,27 +151,29 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects
 		std::string key = it->first;
 		auto native_object = it->second;
 
-		switch (casting[native_object->type()]) {
+		if (native_object->type().length() <= 0) continue;
+		
+		std::string upperTypeName = native_object->type();
+		upperTypeName[0] = toupper(upperTypeName[0]);
+		
+		std::string namespaceName = "HV.V1.";
+		std::string fullNamespaceName = namespaceName + upperTypeName;
 
-		case hv::v1::casting::number:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(native_object));
-			break;
-		case hv::v1::casting::image:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(native_object));
-			break;
-		case hv::v1::casting::boolean:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(native_object));
-			break;
-		case hv::v1::casting::string:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(native_object));
-			break;
-		case hv::v1::casting::point:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(native_object));
-			break;
-		default:
-			global_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(native_object));
-			break;
+		try {
+			System::String^ managedTypeName = gcnew System::String(fullNamespaceName.c_str());
+
+			Type^ object_type = Type::GetType(managedTypeName);
+
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
+			global_object->Add(gcnew System::String(key.c_str()), createdObject);
 		}
+		catch (Exception^ e) {
+			Debug::WriteLine(e->Message);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			global_object->Add(gcnew System::String(key.c_str()), managedObject);
+		}
+		
 	}
 	return global_object;
 }
@@ -196,27 +199,29 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 		std::string key = it->first;
 		auto native_object = it->second;
 
-		switch (casting[native_object->type()]) {
+		if (native_object->type().length() <= 0) continue;
 
-		case hv::v1::casting::number:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Number(native_object));
-			break;
-		case hv::v1::casting::image:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Image(native_object));
-			break;
-		case hv::v1::casting::boolean:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Boolean(native_object));
-			break;
-		case hv::v1::casting::string:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::String(native_object));
-			break;
-		case hv::v1::casting::point:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Point(native_object));
-			break;
-		default:
-			external_object->Add(gcnew System::String(key.c_str()), gcnew HV::V1::Object(native_object));
-			break;
+		std::string upperTypeName = native_object->type();
+		upperTypeName[0] = toupper(upperTypeName[0]);
+
+		std::string namespaceName = "HV.V1.";
+		std::string fullNamespaceName = namespaceName + upperTypeName;
+
+		try {
+			System::String^ managedTypeName = gcnew System::String(fullNamespaceName.c_str());
+
+			Type^ object_type = Type::GetType(managedTypeName);
+
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
+			external_object->Add(gcnew System::String(key.c_str()), createdObject);
 		}
+		catch (Exception^ e) {
+			Debug::WriteLine(e->Message);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			external_object->Add(gcnew System::String(key.c_str()), managedObject);
+		}
+
 	}
 
 	return external_object;
@@ -233,10 +238,6 @@ Dictionary<System::String^, HV::V1::NativeModule^>^ HV::V1::Interpreter::NativeM
 		std::string key = it->first;
 		auto native_moudle = it->second;
 		dictionary->Add(gcnew System::String(key.c_str()), gcnew HV::V1::NativeModule(gcnew System::String(native_moudle.file_path().c_str()), System::IntPtr(native_moudle.handle())));
-	}
-
-	for (auto& [key, val] : *native_modules) {
-		
 	}
 
 	return dictionary;

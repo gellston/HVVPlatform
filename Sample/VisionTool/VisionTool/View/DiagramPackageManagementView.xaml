@@ -8,10 +8,11 @@
              d:DesignHeight="1024" d:DesignWidth="1280"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:uc="clr-namespace:VisionTool.UC"
+             xmlns:uclib="clr-namespace:UClib;assembly=UC"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              xmlns:dxxtra="clr-namespace:DevExpress.XtraEditors;assembly=DevExpress.Data.v20.2"
-             xmlns:property="clr-namespace:VisionTool.Model.DiagramProperty"
+             xmlns:property="clr-namespace:Model.DiagramProperty;assembly=Model"
              xmlns:converter="clr-namespace:VisionTool.Converter"
              x:Name="view">
     <DockPanel>
@@ -414,13 +415,13 @@
                     <RowDefinition Height="0.8*"></RowDefinition>
                     <RowDefinition Height="0.8*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <uc:FunctionDiagramViewer Grid.Row="0"
+                <uclib:FunctionDiagramViewer Grid.Row="0"
                                           IsShowFunctionPanel="False"
                                           InputSnapSpotCollection="{Binding PreviewInputSnapSpotCollection}"
                                           OutputSnapSpotCollection="{Binding PreviewOutputSnapSpotCollection}"
                                           FunctionCollection="{Binding PreviewFunctionCollection}"
                                           CanvasWidth="{Binding CanvasWidth, Mode=OneWayToSource}"
-                                          CanvasHeight="{Binding CanvasHeight, Mode=OneWayToSource}"></uc:FunctionDiagramViewer>
+                                          CanvasHeight="{Binding CanvasHeight, Mode=OneWayToSource}"></uclib:FunctionDiagramViewer>
                 <uc:BindableAvalonEditor Grid.Row="1"
                                          Text="{Binding DiagramScript}"
                                          SyntaxHighlighting="JavaScript"

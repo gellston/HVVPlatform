@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Data;
-using VisionTool.Model;
-using VisionTool.Model.DiagramProperty;
+using Model;
+using Model.DiagramProperty;
 
 namespace VisionTool.Converter
 {
@@ -22,6 +22,7 @@ namespace VisionTool.Converter
             }
             catch (Exception e)
             {
+                System.Diagnostics.Trace.WriteLine(e.Message);
                 return "Invalid Value";
             }
 

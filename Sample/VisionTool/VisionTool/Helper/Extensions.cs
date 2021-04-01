@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using VisionTool.Model.DiagramProperty;
+using Model.DiagramProperty;
 
 namespace VisionTool.Helper
 {

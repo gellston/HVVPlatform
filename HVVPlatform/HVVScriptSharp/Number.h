@@ -1,9 +1,7 @@
 #pragma once
 
 
-
 #include "Object.h"
-
 
 using namespace System;
 using namespace System::Collections;
@@ -25,6 +23,7 @@ namespace HV {
 			Number(System::String^ Name, double data);
 			Number(double data);
 			Number(HV::V1::Object^ object);
+			Number(hv::v1::object* object);
 			~Number();
 			!Number();
 

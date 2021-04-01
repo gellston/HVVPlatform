@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using VisionTool.Model;
+using Model;
 
 namespace VisionTool.Service
 {

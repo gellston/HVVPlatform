@@ -1,15 +1,17 @@
 ﻿#pragma once
 
+#include "interpreter_managed.h"
 
-#include <interpreter_managed.h>
 
 #include "Object.h"
+
 #include "NativeModule.h"
 
 using namespace System;
 using namespace System::Collections;
 using namespace System::Collections::Generic;
 using namespace System::Runtime::InteropServices;
+
 
 
 namespace hv::v1 {
@@ -27,7 +29,7 @@ namespace HV {
 		{
 
 		internal:
-			
+		
 			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
 			HV::V1::mananged_shared_ptr<hv::v1::pimpl_hvvscript_casting_container> _casting_pimpl;
 

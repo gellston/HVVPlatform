@@ -7,20 +7,28 @@
 #include "Object.h"
 
 
-HV::V1::Object::Object() : _instance(new hv::v1::object("", "")){
+HV::V1::Object::Object() : _instance(new hv::v1::object("", "")) {
 
 }
 
 
-HV::V1::Object::Object(std::shared_ptr<hv::v1::object> & object) : _instance(object){
-	
+HV::V1::Object::Object(std::shared_ptr<hv::v1::object>& object) : _instance(object) {
+
 }
 
 
 HV::V1::Object::Object(System::String^ Name, System::String^ Type) : _instance(new hv::v1::object(msclr::interop::marshal_as<std::string>(Name),
-																				                  msclr::interop::marshal_as<std::string>(Type))) {
+	msclr::interop::marshal_as<std::string>(Type))) {
+
 }
 
+HV::V1::Object::Object(HV::V1::Object^ object) : _instance(object->_instance.get()) {
+
+}
+
+HV::V1::Object::Object(hv::v1::object* object) : _instance(object){
+
+}
 
 HV::V1::Object::~Object() {
 

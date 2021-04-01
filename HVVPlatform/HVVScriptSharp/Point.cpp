@@ -12,15 +12,19 @@
 
 
 HV::V1::Point::Point(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object) {
-	this->_instance = object;
+
 }
 
-HV::V1::Point::Point(String^ name,double x, double y) {
-	this->_instance = new hv::v1::point(msclr::interop::marshal_as<std::string>(name), x, y);
+HV::V1::Point::Point(String^ name,double x, double y) : HV::V1::Object(new hv::v1::point(msclr::interop::marshal_as<std::string>(name), x, y)){
+
 }
 
-HV::V1::Point::Point(HV::V1::Object^ object) {
-	this->_instance = object->_instance.get();
+HV::V1::Point::Point(HV::V1::Object^ object) : HV::V1::Object(object) {
+
+}
+
+HV::V1::Point::Point(hv::v1::object* object) : HV::V1::Object(object) {
+
 }
 
 HV::V1::Point::~Point() {

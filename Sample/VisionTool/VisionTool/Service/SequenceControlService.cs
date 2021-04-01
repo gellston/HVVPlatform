@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using VisionTool.Model;
+using Model;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace VisionTool.Service
 {
@@ -23,14 +24,113 @@ namespace VisionTool.Service
         }
 
 
-        private List<SequencePage> _SequencePages = new List<SequencePage>();
+        private List<SequencePage> _SequencePages = null;
         public List<SequencePage> SequencePages
         {
-            get => _SequencePages;
+            get
+            {
+                _SequencePages ??= new List<SequencePage>();
+                return _SequencePages;
+            }
         }
 
 
-        public void ScriptGeneration(List<Function> _functions, List<Connector> _connectors)
+        private ObservableCollection<Function> _FunctionCollection = null;
+        public ObservableCollection<Function> FunctionCollection
+        {
+            get
+            {
+                _FunctionCollection ??= new ObservableCollection<Function>();
+                return _FunctionCollection;
+            }
+        }
+
+        private ObservableCollection<Connector> _ConnectorCollection = null;
+        public ObservableCollection<Connector> ConnectorCollection
+        {
+            get
+            {
+                _ConnectorCollection ??= new ObservableCollection<Connector>();
+                return _ConnectorCollection;
+            }
+        }
+
+        private ObservableCollection<InputSnapSpot> _InputSnapSpotCollection = null;
+        public ObservableCollection<InputSnapSpot> InputSnapSpotCollection
+        {
+            get
+            {
+                _InputSnapSpotCollection ??= new ObservableCollection<InputSnapSpot>();
+                return _InputSnapSpotCollection;
+            }
+        }
+
+        private ObservableCollection<OutputSnapSpot> _OutputSnapSpotCollection = null;
+        public ObservableCollection<OutputSnapSpot> OutputSnapSpotCollection
+        {
+            get
+            {
+                _OutputSnapSpotCollection ??= new ObservableCollection<OutputSnapSpot>();
+                return _OutputSnapSpotCollection;
+            }
+        }
+
+        public void SetErrorFlag(int _errorLine)
+        {
+            int index = 0;
+            this.SequencePages.ForEach(data =>
+            {
+                if (data.StartRow <= _errorLine && data.EndRow >= _errorLine)
+                {
+                    this.FunctionCollection[index].IsError = true;
+                    
+                }
+                index++;
+            });
+        }
+
+        public void DeleteDiagram(DiagramObject _diagram)
+        {
+            if (_diagram == null) return;
+            if (_diagram.IsNew == true) return;
+            var function = _diagram as Function;
+            var connector = _diagram as Connector;
+
+            if (function != null)
+                this.FunctionCollection.Remove(function);
+            else if (connector != null)
+                this.ConnectorCollection.Remove(connector);
+        }
+
+        public string StepScriptGeneration(Function _diagram)
+        {
+
+            if (_diagram == null)
+                throw new Exception("there is no selected function");
+
+
+            if (this.SequencePages.Count == 0)
+                throw new Exception("there are no sequence pages");
+
+
+
+            var targetIndex = this.FunctionCollection.IndexOf(_diagram);
+
+
+
+            string stepScript = "";
+
+
+            for(var index =0; index < targetIndex + 1; index++)
+            {
+                stepScript += this.SequencePages[index].Content;
+            }
+
+
+            return stepScript;
+        }
+
+        public void ScriptGeneration()
         {
 
             this.FullScriptContent = "";
@@ -39,7 +139,11 @@ namespace VisionTool.Service
             
             var funtion_index = 0;
 
-            var funtions = _functions.Where(x => x.IsNew == false).ToList();
+            foreach (var function in this.FunctionCollection)
+                function.IsError = false;
+
+
+            var funtions = this.FunctionCollection.Where(x => x.IsNew == false);
             foreach(var function in funtions)
             {
                 
@@ -69,8 +173,14 @@ namespace VisionTool.Service
                     }
                     else
                     {
-                        var connector = _connectors.Where(x => (x.End == input && x.IsNew == false)).FirstOrDefault();
-                        if (connector == null) throw new Exception("Node is not connected\n" + "function name = " + function.Name + "\n" + "function index = " + funtion_index + "\n");
+                        var connector = this.ConnectorCollection.Where(x => (x.End == input && x.IsNew == false)).FirstOrDefault();
+                        if (connector == null)
+                        {
+                            function.IsError = true;
+
+                            throw new Exception("Node is not connected\n" + "function name = " + function.Name + "\n" + "function index = " + (funtion_index) + "\n");
+                        }
+                        
 
                         filled_code = filled_code.Replace("###input" + (index + 1), connector.Start.Hash);
                     }
@@ -90,7 +200,7 @@ namespace VisionTool.Service
 
                 sequencePage.Content = content;
                 sequencePage.StartRow = startIndex;
-                startIndex += content.Split("\n").Length;
+                startIndex += content.Split("\n").Length - 1;
                 sequencePage.EndRow = startIndex;
                 startIndex += 1;
                 this.SequencePages.Add(sequencePage);

@@ -7,7 +7,7 @@ using DevExpress.Xpf.Core.Native;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
-using VisionTool.Model;
+using Model;
 using VisionTool.Service;
 
 

@@ -9,7 +9,7 @@
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
     xmlns:viewModel="clr-namespace:VisionTool.ViewModel"
     xmlns:view="clr-namespace:VisionTool.View"
-    xmlns:model="clr-namespace:VisionTool.Model"
+    xmlns:model="clr-namespace:Model;assembly=Model"
     Closed="ThemedWindow_Closed">
     <DockPanel>
 

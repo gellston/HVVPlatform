@@ -152,7 +152,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="data_type.h" />
-    <ClInclude Include="function.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="_math.h" />
     <ClInclude Include="point.h" />

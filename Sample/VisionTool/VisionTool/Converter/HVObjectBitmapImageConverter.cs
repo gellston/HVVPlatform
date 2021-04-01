@@ -76,7 +76,8 @@ namespace VisionTool.Converter
                 }
                 catch(Exception e)
                 {
-                    System.Console.WriteLine(e.Message);
+                    
+                    System.Diagnostics.Debug.WriteLine(e.Message);
                 }
                 finally
                 {
@@ -88,7 +89,7 @@ namespace VisionTool.Converter
             }
             catch (Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 return null;
             }
         }

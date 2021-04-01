@@ -31,11 +31,17 @@ namespace hv::v1 {
 
 HV::V1::Image::Image(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object),
 															    _casting_pimpl(new hv::v1::pimpl_image_casting_container()){
-	this->_instance = object;
+
 }
 
-HV::V1::Image::Image(HV::V1::Object^ data) : _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
-	this->_instance = data->_instance.get();
+HV::V1::Image::Image(HV::V1::Object^ data) : HV::V1::Object(data),
+										     _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
+
+}
+
+HV::V1::Image::Image(hv::v1::object* object) : HV::V1::Object(object),
+										       _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
+
 }
 
 HV::V1::Image::~Image() {
@@ -47,11 +53,11 @@ HV::V1::Image::!Image() {
 }
 
 
-HV::V1::Image::Image(String^ name, unsigned int width, unsigned int height, unsigned int type, double resolution) {
-	this->_instance = new hv::v1::image(msclr::interop::marshal_as<std::string>(name), width, height, type, resolution);
+HV::V1::Image::Image(String^ name, unsigned int width, unsigned int height, unsigned int type, double resolution) : HV::V1::Image(new hv::v1::image(msclr::interop::marshal_as<std::string>(name), width, height, type, resolution)) {
+
 }
-HV::V1::Image::Image(Image^ copy) {
-	this->_instance = copy->_instance.get();
+HV::V1::Image::Image(Image^ copy) : HV::V1::Object(copy) {
+
 }
 
 void HV::V1::Image::RegisterDrawObject(HV::V1::Object^ _object) {
