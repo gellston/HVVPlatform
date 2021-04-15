@@ -6,6 +6,15 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <WarningLevel>5</WarningLevel>
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="DevExpress.WindowsDesktop.Wpf" Version="20.2.6" />
     <PackageReference Include="MvvmLightStd10" Version="5.4.1.2" />
@@ -13,7 +22,7 @@
 
   <ItemGroup>
     <Reference Include="Model">
-      <HintPath>..\Model\bin\x64\Release\netcoreapp3.1\Model.dll</HintPath>
+      <HintPath>..\Model\bin\netcoreapp3.1\Model.dll</HintPath>
     </Reference>
   </ItemGroup>
 

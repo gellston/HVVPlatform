@@ -10,11 +10,12 @@ namespace Model
     {
 
 
-        public InputSnapSpot(string _Name, string _DataType)
+        public InputSnapSpot(string _Name, string _DataType) : base()
         {
+            
             this.Name = _Name;
             this.DataType = _DataType;
-
+       
         }
 
         private string _DataType;

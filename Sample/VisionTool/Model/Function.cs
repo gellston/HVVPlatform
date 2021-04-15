@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json.Serialization;
 using Model.DiagramProperty;
+using Newtonsoft.Json;
 
 namespace Model
 {
@@ -25,7 +26,7 @@ namespace Model
 
             this.Location.GridStep = 10;
 
-            this.Location.ValueChanged = RecalculateSnaps;
+            this.UpdateValueChangeAction();
         }
 
         
@@ -35,12 +36,36 @@ namespace Model
             this.Output.ToList().ForEach(x => x.Recalculate());
         }
 
+        public void UpdateValueChangeAction()
+        {
+            this.Location.ValueChanged = RecalculateSnaps;
+        }
+
 
         private bool _IsError = false;
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsError
         {
             get => _IsError;
             set => Set(ref _IsError, value);
+        }
+
+        
+        private bool _IsCodeError = false;
+        [System.Text.Json.Serialization.JsonIgnore]
+        public bool IsCodeError
+        {
+            get => _IsCodeError;
+            set => Set(ref _IsCodeError, value);
+        }
+
+
+        private bool _IsNodeError = false;
+        [System.Text.Json.Serialization.JsonIgnore]
+        public bool IsNodeError
+        {
+            get => _IsNodeError;
+            set => Set(ref _IsNodeError, value);
         }
 
         private BindableSize _Size = null;
@@ -55,8 +80,7 @@ namespace Model
 
         
         private ObservableCollection<InputSnapSpot> _Input = null;
-        [JsonIgnore]
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public ObservableCollection<InputSnapSpot> Input
         {
             get
@@ -69,8 +93,7 @@ namespace Model
 
         
         private ObservableCollection<OutputSnapSpot> _Output = null;
-        [JsonIgnore]
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public ObservableCollection<OutputSnapSpot> Output
         {
             get
@@ -81,8 +104,7 @@ namespace Model
         }
 
         private ObservableCollection<BaseDiagramProperty> _FunctionProperties = null;
-        [JsonIgnore]
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public ObservableCollection<BaseDiagramProperty> FunctionProperties
         {
             get

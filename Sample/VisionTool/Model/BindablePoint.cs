@@ -11,11 +11,10 @@ namespace Model
     {
         public BindablePoint()
         {
-
+            this.Value = new Point(0, 0);
         }
 
-        [JsonIgnore]
-        [IgnoreDataMember]
+        [Newtonsoft.Json.JsonIgnore]
         public Action ValueChanged;
 
 

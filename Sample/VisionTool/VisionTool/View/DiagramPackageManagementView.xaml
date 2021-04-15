@@ -11,10 +11,10 @@
              xmlns:uclib="clr-namespace:UClib;assembly=UC"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:dxxtra="clr-namespace:DevExpress.XtraEditors;assembly=DevExpress.Data.v20.2"
              xmlns:property="clr-namespace:Model.DiagramProperty;assembly=Model"
              xmlns:converter="clr-namespace:VisionTool.Converter"
-             x:Name="view">
+             x:Name="view"
+             xmlns:syntaxEditor="http://schemas.actiprosoftware.com/winfx/xaml/syntaxeditor">
     <DockPanel>
 
         <DockPanel.Resources>
@@ -34,7 +34,7 @@
             </Button>
             <Button ToolTip="다이어그램 수정"
                     Grid.Column="1"
-                    Command="{Binding ModifyDiagramCommand}"
+                    Command="{Binding ModifyPackageDiagramCommand}"
                     Width="40">
                 <Image Source="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}"></Image>
             </Button>
@@ -111,6 +111,18 @@
                         <Image Source="{dx:DXImage 'SvgImages/Dashboards/EditColors.svg'}"></Image>
                     </Button>
                     <dxe:PopupColorEdit Color="{Binding DiagramColor, Mode=TwoWay, FallbackValue=White}" HorizontalContentAlignment="Center"/>
+                </DockPanel>
+
+                <DockPanel Height="40" DockPanel.Dock="Top">
+                    <Button ToolTip="다이어그램 카테고리" Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/ModelEditor_Categorized.svg'}"></Image>
+                    </Button>
+                    <ComboBox ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramCategory}"
+                              HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center"
+                              SelectedItem="{Binding SelectedDiagramCategory}"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedIndex="0"></ComboBox>
                 </DockPanel>
 
 
@@ -267,7 +279,9 @@
                                   ItemsSource="{Binding ElementName=view, Path=DataContext.DiagramPropertyDataType}"
                                   HorizontalContentAlignment="Center"
                                   VerticalContentAlignment="Center"
-                                  SelectedItem="{Binding SelectedDiagramPropertyDataType}"></ComboBox>
+                                  SelectedItem="{Binding SelectedDiagramPropertyDataType}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  SelectedIndex="0"></ComboBox>
                         <dxg:GridControl EnableSmartColumnsGeneration="False"
                                          SelectionMode="Row"
                                          AutoGenerateColumns="None"
@@ -420,12 +434,29 @@
                                           InputSnapSpotCollection="{Binding PreviewInputSnapSpotCollection}"
                                           OutputSnapSpotCollection="{Binding PreviewOutputSnapSpotCollection}"
                                           FunctionCollection="{Binding PreviewFunctionCollection}"
-                                          CanvasWidth="{Binding CanvasWidth, Mode=OneWayToSource}"
-                                          CanvasHeight="{Binding CanvasHeight, Mode=OneWayToSource}"></uclib:FunctionDiagramViewer>
-                <uc:BindableAvalonEditor Grid.Row="1"
-                                         Text="{Binding DiagramScript}"
-                                         SyntaxHighlighting="JavaScript"
-                                         ShowLineNumbers="True"></uc:BindableAvalonEditor>
+                                          CanvasWidth="{Binding CanvasWidth, Mode=OneWayToSource}"></uclib:FunctionDiagramViewer>
+                <syntaxEditor:SyntaxEditor  Grid.Row="1"
+                                            Text="{Binding DiagramScript, Mode=TwoWay}"
+                                            IsLineNumberMarginVisible="True"
+                                            IsDefaultContextMenuEnabled="True"
+                                            IsDelimiterAutoCompleteEnabled="True"
+                                            IsDelimiterHighlightingEnabled="True"
+                                            IsCurrentLineHighlightingEnabled="True"
+                                            IsCollapsibleRegionHighlightingEnabled="True"
+                                            IsTextDataBindingEnabled="True"
+                                            HasHorizontalSplit="False"
+                                            CanSplitHorizontally="False"
+                                            ZoomModesAllowed="Mouse"
+                                            IsSearchResultHighlightingEnabled="True"
+                                            SelectionCollapsesToAnchor="True"
+                                            SelectionCollapsesOnCopy="True"
+                                            x:Name="CodeEditor">
+                    <syntaxEditor:EditorDocument>
+                        <syntaxEditor:EditorDocument.Language>
+                            <syntaxEditor:JavaScriptSyntaxLanguage></syntaxEditor:JavaScriptSyntaxLanguage>
+                        </syntaxEditor:EditorDocument.Language>
+                    </syntaxEditor:EditorDocument>
+                </syntaxEditor:SyntaxEditor>
 
                 <DockPanel Grid.Row="2">
                     <TextBox Height="40" DockPanel.Dock="Top" IsEnabled="False" Text="다이어그램 코멘트" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
@@ -473,7 +504,7 @@
 
                 </Grid.RowDefinitions>
                 <dxg:GridControl ItemsSource="{Binding DiagramConfigCollection, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                                 SelectedItem="{Binding SelectedDiagramConfig, Mode=OneWay}"
+                                 SelectedItem="{Binding SelectedDiagramConfig, Mode=TwoWay}"
                                  SelectionMode="Row">
 
                     <dxg:GridControl.Columns>
@@ -486,6 +517,7 @@
                         </dxg:GridColumn>
                         <dxg:GridColumn FieldName="이름" Binding="{Binding DiagramName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
                         <dxg:GridColumn FieldName="작성자" Binding="{Binding DiagramWriter, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False" />
+                        <dxg:GridColumn FieldName="카테고리" Binding="{Binding DiagramCategory, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
                         <dxg:GridColumn FieldName="버전" Binding="{Binding DiagramVersion, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
                         <dxg:GridColumn FieldName="날짜" Binding="{Binding DiagramModifyDate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsSmart="False" Width="*" AllowFocus="False"/>
                     </dxg:GridControl.Columns>
@@ -496,6 +528,9 @@
                                AllowGrouping="True"
                                AllowScrollToFocusedRow="False"
                                >
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Modification" Glyph="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}" Command="{Binding ElementName=view, Path=DataContext.ModifyRenderDiagramCommand}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>
                 </dxg:GridControl>

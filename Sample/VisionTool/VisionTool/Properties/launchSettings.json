@@ -1,7 +1,8 @@
 {
   "profiles": {
     "VisionTool": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\gellston\\Desktop\\test.vsjs"
     }
   }
 }

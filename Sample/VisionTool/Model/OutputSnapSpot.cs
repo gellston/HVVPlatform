@@ -8,7 +8,7 @@ namespace Model
     public class OutputSnapSpot : DiagramObject
     {
 
-        public OutputSnapSpot(string _Name, string _DataType)
+        public OutputSnapSpot(string _Name, string _DataType) : base()
         {
             this.Name = _Name;
             this.DataType = _DataType;

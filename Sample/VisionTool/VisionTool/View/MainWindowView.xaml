@@ -5,7 +5,7 @@
     xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
     xmlns:dxwui="http://schemas.devexpress.com/winfx/2008/xaml/windowsui"
     x:Class="VisionTool.View.MainWindowView"
-    Title="MainWindow" Height="450" Width="800"
+    Title="Vision 1.0" Height="450" Width="800"
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MainWindowViewModel}"
     xmlns:viewModel="clr-namespace:VisionTool.ViewModel"
     xmlns:view="clr-namespace:VisionTool.View"
@@ -13,7 +13,7 @@
     Closed="ThemedWindow_Closed">
     <DockPanel>
 
-        <Grid DockPanel.Dock="Top"
+        <!--<Grid DockPanel.Dock="Top"
               Height="40">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"></ColumnDefinition>
@@ -23,108 +23,85 @@
                     Command="{Binding OpenMainMenuCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ChartGridlinesHorizontal_Major.svg'}"></Image>
             </Button>
-        </Grid>
-        
-        <ListView Name="LeftMainMenu"
-                  Width="0"
-                  ItemsSource="{Binding MainMenuCollection}"
-                  SelectedItem="{Binding CurrentContentViewModel}"
-                  HorizontalContentAlignment="Stretch"
-                  VerticalContentAlignment="Stretch"
-                  ScrollViewer.HorizontalScrollBarVisibility="Hidden">
-            <!--<ListView.ItemContainerStyle>
-                <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                <ContentPresenter />
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ListView.ItemContainerStyle>-->
-            <ListView.ItemTemplate>
-                <ItemContainerTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="30"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Source="{Binding Icon}"></Image>
-                        <TextBlock Grid.Column="1" 
-                                       Margin="10,0,0,0" 
-                                       Text="{Binding Name}"
-                                       VerticalAlignment="Center"
-                                       HorizontalAlignment="Left"></TextBlock>
-                    </Grid>
-                </ItemContainerTemplate>
-            </ListView.ItemTemplate>
-            <ListView.Resources>
-                <Style TargetType="Control" x:Key="EmptyFocusVisualStyle">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate>
+        </Grid>-->
 
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-                
-                <Storyboard x:Key="ShrinkWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=LeftMainMenu}"
-                                         Duration="0:0:0.5"
-                                         To="0">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-                <Storyboard x:Key="EnLargeWidth">
-                    <DoubleAnimation Storyboard.TargetProperty="(FrameworkElement.Width)"
-                                         Storyboard.Target="{Binding ElementName=LeftMainMenu}"
-                                         Duration="0:0:0.5"
-                                         To="250">
-                        <DoubleAnimation.EasingFunction>
-                            <PowerEase EasingMode="EaseOut" Power="5"></PowerEase>
-                        </DoubleAnimation.EasingFunction>
-                    </DoubleAnimation>
-                </Storyboard>
-            </ListView.Resources>
-            <ListView.Style>
-                <Style TargetType="{x:Type ListView}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsOpenMenu}" Value="true">
-                            <DataTrigger.EnterActions>
-                                <BeginStoryboard Storyboard="{StaticResource EnLargeWidth}"></BeginStoryboard>
-                            </DataTrigger.EnterActions>
-                            <DataTrigger.ExitActions>
-                                <BeginStoryboard Storyboard="{StaticResource ShrinkWidth}"></BeginStoryboard>
-                            </DataTrigger.ExitActions>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListView.Style>
-        </ListView>
-        <ContentPresenter Content="{Binding CurrentContentViewModel.ViewModel}">
-            <ContentPresenter.Resources>
-                <DataTemplate DataType="{x:Type viewModel:ScriptEditViewModel}">
-                    <view:ScriptEditView></view:ScriptEditView>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type viewModel:ModulePackageManagementViewModel}">
-                    <view:ModulePackageManagementView></view:ModulePackageManagementView>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type viewModel:ApplicationSettingViewModel}">
-                    <view:ApplicationSettingView></view:ApplicationSettingView>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type viewModel:DiagramEditViewModel}">
-                    <view:DiagramEditView></view:DiagramEditView>
-                </DataTemplate>
-                <DataTemplate DataType="{x:Type viewModel:DiagramPackageManagementViewModel}">
-                    <view:DiagramPackageManagementView></view:DiagramPackageManagementView>
-                </DataTemplate>
-            </ContentPresenter.Resources>
-        </ContentPresenter>
+ 
+
+        <dxwui:HamburgerMenu OpenPaneWidth="200"
+                             AvailableViewStates="Overlay"
+                             >
+
+            <dxwui:HamburgerMenu.Content>
+                <ContentPresenter Content="{Binding CurrentContentViewModel}">
+                    <ContentPresenter.Resources>
+                        <DataTemplate DataType="{x:Type viewModel:ScriptEditViewModel}">
+                            <view:ScriptEditView></view:ScriptEditView>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:ModulePackageManagementViewModel}">
+                            <view:ModulePackageManagementView></view:ModulePackageManagementView>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:ApplicationSettingViewModel}">
+                            <view:ApplicationSettingView></view:ApplicationSettingView>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:DiagramEditViewModel}">
+                            <view:DiagramEditView></view:DiagramEditView>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:DiagramPackageManagementViewModel}">
+                            <view:DiagramPackageManagementView></view:DiagramPackageManagementView>
+                        </DataTemplate>
+                    </ContentPresenter.Resources>
+                </ContentPresenter>
+            </dxwui:HamburgerMenu.Content>
+            <dxwui:HamburgerSubMenu Content="스크립트" Glyph="{dx:DXImage 'SvgImages/XAF/Action_ShowScript.svg'}" MoreButtonVisibilityMode="Hidden" ToolTip="스크립트">
+                <dxwui:HamburgerSubMenu.Items>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="스크립트 편집"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=ScriptEditViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/RichEdit/ShowAllFieldCodes.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="모듈 관리"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=ModulePackageManagementViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/XAF/ModelEditor_Action_Modules.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
+                </dxwui:HamburgerSubMenu.Items>
+            </dxwui:HamburgerSubMenu>
+
+            <dxwui:HamburgerSubMenu Content="다이어그램" Glyph="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"  MoreButtonVisibilityMode="Hidden"  ToolTip="다이어그램">
+                <dxwui:HamburgerSubMenu.Items>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="다이어그램 편집"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=DiagramEditViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_WorkflowDefinition.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="다이어그램 관리"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=DiagramPackageManagementViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/XAF/Action_OrganizeDashboard.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
+                </dxwui:HamburgerSubMenu.Items>
+            </dxwui:HamburgerSubMenu>
+
+            <dxwui:HamburgerMenuNavigationButton Content="설정" 
+                                                 Glyph="{dx:DXImage 'SvgImages/Icon Builder/Actions_Settings.svg'}"
+                                                 Placement="Bottom"
+                                                 Command="{Binding SelectCurrentMenuCommand}"
+                                                 CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=ApplicationSettingViewModel}"
+                                                 ToolTip="설정">
+            </dxwui:HamburgerMenuNavigationButton>
+
+        </dxwui:HamburgerMenu>
     </DockPanel>
 </dx:ThemedWindow>

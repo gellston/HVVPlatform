@@ -13,7 +13,6 @@
 
 
 #include "pimpl.h"
-#include "converter.h"
 #include "macro.h"
 #include "native_module.hpp"
 
@@ -41,11 +40,8 @@ namespace hv::v1{
 		/// <summary>
 		/// pimpl converter lambda
 		/// </summary>
-		//std::shared_ptr<pimpl> _converter_lambda;
-		std::map<std::string, std::shared_ptr<converter>> _converter_lambda;
 
 		std::shared_ptr <std::map<std::string, std::shared_ptr<object>>> _external_hash_map;
-
 		std::shared_ptr <std::map<std::string, std::shared_ptr<object>>> _global_hash_map;
 			
 
@@ -102,9 +98,8 @@ namespace hv::v1{
 		// native module 
 		std::shared_ptr<std::map<std::string, hv::v1::native_module>> _native_modules;
 
+		// trace callback function
 		void trace(std::string input);
-		bool register_converter(std::string _type, converter* _converter);
-
 
 		// lambda trace callback
 		std::function<void(char *)> _trace_callback;
@@ -125,6 +120,8 @@ namespace hv::v1{
 
 		bool register_external_object(std::string _key, std::shared_ptr<object> _data);
 		std::shared_ptr<object> external_object(std::string _key);
+		std::list<std::string> external_names();
+		std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> external_objects();
 		bool check_external_object(std::string _key);
 		void clear_external_object();
 
@@ -132,13 +129,8 @@ namespace hv::v1{
 		std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> global_objects();
 
 
-		std::list<std::string> external_names();
-		std::shared_ptr<std::map<std::string, std::shared_ptr<object>>> external_objects();
-
-		std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
-
-		
 		bool terminate();
+		std::shared_ptr<std::map<std::string, hv::v1::native_module>> native_modules();
 		void release_native_modules();
 
 		void set_trace_callback(std::function<void(char *)> _callback);

@@ -5,8 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:VisionTool.View" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:converter="clr-namespace:VisionTool.Converter"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="view">
     <UserControl.Resources>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
     </UserControl.Resources>
@@ -130,7 +132,10 @@
                                  Grid.Column="0"
                                  Grid.Row="7"
                                  Grid.ColumnSpan="3"
-                                 ItemsSource="{Binding DependentDLLCollection}">
+                                 ItemsSource="{Binding DependentDLLCollection}"
+                                 x:Name="DependentDLLList"
+                                 AllowUpdateTwoWayBoundPropertiesOnSynchronization="True"
+                                 >
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn FieldName="DLL 이름" Binding="{Binding FileName}" IsSmart="False" Width="*"/>
                         <dxg:GridColumn FieldName="DLL 경로" Binding="{Binding FilePath}" IsSmart="False" Width="*"/>
@@ -138,9 +143,14 @@
                     <dxg:GridControl.View>
                         <dxg:TableView AllowPerPixelScrolling="True" 
                                        ShowTotalSummary="False"
-                                       AllowGrouping="True"
+                                       AllowGrouping="False"
                                        AllowScrollToFocusedRow="False"
                                        >
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Delete" 
+                                                   Command="{Binding ElementName=view, Path=DataContext.DeleteDependentDLLCommand}"
+                                                   CommandParameter="{Binding ElementName=DependentDLLList, Path=SelectedItem}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
                         </dxg:TableView>
                     </dxg:GridControl.View>
                 </dxg:GridControl>
@@ -168,6 +178,9 @@
                                                ShowTotalSummary="False"
                                                AllowGrouping="True"
                                                AllowScrollToFocusedRow="False">
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Modification" Glyph="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}" Command="{Binding ElementName=view, Path=DataContext.ModifyUpdateModuleCommand}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
                             <dxg:TableView.RowStyle>
                                 <Style TargetType="dxg:RowControl">
                                     <Setter Property="ToolTipService.ToolTip">

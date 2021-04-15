@@ -31,12 +31,10 @@ namespace HV {
 		internal:
 		
 			HV::V1::mananged_shared_ptr<hv::v1::interpreter_managed> _instance;
-			HV::V1::mananged_shared_ptr<hv::v1::pimpl_hvvscript_casting_container> _casting_pimpl;
 
 		private:
 
 			DelegateTrace^ EventTraceCallback;
-			DelegateTrace^ EventTraceTriggerCallback;
 
 			GCHandle Handle;
 			IntPtr HandlePtr;

@@ -11,36 +11,38 @@
 #include "Point.h"
 
 
-#include "secure_macro.h"
+
+using namespace System;
+using namespace System::Collections;
+using namespace System::Collections::Generic;
+using namespace System::Runtime::InteropServices;
+using namespace System::Diagnostics;
 
 
-namespace hv::v1 {
-	class pimpl_image_casting_container {
-	private:
-		std::map<std::string, int> _converter;
-	public:
-		pimpl_image_casting_container() {
-			register_casting_type(point);
-		}
+//namespace hv::v1 {
+//	class pimpl_image_casting_container {
+//	private:
+//		std::map<std::string, int> _converter;
+//	public:
+//		pimpl_image_casting_container() {
+//			register_casting_type(point);
+//		}
+//
+//		std::map<std::string, int>& converter() {
+//			return _converter;
+//		}
+//	};
+//}
 
-		std::map<std::string, int>& converter() {
-			return _converter;
-		}
-	};
+HV::V1::Image::Image(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object){
+
 }
 
-HV::V1::Image::Image(std::shared_ptr<hv::v1::object>& object) : HV::V1::Object(object),
-															    _casting_pimpl(new hv::v1::pimpl_image_casting_container()){
+HV::V1::Image::Image(HV::V1::Object^ data) : HV::V1::Object(data) {
 
 }
 
-HV::V1::Image::Image(HV::V1::Object^ data) : HV::V1::Object(data),
-										     _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
-
-}
-
-HV::V1::Image::Image(hv::v1::object* object) : HV::V1::Object(object),
-										       _casting_pimpl(new hv::v1::pimpl_image_casting_container()) {
+HV::V1::Image::Image(hv::v1::object* object) : HV::V1::Object(object) {
 
 }
 
@@ -69,17 +71,29 @@ List<HV::V1::Object^>^ HV::V1::Image::DrawObjects::get() {
 	auto list = gcnew List<HV::V1::Object^>();
 	auto native_list = target->drarw_objects();
 
-	auto casting = this->_casting_pimpl->converter();
-
 	for (auto& element : native_list) {
-		switch (casting[element->type()]) {
 
-		case hv::v1::casting::point:
-			list->Add( gcnew HV::V1::Point(element));
-			break;
-		default:
-			list->Add( gcnew HV::V1::Object(element));
-			break;
+		if (element->type().length() <= 0) continue;
+
+		std::string upperTypeName = element->type();
+		upperTypeName[0] = toupper(upperTypeName[0]);
+
+		std::string namespaceName = "HV.V1.";
+		std::string fullNamespaceName = namespaceName + upperTypeName;
+
+		try {
+			System::String^ managedTypeName = gcnew System::String(fullNamespaceName.c_str());
+
+			System::Type^ object_type = System::Type::GetType(managedTypeName);
+			
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(element);
+			HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
+			list->Add(createdObject);
+		}
+		catch (Exception^ e) {
+			Debug::WriteLine(e->Message);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(element);
+			list->Add(managedObject);
 		}
 	}
 	return list;

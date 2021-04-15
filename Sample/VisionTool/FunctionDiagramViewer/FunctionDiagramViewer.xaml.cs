@@ -660,6 +660,7 @@ namespace UClib
                         control.ShowMidPoint = true;
 
                     control.SelectedFunction = null;
+                    control.SelectedConnector = connector;
                 }
 
                 if (newValue is Function)
@@ -667,6 +668,7 @@ namespace UClib
                     var function = newValue as Function;
                     control.SelectedInputSnapSpotCollection = function.Input;
                     control.SelectedFunction = newValue as Function;
+                    control.SelectedConnector = null;
                 }
 
 
@@ -685,6 +687,20 @@ namespace UClib
             set
             {
                 SetValue(SelectedFunctionProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty SelectedConnectorProperty = DependencyProperty.Register("SelectedConnector", typeof(Connector), typeof(FunctionDiagramViewer));
+        public Connector SelectedConnector
+        {
+            get
+            {
+                return (Connector)GetValue(SelectedConnectorProperty);
+            }
+
+            set
+            {
+                SetValue(SelectedConnectorProperty, value);
             }
         }
 
@@ -853,6 +869,7 @@ namespace UClib
                 {
                     connector.End = snapSpot;
                     connector.MidPoint.X = this.CanvasWidth * 0.15;
+      
                 }
             }
 
@@ -941,7 +958,7 @@ namespace UClib
 
                     connector.MidPoint.X = this.CanvasWidth * 0.15;
                     connector.IsNew = false;
-
+                    connector.EndSnapHash = connector.End.Hash;
 
                     IsConnectorCreate = false;
                     IsConnectorCreate = true;

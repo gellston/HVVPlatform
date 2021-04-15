@@ -9,6 +9,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Model;
+using VisionTool.Message;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel
@@ -16,29 +17,75 @@ namespace VisionTool.ViewModel
     public class ModulePackageManagementViewModel : ViewModelBase
     {
 
-        private readonly SettingConfigService appConfigService;
-        private readonly ModuleControlService modulePackageService;
+        
+        private readonly ModuleControlService moduleControlService;
         private readonly ScriptControlService scriptControlService;
 
-        public ModulePackageManagementViewModel(SettingConfigService _appConfigService,
-                                                ModuleControlService _modulePackageService,
+        public ModulePackageManagementViewModel(ModuleControlService _moduleControlService,
                                                 ScriptControlService _scriptControlService)
         {
-            this.appConfigService = _appConfigService;
-            this.modulePackageService = _modulePackageService;
+        
+            this.moduleControlService = _moduleControlService;
             this.scriptControlService = _scriptControlService;
 
-            this.ModuleCollection = this.modulePackageService.ModuleCollection;
-            this.ModuleConfigCollection = this.modulePackageService.ModuleConfigCollection;
+            this.ModuleCollection = this.moduleControlService.ModuleCollection;
+            this.ModuleConfigCollection = this.moduleControlService.ModuleConfigCollection;
+            this.DependentDLLCollection = this.moduleControlService.DependentDLLCollection;
+          
 
-            
 
+            this.moduleControlService.SetCallbackCurrentModuleComment(data => this.ModuleComment = data);
+            this.moduleControlService.SetCallbackCurrentModuleMainPath(data => this.ModuleMainPath = data);
+            this.moduleControlService.SetCallbackCurrentModuleModifyDate(data => this.ModuleModifyDate = data);
+            this.moduleControlService.SetCallbackCurrentModuleName(data => this.ModuleName = data);
+            this.moduleControlService.SetCallbackCurrentModuleVersion(data => this.ModuleVersion = data);
+
+            this.MessengerInstance.Register<AssociationModeMessage>(this, FileAssociationCallback);
+        }
+
+        private void FileAssociationCallback(AssociationModeMessage message)
+        {
+            if (message.AssociationMode == "Module")
+            {
+
+                try
+                {
+                    this.moduleControlService.ImportModule(message.FilePath);
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+
+
+            }
         }
 
         public ICommand ImportModuleCommand
         {
             get => new RelayCommand(() =>
             {
+                this.moduleControlService.ImportModule();
+            });
+        }
+
+        public ICommand ModifyUpdateModuleCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                if (this.SelectedModuleConfig == null) return;
+
+                try
+                {
+                    
+                    this.moduleControlService.LoadModuleInfoFromConfig(this.SelectedModuleConfig);
+
+                    this.RaisePropertyChanged("DependentDLLCollection");
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
 
             });
         }
@@ -47,7 +94,34 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
+                try
+                {
+                    this.ModuleModifyDate = DateTime.Now.ToString("yyyy-MM-HH hh:mm:ss");
 
+                    try
+                    {
+                        if (this.moduleControlService.CheckModuleExists(this.ModuleName) == false) return;
+                        this.scriptControlService.ClearNativeModules();
+                        this.moduleControlService.CreateModulePackage(this.ModuleName,
+                                                                      this.ModuleModifyDate,
+                                                                      this.ModuleVersion + 1,
+                                                                      this.ModuleComment,
+                                                                      this.ModuleMainPath,
+                                                                      true);
+
+
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                    }
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             });
         }
 
@@ -57,9 +131,9 @@ namespace VisionTool.ViewModel
             {
                 try
                 {
-                    this.modulePackageService.DeleteModule(this.SelectedModule);
+                    this.moduleControlService.DeleteModule(this.SelectedModule);
                     this.scriptControlService.ClearNativeModules();
-                    this.modulePackageService.UpdateModuleInfo();
+                    this.moduleControlService.UpdateModuleInfo();
 
                 }catch(Exception e)
                 {
@@ -74,7 +148,16 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
                 this.scriptControlService.ClearNativeModules();
-                this.modulePackageService.UpdateModuleInfo();
+                this.moduleControlService.UpdateModuleInfo();
+            });
+        }
+
+        public ICommand DeleteDependentDLLCommand
+        {
+            get => new RelayCommand<DependentDLL>((dll) =>
+            {
+                this.moduleControlService.DeleteDeleteDependentDLL(dll);
+
             });
         }
 
@@ -83,12 +166,7 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
 
-                this.ModuleComment = "";
-                this.ModuleMainPath = "";
-                this.ModuleVersion = 1;
-                this.ModuleModifyDate = "";
-                this.ModuleName = "";
-                this.DependentDLLCollection.Clear();
+                this.moduleControlService.ClearMoudle();
 
             });
         }
@@ -100,8 +178,9 @@ namespace VisionTool.ViewModel
             {
                 try
                 {
-                    this.ModuleMainPath = this.modulePackageService.GetLibraryFromPath();
-                }catch(Exception e)
+                    this.moduleControlService.LoadLibraryFromPath();
+                }
+                catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
@@ -116,11 +195,11 @@ namespace VisionTool.ViewModel
 
                 try
                 {
-                    this.DependentDLLCollection.Clear();
-                    this.DependentDLLCollection.AddRange(this.modulePackageService.Get3rdLibrariesFromPath());
+                    this.moduleControlService.Load3rdLibrariesFromPath();
 
 
-                }catch(Exception e)
+                }
+                catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
@@ -137,17 +216,20 @@ namespace VisionTool.ViewModel
 
                 try
                 {
-                    this.modulePackageService.CreateModulePackage(this.ModuleName,
+                    this.scriptControlService.ClearNativeModules();
+                    this.moduleControlService.CreateModulePackage(this.ModuleName,
                                                                   this.ModuleModifyDate,
                                                                   this.ModuleVersion,
                                                                   this.ModuleComment,
                                                                   this.ModuleMainPath,
-                                                                  this.DependentDLLCollection);
+                                                                  false);
 
-                    this.modulePackageService.UpdateModuleInfo();
-                    
 
-                }catch(Exception e)
+                    this.scriptControlService.ClearNativeModules();
+                    this.moduleControlService.UpdateModuleInfo();
+
+                }
+                catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
@@ -192,13 +274,8 @@ namespace VisionTool.ViewModel
         private ObservableCollection<DependentDLL> _DependentDLLCollection = null;
         public ObservableCollection<DependentDLL> DependentDLLCollection
         {
-            get
-            {
-                if (_DependentDLLCollection == null)
-                    _DependentDLLCollection = new ObservableCollection<DependentDLL>();
-                return _DependentDLLCollection;
-            }
-            
+            get => _DependentDLLCollection;
+            set => Set(ref _DependentDLLCollection, value);
         }
 
         private ObservableCollection<ModuleConfig> _ModuleConfigCollection = null;

@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
-using DevExpress.Xpf.CodeView;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Model;
+using VisionTool.Message;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel
@@ -34,11 +25,15 @@ namespace VisionTool.ViewModel
             this.LogCollection = this.scriptControlService.ScriptLogCollection;
             this.GlobalCollection = this.scriptControlService.GlobalCollection;
             this.NativeModuleCollection = this.scriptControlService.NativeModuleCollection;
+            this.ScriptCollection = this.scriptControlService.ScriptCollection;
+            
 
-            this.scriptControlService.SetCheckRunning(data => this.IsRunningScript = data );
-            this.scriptControlService.SetCheckCurrentExecutionTime(data => this.CurrentExecutionTime = data);
-            this.scriptControlService.SetCheckCurrentFPS(data => this.CurrentFPS = data);
+            this.scriptControlService.SetCallbackRunning(data => this.IsRunningScript = data );
+            this.scriptControlService.SetCallbackCurrentExecutionTime(data => this.CurrentExecutionTime = data);
+            this.scriptControlService.SetCallbackCurrentFPS(data => this.CurrentFPS = data);
 
+
+            MessengerInstance.Register<AssociationModeMessage>(this, FileAssociationCallback);
         }
 
         ~ScriptEditViewModel()
@@ -46,42 +41,27 @@ namespace VisionTool.ViewModel
             
         }
 
+        private void FileAssociationCallback(AssociationModeMessage message)
+        {
+            if(message.AssociationMode == "Script")
+            {
 
-        //public void NotifyMessage(NotificationMessage message)
-        //{
-        //    if(message.Notification == "ClearNativeModules")
-        //    {
+                try
+                {
+                    this.scriptControlService.LoadScriptFromPath(message.FilePath);
 
-        //        this.GlobalCollection.Clear();
-                
-        //        this.SelectedGlobal = null;
-        //        this.DetailImageDrawCollection.Clear();
-        //        this.NativeModuleCollection.Clear();
-
-        //        System.GC.Collect();
-        //        System.GC.WaitForPendingFinalizers();
-        //        System.GC.WaitForFullGCComplete();
-
-        //        this.interpreter.ReleaseNativeModules();
-
-        //        if(this.interpreter.NativeModules.Count() > 0)
-        //            this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
-        //     }
-        //}
+                    this.SelectedScript = this.scriptControlService.ScriptCollection[0];
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
 
 
-        //private void Trace(string text)
-        //{
-        //    Application.Current.Dispatcher.Invoke(() =>
-        //    {
-        //        this.LogCollection.Insert(0,new Log()
-        //        {
-        //            Type = "스크립트",
-        //            Content = text
-        //        });
-        //    });
-        //    Thread.Sleep(1);
-        //}
+            }
+        }
+
+
 
         private WriteableBitmap _TrackingImagePresenter = null;
         public WriteableBitmap TrackingImagePresenter
@@ -113,15 +93,12 @@ namespace VisionTool.ViewModel
 
                  try
                  {
-                     var script = this.scriptControlService.GetScriptFromPath();
-                     this.ScriptCollection.Add(script);
+                     this.scriptControlService.LoadScriptFromPath();
                  }
                  catch(Exception e)
                  {
                      System.Diagnostics.Debug.WriteLine(e.Message);
                  }
-                 
-
              });
             
         }
@@ -130,9 +107,19 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.ScriptCollection.Add(this.scriptControlService.CreateNewScript());
+                this.scriptControlService.AddNewScript();
             });
         }
+
+
+        public ICommand DeleteScriptItemCommand
+        {
+            get => new RelayCommand<Script>((data) =>
+            {
+                this.scriptControlService.RemoveScript(data);
+            });
+        }
+
 
         public ICommand SaveScriptFileCommand
         {
@@ -228,15 +215,13 @@ namespace VisionTool.ViewModel
             });
         }
 
+
+
         private ObservableCollection<Script> _ScriptCollection = null;
         public ObservableCollection<Script> ScriptCollection
         {
-            get {
-
-                _ScriptCollection ??= new ObservableCollection<Script>();
-                return _ScriptCollection;
-            }
-            //set => Set(ref _ScriptCollection, value);
+            get => _ScriptCollection;
+            set => Set(ref _ScriptCollection, value);
         }
 
 
@@ -297,6 +282,11 @@ namespace VisionTool.ViewModel
         public ObservableCollection<Log> LogCollection { get; set; }
 
         public ObservableCollection<HV.V1.NativeModule> NativeModuleCollection { get; set; }
+
+
+
+
+       
 
     }
 }

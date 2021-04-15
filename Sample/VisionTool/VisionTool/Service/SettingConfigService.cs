@@ -65,6 +65,17 @@ namespace VisionTool.Service
             }
         }
 
+        public string TempModuleModPackagePath
+        {
+            get
+            {
+                var path = this.CurrentApplicationPath + "TempModuleModPackage" + Path.DirectorySeparatorChar;
+                Directory.CreateDirectory(path);
+                return path;
+            }
+
+        }
+
         public string TempDiagramPackagePath
         {
             get

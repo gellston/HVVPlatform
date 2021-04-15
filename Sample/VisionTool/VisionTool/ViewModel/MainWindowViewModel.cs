@@ -8,6 +8,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Ioc;
 using Model;
+using VisionTool.Message;
 using VisionTool.Service;
 
 
@@ -15,100 +16,49 @@ namespace VisionTool.ViewModel
 {
     public class MainWindowViewModel : ViewModelBase
     {
-
-        private readonly SettingConfigService appConfigService;
-        
-        public MainWindowViewModel(ScriptEditViewModel _scriptEditViewModel,
-                                   SettingConfigService _appConfigService,
-                                   ModulePackageManagementViewModel _modulePackageViewModel,
-                                   ApplicationSettingViewModel _applicationSettingViewModel,
-                                   DiagramEditViewModel _diagramEditViewModel,
-                                   DiagramPackageManagementViewModel _diagramPackageManagementViewModel)
+        private readonly ScriptControlService scriptContorlService;
+        public MainWindowViewModel(ScriptControlService _scriptContorlService,
+                                   ScriptEditViewModel _scriptEditViewModel)
         {
-
-            this.appConfigService = _appConfigService;
-            //this.CurrentContentViewModel = _scriptEditViewModel;
-            this.MainMenuCollection.Add(new MainMenu()
-            {
-                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/XAF/Action_ShowScript.svg")), 1d, null, null, true),
-                Name = "스크립트 편집",
-                ViewModel = _scriptEditViewModel
-            });
-
-            this.MainMenuCollection.Add(new MainMenu()
-            {
-                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Icon Builder/Business_Diagram.svg")), 1d, null, null, true),
-                Name = "다이어그램 편집",
-                ViewModel = _diagramEditViewModel
-            });
+            this.scriptContorlService = _scriptContorlService;
 
 
-            this.MainMenuCollection.Add(new MainMenu()
-            {
-                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Icon Builder/Shopping_Box.svg")), 1d, null, null, true),
-                Name = "모듈 패키지",
-                ViewModel = _modulePackageViewModel
-            });
 
-            this.MainMenuCollection.Add(new MainMenu()
-            {
-                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Icon Builder/Shopping_Box.svg")), 1d, null, null, true),
-                Name = "다이어그램 패키지",
-                ViewModel = _diagramPackageManagementViewModel
-            });
-
-
-            this.MainMenuCollection.Add(new MainMenu()
-            {
-                Icon = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/XAF/ModelEditor_Settings.svg")), 1d, null, null, true),
-                Name = "어플리케이션 설정",
-                ViewModel = _applicationSettingViewModel
-            });
-
-            
-
-
-            this.CurrentContentViewModel = this.MainMenuCollection[0];
-
-
+            this.MessengerInstance.Register<AssociationModeMessage>(this, FileAssocationCallback);
         }
 
-
-        private ObservableCollection<MainMenu> _MainMenuCollection = null;
-        public ObservableCollection<MainMenu> MainMenuCollection
+        private void FileAssocationCallback(AssociationModeMessage message)
         {
-            get
+            switch (message.AssociationMode)
             {
-                if (_MainMenuCollection == null)
-                    _MainMenuCollection = new ObservableCollection<MainMenu>();
+                case "Script":
+                    this.CurrentContentViewModel = message.CurrentViewModel;
+                    break;
 
-                return _MainMenuCollection;
+                case "Sequence":
+                    this.CurrentContentViewModel = message.CurrentViewModel;
+                    break;
             }
-
         }
 
-        private MainMenu _CurrentContentViewModel = null;
-        public MainMenu CurrentContentViewModel
+
+        private ViewModelBase _CurrentContentViewModel = null;
+        public ViewModelBase CurrentContentViewModel
         {
             get => _CurrentContentViewModel;
-            set => Set<MainMenu>(nameof(CurrentContentViewModel), ref _CurrentContentViewModel, value);
+            set => Set<ViewModelBase>(nameof(CurrentContentViewModel), ref _CurrentContentViewModel, value);
 
         }
 
-        public ICommand OpenMainMenuCommand
+
+
+        public ICommand SelectCurrentMenuCommand
         {
-            get => new RelayCommand(() =>
+            get => new RelayCommand<ViewModelBase>((menu) =>
             {
-                this.IsOpenMenu = !this.IsOpenMenu;
+                this.CurrentContentViewModel = menu;
             });
         }
 
-
-        private bool _IsOpenMenu = false;
-        public bool IsOpenMenu
-        {
-            get => _IsOpenMenu;
-            set => Set<bool>(nameof(IsOpenMenu), ref _IsOpenMenu, value);
-        }
     }
 }

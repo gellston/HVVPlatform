@@ -15,7 +15,15 @@
              xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm">
     <DockPanel>
         <DockPanel.Resources>
-
+            <Point x:Key="emptyPoint">
+                <Point.X>
+                    0
+                </Point.X>
+                <Point.Y>
+                    0
+                </Point.Y>
+            </Point>
+            <Color x:Key="emptyColor"></Color>
             <converter:DiagramOjbectToFunctionConverter x:Key="DiagramOjbectToFunctionConverter"></converter:DiagramOjbectToFunctionConverter>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
             <converter:FunctionDiagramTypeCheckConverter x:Key="FunctionDiagramTypeCheckConverter"></converter:FunctionDiagramTypeCheckConverter>
@@ -24,7 +32,7 @@
                 <CollectionContainer Collection="{Binding Path=ConnectorCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=InputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
                 <CollectionContainer Collection="{Binding Path=OutputSnapSpotCollection, Source={x:Reference view}, Mode=OneWay}"></CollectionContainer>
-                <ListBoxItem DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" Canvas.Left="{Binding MidPoint.X, FallbackValue=0}" Canvas.Top="{Binding MidPoint.Y, FallbackValue=0}">
+                <ListBoxItem DataContext="{Binding Path=SelectedConnector, Source={x:Reference view}}" Canvas.Left="{Binding MidPoint.X, TargetNullValue=0}" Canvas.Top="{Binding MidPoint.Y, TargetNullValue=0}">
                     <Thumb Name="LineMidPoint" DataContext="{Binding Path=SelectedDiagram, Source={x:Reference view}}" DragDelta="LineMidPoint_DragDelta" Height="10" Width="10"
                            Visibility="{Binding ElementName=view, Path=ShowMidPoint, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Background="Transparent">
@@ -79,7 +87,7 @@
 
 
             <ListView ItemsSource="{Binding ElementName=view, Path=FunctionCollection}"
-                      SelectedItem="{Binding SelectedFunction}"
+                      SelectedItem="{Binding ElementName=view, Path=SelectedFunction}"
                       HorizontalContentAlignment="Stretch"
                       x:Name="FunctionSequenceListView"
                       PreviewMouseRightButtonDown="FunctionSequenceListView_PreviewMouseRightButtonDown"
@@ -240,7 +248,7 @@
                                         BorderBrush="Black"
                                         x:Name="FunctionBorder">
                                 <Border.Background>
-                                    <SolidColorBrush Color="{Binding Color}"></SolidColorBrush>
+                                    <SolidColorBrush Color="{Binding Color, TargetNullValue={StaticResource emptyColor}}"></SolidColorBrush>
                                 </Border.Background>
 
                             </Border>
@@ -260,20 +268,55 @@
 
                         </Grid>
                         <DataTemplate.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsCodeError}" Value="True"></Condition>
+                                    <Condition Binding="{Binding IsNodeError}" Value="False"></Condition>
+                                    
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="FunctionBorder" Storyboard.TargetProperty="Opacity" From="1" To="0.5" Duration="0:0:0.8" BeginTime="0:0:0" />
+                                            <DoubleAnimation Storyboard.TargetName="FunctionBorder" Storyboard.TargetProperty="Opacity" From="0.5" To="1" Duration="0:0:0.8" BeginTime="0:0:0.8" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </MultiDataTrigger.EnterActions>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsCodeError}" Value="False"></Condition>
+                                    <Condition Binding="{Binding IsNodeError}" Value="True"></Condition>
+
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="FunctionBorder" Storyboard.TargetProperty="Opacity" From="1" To="0.5" Duration="0:0:0.2" BeginTime="0:0:0" />
+                                            <DoubleAnimation Storyboard.TargetName="FunctionBorder" Storyboard.TargetProperty="Opacity" From="0.5" To="1" Duration="0:0:0.2" BeginTime="0:0:0.2" />
+                                        </Storyboard>
+
+                                    </BeginStoryboard>
+                                </MultiDataTrigger.EnterActions>
+                            </MultiDataTrigger>
                             <DataTrigger Binding="{Binding IsError}" Value="True">
                                 <Setter TargetName="FunctionBorder" Property="BorderBrush" Value="Red"></Setter>
                             </DataTrigger>
+  
                         </DataTemplate.Triggers>
                     </DataTemplate>
 
                     <DataTemplate DataType="{x:Type model:Connector}">
+                        <DataTemplate.Resources>
+                            
+                        </DataTemplate.Resources>
                         <Grid>
                             <Path StrokeThickness="9" Stroke="Black" x:Name="BackgroundLine" Panel.ZIndex="1">
                                 <Path.Data>
                                     <PathGeometry>
-                                        <PathFigure StartPoint="{Binding Start.Location.Value}">
-                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value}"
-                                                                    Point2="{Binding End.Location.Value}" />
+                                        <PathFigure StartPoint="{Binding Start.Location.Value, TargetNullValue={StaticResource emptyPoint}}">
+                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value, TargetNullValue={StaticResource emptyPoint}}"
+                                                                    Point2="{Binding End.Location.Value, TargetNullValue={StaticResource emptyPoint}}" />
 
                                         </PathFigure>
                                     </PathGeometry>
@@ -281,13 +324,13 @@
                             </Path>
                             <Path StrokeThickness="3" x:Name="Line"  Panel.ZIndex="1">
                                 <Path.Stroke>
-                                    <SolidColorBrush Color="{Binding Start.Parent.Color}"/>
+                                    <SolidColorBrush Color="{Binding Start.Parent.Color, TargetNullValue={StaticResource emptyColor}}"/>
                                 </Path.Stroke>
                                 <Path.Data>
                                     <PathGeometry>
-                                        <PathFigure StartPoint="{Binding Start.Location.Value}">
-                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value}"
-                                                                    Point2="{Binding End.Location.Value}" />
+                                        <PathFigure StartPoint="{Binding Start.Location.Value, TargetNullValue={StaticResource emptyPoint}}">
+                                            <QuadraticBezierSegment Point1="{Binding MidPoint.Value, TargetNullValue={StaticResource emptyPoint}}"
+                                                                    Point2="{Binding End.Location.Value, TargetNullValue={StaticResource emptyPoint}}" />
 
                                         </PathFigure>
                                     </PathGeometry>
@@ -295,6 +338,11 @@
                             </Path>
                         </Grid>
                         <DataTemplate.Triggers>
+
+                            <DataTrigger Binding="{Binding Start}" Value="{x:Null}">
+                                <Setter TargetName="Line" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="BackgroundLine" Property="Visibility" Value="Collapsed"></Setter>
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding End}" Value="{x:Null}">
                                 <Setter TargetName="Line" Property="Visibility" Value="Collapsed"/>
                                 <Setter TargetName="BackgroundLine" Property="Visibility" Value="Collapsed"></Setter>
@@ -381,17 +429,6 @@
 
             </ListBox>
         </ScrollViewer>
-
-
-
-
-
-
-
-
-
-
-
 
 
     </DockPanel>

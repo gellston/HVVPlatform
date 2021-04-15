@@ -14,6 +14,7 @@ namespace hv::v1 {
 	class number;
 	class string;
 
+	/*
 	template<class T> class array: public object {
 	private:
 
@@ -53,6 +54,8 @@ namespace hv::v1 {
 		std::string data_type();
 		std::string to_string()  override;
 	};
+
+	*/
 
 	class boolean : public object {
 	private:
@@ -103,7 +106,7 @@ namespace hv::v1 {
 
 	
 
-	
+	/*
 	template<> class array<double> : public object {
 	private:
 		
@@ -225,6 +228,8 @@ namespace hv::v1 {
 		std::string data_type();
 		std::string to_string()  override;
 	};
+	*/
+
 }
 
 #endif // ! HV_PRIMITIVE_OBJECT

@@ -8,17 +8,14 @@
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
              xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
-             xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:UC="clr-namespace:VisionTool.UC"
              xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
              xmlns:converter="clr-namespace:VisionTool.Converter"
-             xmlns:uc="clr-namespace:VisionTool.UC"
-             xmlns:viewmodel="clr-namespace:VisionTool.ViewModel"
-             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
+             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+             xmlns:syntaxEditor="http://schemas.actiprosoftware.com/winfx/xaml/syntaxeditor"
              mc:Ignorable="d" 
-             d:DesignHeight="1024" d:DesignWidth="1280">
+             d:DesignHeight="1024" d:DesignWidth="1280"
+             x:Name="view">
 
     <UserControl.Resources>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
@@ -26,77 +23,62 @@
         <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
         <converter:BooleanToVisibility x:Key="BooleanToVisibility"></converter:BooleanToVisibility>
         <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
+       
     </UserControl.Resources>
 
 
     <DockPanel>
-        <Grid Height="40"
-              DockPanel.Dock="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-                <ColumnDefinition Width="40"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
+        <dx:UniformStackPanel DockPanel.Dock="Top"
+                              Height="40" 
+                              ChildSpacing="0" 
+                              Orientation="Horizontal"
+                              Name="TopControlMenu"
+                              >
             <Button ToolTip="새 스크립트"
-                    Grid.Column="0"
+                    Width="40"
                     Command="{Binding NewScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Actions/New.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 열기"
-                    Grid.Column="1"
+                    Width="40"
                     Command="{Binding OpenScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Actions/Open2.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 저장"
-                    Grid.Column="2"
+                    Width="40"
                     Command="{Binding SaveScriptFileCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/save as.svg'}"></Image>
             </Button>
             <Button ToolTip="이미지 열기"
-                    Grid.Column="3"
+                    Width="40"
                     Command="{Binding OpenImageCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/LoadImage.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 실행"
-                    Grid.Column="4"
+                    Width="40"
                     Command="{Binding StartRunScriptCommand}"
                     IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Start.svg'}"></Image>
             </Button>
             <Button ToolTip="스크립트 연속 실행"
-                    Grid.Column="5"
+                    Width="40"
                     Command="{Binding ContinusStartRunScriptCommand}"
                     IsEnabled="{Binding IsRunningScript, Converter={StaticResource InverseBooleanConverter}}">
                 <Image Source="{dx:DXImage 'Images/Actions/Refresh2_32x32.png'}"></Image>
             </Button>
             <Button ToolTip="스크립트 정지"
-                    Grid.Column="6"
+                    Width="40"
                     Command="{Binding StopScriptCommand}"
                     IsEnabled="{Binding IsRunningScript}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
             </Button>
-            <dxe:FontEdit Grid.Column="7"
-                          Grid.ColumnSpan="2"
+            <dxe:FontEdit Width="40"
                           EditValue="Consolas"
                           Name="editFont"
                           ToolTip="스크립트 폰트"></dxe:FontEdit>
-            <dxe:ComboBoxEdit Grid.Column="9"
-                              SelectedItem="18"
+            <dxe:ComboBoxEdit SelectedItem="18"
                               Name="editFontSize"
+                              Width="40"
                               ToolTip="스크립트 폰트 사이즈">
                 <dxe:ComboBoxEditItem>10</dxe:ComboBoxEditItem>
                 <dxe:ComboBoxEditItem>11</dxe:ComboBoxEditItem>
@@ -116,12 +98,22 @@
                 <dxe:ComboBoxEditItem>25</dxe:ComboBoxEditItem>
                 <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
             </dxe:ComboBoxEdit>
-            <dxe:PopupColorEdit Name="fontColor" ToolTip="스크립트 폰트 컬러" Grid.Column="10" Grid.ColumnSpan="2" Color="Black"/>
-            <dxe:PopupColorEdit Name="imageViewerColor" ToolTip="이미지 뷰어 배경 색" Grid.Column="12" Grid.ColumnSpan="2" Color="#FF1F497D"/>
-            <dx:SimpleButton ToolTip="결과 출력 숨김 (실행 속도 향상)" ButtonKind="Toggle" IsChecked="{Binding IsShowingResult}" Grid.Column="14">
+            <dxe:PopupColorEdit Name="fontColor" 
+                                ToolTip="스크립트 폰트 컬러" 
+                                Width="40"
+                                Color="Black"/>
+            <dxe:PopupColorEdit Name="imageViewerColor" 
+                                ToolTip="이미지 뷰어 배경 색" 
+                                Width="40"
+                                Color="#FF1F497D"/>
+            <dx:SimpleButton ToolTip="결과 출력 숨김 (실행 속도 향상)"
+                             ButtonKind="Toggle" 
+                             IsChecked="{Binding IsShowingResult}" 
+                             Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Hide_Chart.svg'}"></Image>
             </dx:SimpleButton>
-        </Grid>
+        </dx:UniformStackPanel>
+
         
         <dxb:BarContainerControl ContainerType="Bottom" DockPanel.Dock="Bottom">
             <dxb:StatusBarControl Caption="Status Bar">
@@ -150,39 +142,68 @@
                                     <RowDefinition Height="27"></RowDefinition>
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
+   
                                 <dx:DXTabControl ItemsSource="{Binding ScriptCollection}"
-                                             SelectedItem="{Binding SelectedScript}"
-                                             Margin="0,3,0,0"
-                                             Grid.Row="0"
-                                             Grid.RowSpan="2">
+                                                 SelectedItem="{Binding SelectedScript}"
+                                                 Margin="0,3,0,0"
+                                                 Grid.Row="0"
+                                                 Grid.RowSpan="2"
+                                                 IsSynchronizedWithCurrentItem="True">
+                                    <dx:DXTabControl.ItemTemplate>
+                                        <ItemContainerTemplate>
+                                            <syntaxEditor:SyntaxEditor  Margin="5"
+                                                                        Text="{Binding ScriptContent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                        IsLineNumberMarginVisible="True"
+                                                                        IsDefaultContextMenuEnabled="True"
+                                                                        IsDelimiterAutoCompleteEnabled="True"
+                                                                        IsDelimiterHighlightingEnabled="True"
+                                                                        IsCurrentLineHighlightingEnabled="True"
+                                                                        IsCollapsibleRegionHighlightingEnabled="True"
+                                                                        IsTextDataBindingEnabled="True"
+                                                                        HasHorizontalSplit="False"
+                                                                        CanSplitHorizontally="False"
+                                                                        ZoomModesAllowed="Mouse"
+                                                                        FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
+                                                                        FontFamily="{Binding ElementName=editFont, Path=EditValue}"
+                                                                        IsSearchResultHighlightingEnabled="True"
+                                                                        SelectionCollapsesToAnchor="True"
+                                                                        SelectionCollapsesOnCopy="True"
+                                                                        x:Name="CodeEditor">
+                                                <syntaxEditor:SyntaxEditor.Foreground>
+                                                    <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
+                                                </syntaxEditor:SyntaxEditor.Foreground>
+                                                <syntaxEditor:EditorDocument>
+                                                    <syntaxEditor:EditorDocument.Language>
+                                                        <syntaxEditor:JavaScriptSyntaxLanguage></syntaxEditor:JavaScriptSyntaxLanguage>
+                                                    </syntaxEditor:EditorDocument.Language>
+                                                </syntaxEditor:EditorDocument>
+                                                <mvvm:Interaction.Behaviors>
+                                                    <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding ElementName=view, Path=DataContext.SaveScriptFileCommand}"></mvvm:KeyToCommand>
+                                                </mvvm:Interaction.Behaviors>
+                                            </syntaxEditor:SyntaxEditor>
+                                        </ItemContainerTemplate>
+                                    </dx:DXTabControl.ItemTemplate>
+                                    
                                     <dx:DXTabControl.ItemContainerStyle>
                                         <Style TargetType="dx:DXTabItem">
                                             <Setter Property="Header" Value="{Binding FileName}"/>
                                             <Setter Property="ToolTip" Value="{Binding FilePath}"/>
-
+                                            <Setter Property="CloseCommand" Value="{Binding ElementName=view, Path=DataContext.DeleteScriptItemCommand}"/>
+                                            <Setter Property="CloseCommandParameter" Value="{Binding}"/>
                                         </Style>
                                     </dx:DXTabControl.ItemContainerStyle>
 
                                     <dx:DXTabControl.View>
                                         <dx:TabControlStretchView HideButtonShowMode="InAllTabs "
-                                                                  NewButtonShowMode="NoWhere"/>
+                                                                  NewButtonShowMode="NoWhere"
+                                                                  >
+                                            
+                                        </dx:TabControlStretchView>
                                     </dx:DXTabControl.View>
 
                                 </dx:DXTabControl>
-                                <UC:BindableAvalonEditor ShowLineNumbers="True"
-                                                         Text="{Binding SelectedScript.ScriptContent}"
-                                                         SyntaxHighlighting="JavaScript"
-                                                         FontFamily="{Binding ElementName=editFont, Path=EditValue}"
-                                                         FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
-                                                         Grid.Row="1"
-                                                         Margin="5">
-                                    <mvvm:Interaction.Behaviors>
-                                        <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveScriptFileCommand}"></mvvm:KeyToCommand>
-                                    </mvvm:Interaction.Behaviors>
-                                    <UC:BindableAvalonEditor.Foreground>
-                                        <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
-                                    </UC:BindableAvalonEditor.Foreground>
-                                </UC:BindableAvalonEditor>
+                                
+                            
                             </Grid>
 
                         </dxdo:LayoutPanel>
@@ -197,7 +218,7 @@
                                               AllowClose="False"
                                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                                <uc:ImageCanvasViewer Image="{Binding TrackingImagePresenter, Mode=OneWay}"
+                                <!--<uc:ImageCanvasViewer Image="{Binding TrackingImagePresenter, Mode=OneWay}"
                                                       Zoom="1"
                                                       ZoomMin="0.2"
                                                       ZoomMax="5"
@@ -205,7 +226,7 @@
                                     <uc:ImageCanvasViewer.Background>
                                         <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
                                     </uc:ImageCanvasViewer.Background>
-                                </uc:ImageCanvasViewer>
+                                </uc:ImageCanvasViewer>-->
 
                             </dxdo:LayoutPanel>
                             <dxdo:LayoutPanel Caption="이미지 상세정보"
@@ -214,7 +235,7 @@
                                               AllowClose="False"
                                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden">
-                                <uc:ImageCanvasViewer Image="{Binding DetailImagePresenter, Mode=OneWay}"
+                                <!--<uc:ImageCanvasViewer Image="{Binding DetailImagePresenter, Mode=OneWay}"
                                                       DrawObjectsCollection="{Binding DetailImageDrawCollection, Mode=OneWay}"
                                                       Zoom="1"
                                                       ZoomMin="0.2"
@@ -223,7 +244,7 @@
                                     <uc:ImageCanvasViewer.Background>
                                         <SolidColorBrush Color="{Binding ElementName=imageViewerColor, Path=EditValue}"></SolidColorBrush>
                                     </uc:ImageCanvasViewer.Background>
-                                </uc:ImageCanvasViewer>
+                                </uc:ImageCanvasViewer>-->
                             </dxdo:LayoutPanel>
                         </dxdo:TabbedGroup>
                     </dxdo:LayoutGroup>

@@ -30,8 +30,9 @@ namespace Model
 
         public string DiagramScript { get; set; }
 
-        [JsonIgnore]
-        [IgnoreDataMember]
+        public string DiagramCategory { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
         public ImageSource DiagramImage {
             get;set;
         }

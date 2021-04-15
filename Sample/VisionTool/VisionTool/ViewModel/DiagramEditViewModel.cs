@@ -11,6 +11,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Model;
+using VisionTool.Message;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel
@@ -35,10 +36,10 @@ namespace VisionTool.ViewModel
             
 
 
-            this.scriptControlService.SetCheckRunning(data => this.IsRunningScript = data);
-            this.scriptControlService.SetCheckCurrentFPS(data => this.CurrentFPS = data);
-            this.scriptControlService.SetCheckCurrentExecutionTime(data => this.CurrentExecutionTime = data);
-            this.scriptControlService.SetCheckCurrentErrorLine(data => this.CurrentErrorLine = data);
+            this.scriptControlService.SetCallbackRunning(data => this.IsRunningScript = data);
+            this.scriptControlService.SetCallbackCurrentFPS(data => this.CurrentFPS = data);
+            this.scriptControlService.SetCallbackCurrentExecutionTime(data => this.CurrentExecutionTime = data);
+            this.scriptControlService.SetCallbackCurrentErrorLine(data => this.CurrentErrorLine = data);
 
             this.LogCollection = this.scriptControlService.ScriptLogCollection;
             this.GlobalCollection = this.scriptControlService.GlobalCollection;
@@ -49,7 +50,21 @@ namespace VisionTool.ViewModel
             this.InputSnapSpotCollection = this.sequenceControlService.InputSnapSpotCollection;
             this.OutputSnapSpotCollection = this.sequenceControlService.OutputSnapSpotCollection;
             this.ConnectorCollection = this.sequenceControlService.ConnectorCollection;
+
+
+            this.MessengerInstance.Register<AssociationModeMessage>(this, FileAssociationCallback);
         }
+
+        private void FileAssociationCallback(AssociationModeMessage message)
+        {
+            if (message.AssociationMode == "Sequence")
+            {
+                this.sequenceControlService.LoadSequenceFromPath(message.FilePath);
+                this.sequenceControlService.FunctionVersionCheck(this.diagramControlService.DiagramConfigCollection);
+            }
+        }
+
+
 
 
         private ObservableCollection<Function> _FunctionCollection = null;
@@ -93,9 +108,7 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
                 if (DialogHelper.ShowConfirmMessage("다이어그램 시퀀스를 초기화 하시겠습니까?") == false) return;
-                this.FunctionCollection.Clear();
-                this.InputSnapSpotCollection.Clear();
-                this.OutputSnapSpotCollection.Clear();
+                this.sequenceControlService.ClearSequence();
             });
         }
 
@@ -104,7 +117,14 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                
+                try
+                {
+                    this.sequenceControlService.LoadSequenceFromPath();
+                    this.sequenceControlService.FunctionVersionCheck(this.diagramControlService.DiagramConfigCollection);
+                }catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             });
         }
 
@@ -112,17 +132,25 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-
+                try
+                {
+                    this.sequenceControlService.SaveSequence();
+                }catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             });
         }
 
         public ICommand DeleteDiagramCommand
         {
-            get => new RelayCommand(() =>
+            get => new RelayCommand<ICommand>((command) =>
             {
                 var diagram = this.SelectedDiagramObject;
 
                 this.sequenceControlService.DeleteDiagram(diagram);
+
+                command.Execute(null);
                 
             });
         }
@@ -276,7 +304,6 @@ namespace VisionTool.ViewModel
             set => Set(ref _SelectedDiagramObject, value);
         }
 
-        //LogCollection
         private ObservableCollection<Log> _LogCollection = null;
         public ObservableCollection<Log> LogCollection
         {

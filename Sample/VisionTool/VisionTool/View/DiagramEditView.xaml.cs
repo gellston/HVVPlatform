@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace VisionTool.View
 {
     /// <summary>
@@ -22,7 +23,9 @@ namespace VisionTool.View
         {
             InitializeComponent();
 
-            
+
+
+
         }
 
     }

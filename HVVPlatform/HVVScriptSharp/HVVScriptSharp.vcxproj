@@ -138,7 +138,6 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="secure_macro.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,6 @@
 #include <data_type.h>
 #include <exception.h>
 #include <native_module.hpp>
-#include "secure_macro.h"
 
 
 // Managed Header
@@ -22,29 +21,9 @@
 using namespace System::Reflection;
 using namespace System::Diagnostics;
 
-namespace hv::v1 {
-
-	class pimpl_hvvscript_casting_container {
-	private:
-		std::map<std::string, int> _converter;
-	public:
-		pimpl_hvvscript_casting_container() {
-			register_casting_type(point);
-			register_casting_type(image);
-			register_casting_type(string);
-			register_casting_type(number);
-			register_casting_type(boolean);
-		}
-
-		std::map<std::string, int>& converter() {
-			return _converter;
-		}
-	};
-}
 
 
-HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()),
-									_casting_pimpl(new hv::v1::pimpl_hvvscript_casting_container()){
+HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()){
 	
 	this->EventTraceCallback = gcnew HV::V1::DelegateTrace(this, &HV::V1::Interpreter::Trace);
 	this->Handle = GCHandle::Alloc(this->EventTraceCallback);
@@ -142,7 +121,7 @@ List<String^>^ HV::V1::Interpreter::GlobalNames::get() {
 Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects::get() {
 	auto global_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
 	auto globals = this->_instance->global_objects();
-	auto casting = this->_casting_pimpl->converter();
+
 
 	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
 
@@ -190,7 +169,6 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 	auto external_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
 
 	auto externals = this->_instance->external_objects();
-	auto casting = this->_casting_pimpl->converter();
 
 	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
 

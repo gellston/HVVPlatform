@@ -96,7 +96,7 @@ std::string hv::v1::string::to_string() {
 
 // array
 // double array
-
+/*
 hv::v1::array<double>::array(std::string name, std::vector<double> & data) : object(name, "array"){
 	
 	this->__data = data;
@@ -386,4 +386,5 @@ std::string hv::v1::map<bool>::to_string() {
 	temp += "]\n";
 	return temp;
 
-}
+}*/
+

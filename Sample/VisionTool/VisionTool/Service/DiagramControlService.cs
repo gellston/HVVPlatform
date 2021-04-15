@@ -23,6 +23,16 @@ namespace VisionTool.Service
         private readonly SettingConfigService settingConfigService;
         private Action<string> currentDiagramEditDate;
 
+        private Action<string> currentDiagramName;
+        private Action<string> currentDiagramComment;
+        private Action<Color> currentDiagramColor;
+        private Action<int> currentDiagramVersion;
+        private Action<ImageSource> currentDiagramImage = null;
+        private Action<string> currentDiagramImagePath;
+        private Action<string> currentDiagramScript;
+        private Action<string> currentDiagramWriter;
+        private Action<string> currentDiagramCategory;
+
         public DiagramControlService(SettingConfigService _settingConfigService)
         {
 
@@ -37,6 +47,7 @@ namespace VisionTool.Service
 
 
             this.DiagramDataType.Add("number");
+            
 
 
             this.DiagramPropertyDataType.Add(new EmptyDiagramProperty());
@@ -44,52 +55,206 @@ namespace VisionTool.Service
             this.DiagramPropertyDataType.Add(new ThresholdDiagramProperty());
 
 
+
+
+            this.DiagramCategory.Add("Filter");
+            this.DiagramCategory.Add("Binarization");
+
+
             this.UpdateDiagramInfo();
         }
 
 
-        public void SetCheckDiagramEditDate(Action<string> check)
+        public void SetCallbackDiagramEditDate(Action<string> check)
         {
             this.currentDiagramEditDate += check;
 
         }
 
-
-
-
-        public InputSnapSpot CreateInputSnapSpot()
+        public void SetCallbackDiagramComment(Action<string> check)
         {
-            return new InputSnapSpot("", "");
+            this.currentDiagramComment += check;
+
+        }
+        public void SetCallbackDiagramScript(Action<string> check)
+        {
+            this.currentDiagramScript += check;
+
         }
 
-        public InputSnapSpot CreateInputSnapSpot(BaseDiagramProperty property)
+
+        public void SetCallbackDiagramVersion(Action<int> check)
         {
+            this.currentDiagramVersion += check;
+        }
+
+        public void SetCallbackDiagramColor(Action<Color> check)
+        {
+            this.currentDiagramColor += check;
+        }
+
+        public void SetCallbackDiagramImage(Action<ImageSource> check)
+        {
+            this.currentDiagramImage += check;
+        }
+        
+        public void SetCallbackDiagramName(Action<string> check)
+        {
+            this.currentDiagramName += check;
+        }
+
+        public void SetCallbackDiagramImagePath(Action<string> check)
+        {
+            this.currentDiagramImagePath += check;
+        }
+
+        public void SetCallbackDiagramWriter(Action<string> check)
+        {
+            this.currentDiagramWriter += check;
+        }
+
+        public void SetCallbackDiagramCategory(Action<string> check)
+        {
+            this.currentDiagramCategory += check;
+        }
+
+        
+
+
+        private InputSnapSpot CreateInputSnapSpot(BaseDiagramProperty property)
+        {
+            if (property == null) return null;
+            var cloneProperty = (BaseDiagramProperty)property.Clone();
+
             return new InputSnapSpot("", "")
             {
-                DiagramProperty = property
+                DiagramProperty = cloneProperty
             };
         }
 
-        public OutputSnapSpot CreateOutputSnapSpot()
+        private OutputSnapSpot CreateOutputSnapSpot()
         {
             return new OutputSnapSpot("", "");
         }
 
-
-        public BaseDiagramProperty CreateFunctionProperty(string name)
+        public void ImportDiagram()
         {
             try
             {
-                Type type = Type.GetType(name);
-                return (BaseDiagramProperty)Activator.CreateInstance(type);
+                var path = DialogHelper.OpenFile("diagram file (.diagram)|*.diagram");
+                var fileName = Path.GetFileName(path);
+
+                var targetPath = settingConfigService.ApplicationSetting.DiagramPath + fileName;
+
+                if (File.Exists(targetPath) == true)
+                {
+                    if (DialogHelper.ShowConfirmMessage("다이어그램이 존재합니다. 덮어쓰시겠습니까?") == false)
+                    {
+                        return;
+                    }
+
+                    
+                }
+                File.Copy(path, targetPath, true);
+                this.UpdateDiagramInfo();
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        public void DeleteDiagram(DiagramConfig config)
+        {
+            try
+            {
+                if (config == null) return;
+                var diagramPath = this.settingConfigService.ApplicationSetting.DiagramPath + config.DiagramName + ".diagram";
+                File.Delete(diagramPath);
+
+
+                
+            }catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
                 throw e;
             }
+        }
+
+        public void ImportDiagram(string path)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(path);
+
+                var targetPath = settingConfigService.ApplicationSetting.DiagramPath + fileName;
+
+                if(File.Exists(targetPath) == true)
+                {
+                    if(DialogHelper.ShowConfirmMessage("다이어그램이 존재합니다. 덮어쓰시겠습니까?") == false)
+                    {
+                        return;
+                    }
+
+                    
+                }
+                File.Copy(path, targetPath, true);
+                this.UpdateDiagramInfo();
+
+            }catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+
+        public void AddInputSnapSpot(BaseDiagramProperty property)
+        {
+            var input = this.CreateInputSnapSpot(property);
+            if (input == null) return;
+            this.InputSnapSpotCollection.Add(input);
 
         }
 
+
+        public void AddOutputSnapSpot()
+        {
+            this.OutputSnapSpotCollection.Add(this.CreateOutputSnapSpot());
+        }
+
+        public void AddImageFromPath()
+        {
+
+            try
+            {
+                var path = DialogHelper.OpenFile("Image File (.jpg)|*.jpg");
+                var image = Helper.ImageHelper.LoadImageFromPath(path, 100, 100);
+                this.currentDiagramImage.Invoke(image);
+                this.currentDiagramImagePath.Invoke(path);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        public void RemoveOutputSnapSpot(OutputSnapSpot output)
+        {
+            if (output != null)
+                this.OutputSnapSpotCollection.Remove(output);
+        }
+        public void RemoveInputSnapSpot(InputSnapSpot input)
+        {
+            if (input != null)
+                this.InputSnapSpotCollection.Remove(input);
+        }
+
+        public void RemovePreviewFunctionProperty(BaseDiagramProperty property)
+        {
+            if (property != null)
+                this.PreviewFunctionPropertyCollection.Remove(property);
+        }
 
 
 
@@ -130,6 +295,40 @@ namespace VisionTool.Service
             {
                 _DiagramPropertyDataType ??= new ObservableCollection<BaseDiagramProperty>();
                 return _DiagramPropertyDataType;
+            }
+        }
+
+
+        private ObservableCollection<string> _DiagramCategory = null;
+        public ObservableCollection<string> DiagramCategory
+        {
+            get
+            {
+                _DiagramCategory ??= new ObservableCollection<string>();
+                return _DiagramCategory;
+            }
+        }
+
+
+
+
+        private ObservableCollection<InputSnapSpot> _InputSnapSpotCollection = null;
+        public ObservableCollection<InputSnapSpot> InputSnapSpotCollection
+        {
+            get
+            {
+                _InputSnapSpotCollection ??= new ObservableCollection<InputSnapSpot>();
+                return _InputSnapSpotCollection;
+            }
+        }
+
+        private ObservableCollection<OutputSnapSpot> _OutputSnapSpotCollection = null;
+        public ObservableCollection<OutputSnapSpot> OutputSnapSpotCollection
+        {
+            get
+            {
+                _OutputSnapSpotCollection ??= new ObservableCollection<OutputSnapSpot>();
+                return _OutputSnapSpotCollection;
             }
         }
 
@@ -185,47 +384,83 @@ namespace VisionTool.Service
             this.PreviewInputSnapSpotCollection.Clear();
             this.PreviewOutputSnapSpotCollection.Clear();
             this.PreviewFunctionPropertyCollection.Clear();
-            
+
+
+
+            this.currentDiagramColor.Invoke(Color.FromRgb(255, 255, 255));
+            this.currentDiagramComment.Invoke("");
+            this.currentDiagramVersion.Invoke(1);
+            this.currentDiagramEditDate.Invoke("");
+            this.currentDiagramName.Invoke("");
+            this.currentDiagramImage.Invoke(null);
+
+
+            this.InputSnapSpotCollection.Clear();
+            this.OutputSnapSpotCollection.Clear();
+
+        }
+
+        public void LoadFunctionInfoFromConfig(DiagramConfig config)
+        {
+
+            this.currentDiagramComment.Invoke(config.DiagramComment);
+            this.currentDiagramImage.Invoke(config.DiagramImage);
+            this.currentDiagramEditDate.Invoke(config.DiagramModifyDate);
+            this.currentDiagramImagePath.Invoke(this.settingConfigService.ApplicationSetting.DiagramImagePath +
+                                                config.DiagramImageName);
+
+            this.currentDiagramName.Invoke(config.DiagramName);
+            this.currentDiagramScript.Invoke(config.DiagramScript);
+            this.currentDiagramWriter.Invoke(config.DiagramWriter);
+            this.currentDiagramVersion.Invoke(config.DiagramVersion);
+            this.currentDiagramColor.Invoke(config.FunctionInfo.Color);
+            this.currentDiagramCategory.Invoke(config.DiagramCategory);
+            this.InputSnapSpotCollection.Clear();
+            this.OutputSnapSpotCollection.Clear();
+
+
+            this.InputSnapSpotCollection.AddRange(config.InputSnapSpotCollection);
+            this.OutputSnapSpotCollection.AddRange(config.OutputSnapSpotCollection);
+
         }
 
 
-        public void RenderFunction(ObservableCollection<InputSnapSpot> _inputSnapSpot,
-                                   ObservableCollection<OutputSnapSpot> _outputSnapSpot,
-                                   double _canvasWidth,
-                                   double _canvasHeight,
+
+
+        public void RenderFunction(double _canvasWidth,
                                    string _diagramName,
                                    Color _diagramColor)
         {
 
 
 
-            if ((_inputSnapSpot.Count() + _outputSnapSpot.Count() + PreviewFunctionPropertyCollection.Count()) == 0)
+            if ((this.InputSnapSpotCollection.Count() + this.OutputSnapSpotCollection.Count() + PreviewFunctionPropertyCollection.Count()) == 0)
                 throw new Exception("Node and property is not exists");
 
             //if (_outputSnapSpot.Count() == 0)
             //    throw new Exception("Output node is not exists");
 
 
-            if (_inputSnapSpot.ToList().Exists(x => x.Name.Length == 0 || x.DataType.Length == 0))
+            if (this.InputSnapSpotCollection.ToList().Exists(x => x.Name.Length == 0 || x.DataType.Length == 0))
                 throw new Exception("Empty input node exists");
 
-            if (_outputSnapSpot.ToList().Exists(x => x.Name.Length == 0 || x.DataType.Length == 0))
+            if (this.OutputSnapSpotCollection.ToList().Exists(x => x.Name.Length == 0 || x.DataType.Length == 0))
                 throw new Exception("Empty output node exists");
 
 
-            if (this.DiagramConfigCollection.ToList().Exists(x => x.DiagramName == _diagramName))
-                throw new Exception("Diagram name is already exists");
+            //if (this.DiagramConfigCollection.ToList().Exists(x => x.DiagramName == _diagramName))
+            //    throw new Exception("Diagram name is already exists");
 
             if (_diagramName.Length == 0)
                 throw new Exception("Name is not exists");
 
 
 
-            var inputNodeNames = _inputSnapSpot.Select(x => x.Name).ToList();
+            var inputNodeNames = this.InputSnapSpotCollection.Select(x => x.Name).ToList();
             var distinctInputNodeNames = inputNodeNames.Distinct().ToList();
 
 
-            var outputNodeNames = _outputSnapSpot.Select(x => x.Name).ToList();
+            var outputNodeNames = this.OutputSnapSpotCollection.Select(x => x.Name).ToList();
             var distinctOutputNodeNames = outputNodeNames.Distinct().ToList();
 
 
@@ -284,7 +519,7 @@ namespace VisionTool.Service
 
             int count = 0;
             double lastOffsetY = 0;
-            foreach(var inputSnapSpot in _inputSnapSpot)
+            foreach(var inputSnapSpot in this.InputSnapSpotCollection)
             {
                 count++;
                 inputSnapSpot.Parent = function;
@@ -294,7 +529,7 @@ namespace VisionTool.Service
             }
             lastOffsetY += 10;
             count = 0;
-            foreach(var outputSnapSpot in _outputSnapSpot)
+            foreach(var outputSnapSpot in this.OutputSnapSpotCollection)
             {
                 count++;
                 outputSnapSpot.Parent = function;
@@ -312,8 +547,8 @@ namespace VisionTool.Service
             this.PreviewFunctionCollection.Clear();
 
 
-            this.PreviewInputSnapSpotCollection.AddRange(_inputSnapSpot);
-            this.PreviewOutputSnapSpotCollection.AddRange(_outputSnapSpot);
+            this.PreviewInputSnapSpotCollection.AddRange(this.InputSnapSpotCollection);
+            this.PreviewOutputSnapSpotCollection.AddRange(this.OutputSnapSpotCollection);
 
             function.Location.X = _canvasWidth * 0.3;
             function.Location.Y = 10;
@@ -358,7 +593,7 @@ namespace VisionTool.Service
             {
                 try
                 {
-                    var jsonContent = File.ReadAllText(config);
+                    var jsonContent = File.ReadAllText(config, Encoding.UTF8);
                     var module = JsonConvert.DeserializeObject<DiagramConfig>(jsonContent);
 
 
@@ -390,31 +625,41 @@ namespace VisionTool.Service
             }
         }
 
-
+        public bool CheckDiagramExists(string _diagramName)
+        {
+            if (this.DiagramConfigCollection.ToList().Exists(x => x.DiagramName == _diagramName) == true)
+                return true;
+            else return false;
+        }
 
         public void CreateDiagramPackage(string _diagramName,
                                          string _diagramWriter,
                                          int _diagramVersion,
                                          string _diagramComment,
                                          string _diagramScript,
-                                         Function _function,
-                                         ObservableCollection<InputSnapSpot> _inputCollection,
-                                         ObservableCollection<OutputSnapSpot> _outputCollection,
-                                         ObservableCollection<BaseDiagramProperty> _functionPropertyCollection,
+                                         string _diagramCategory,
+                                         //Function _function,
+                                         //ObservableCollection<InputSnapSpot> _inputCollection,
+                                         //ObservableCollection<OutputSnapSpot> _outputCollection,
                                          string _diagramImagePath,
                                          double _diagramWidth,
-                                         double _diagramHeight)
+                                         double _diagramHeight,
+                                         bool _isOverwrite = false)
         {
             try
             {
                 if (_diagramName.Length == 0) throw new Exception("Diagram is not correct");
                 //if (_diagramModifyDate.Length == 0) throw new Exception("Diagram modification date is not correct");
                 if (_diagramVersion < 1) throw new Exception("Diagram version is not correct");
-                if (_function == null) throw new Exception("Function info is not correct");
-
+                if (this.PreviewFunctionCollection.Count == 0) throw new Exception("Function info is not correct");
+                if (_diagramCategory == null) throw new Exception("Diagram category is not set");
+                if (_diagramCategory.Length == 0) throw new Exception("Diagram category is not set");
 
                 var regexItem = new Regex("^[a-zA-Z0-9 ]*$");
                 if (regexItem.IsMatch(_diagramName) == false) new Exception("It contains special characters in diagram name");
+
+                if (this.DiagramConfigCollection.ToList().Exists(x => x.DiagramName == _diagramName) && _isOverwrite == false)
+                    throw new Exception("Diagram name is already exists");
 
 
                 FileSystemHelper.DeleteFiles(this.settingConfigService.TempDiagramPackagePath);
@@ -442,10 +687,11 @@ namespace VisionTool.Service
                     DiagramName = _diagramName,
                     DiagramWriter = _diagramWriter,
                     DiagramModifyDate = currentDate,
+                    DiagramCategory = _diagramCategory,
                     DiagramImageName = _diagramName + ".jpg",
-                    FunctionInfo = _function,
-                    InputSnapSpotCollection = _inputCollection.ToList(),
-                    OutputSnapSpotCollection = _outputCollection.ToList(),
+                    FunctionInfo = this.PreviewFunctionCollection[0],
+                    InputSnapSpotCollection = this.PreviewInputSnapSpotCollection.ToList(),
+                    OutputSnapSpotCollection = this.PreviewOutputSnapSpotCollection.ToList(),
                     DiagramScript = _diagramScript
                     //FunctionProperties = _functionPropertyCollection.ToList()
 
@@ -463,7 +709,7 @@ namespace VisionTool.Service
 
                 var targetConfigPath = this.settingConfigService.TempDiagramPackagePath + _diagramName + ".json";
                 string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                 File.WriteAllText(targetConfigPath, jsonString);
+                 File.WriteAllText(targetConfigPath, jsonString, Encoding.UTF8);
 
 
                 var targetZipPath = this.settingConfigService.ApplicationSetting.DiagramPath + _diagramName + ".diagram";

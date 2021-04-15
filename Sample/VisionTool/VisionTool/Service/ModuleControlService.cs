@@ -6,7 +6,10 @@ using System.IO;
 using System.Text.RegularExpressions;
 using VisionTool.Helper;
 using Model;
-
+using DevExpress.Xpf.CodeView;
+using System.Linq;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace VisionTool.Service
 {
@@ -14,6 +17,12 @@ namespace VisionTool.Service
     {
 
         private readonly SettingConfigService settingConfigService;
+        private Action<string> currentModuleComment;
+        private Action<string> currentModuleMainPath;
+        private Action<int> currentModuleVersion;
+        private Action<string> currentModuleModifyDate;
+        private Action<string> currentModuleName;
+    
 
         public ModuleControlService(SettingConfigService _settingConfigService)
         {
@@ -23,32 +32,203 @@ namespace VisionTool.Service
             this.UpdateModuleInfo();
         }
 
+        public void SetCallbackCurrentModuleVersion(Action<int> check)
+        {
+            this.currentModuleVersion += check;
+        }
 
-        private ObservableCollection<ModuleConfig> _ModuleConfigCollection = null;
+        public void SetCallbackCurrentModuleName(Action<string> check)
+        {
+            this.currentModuleName += check;
+        }
+
+        public void SetCallbackCurrentModuleModifyDate(Action<string> check)
+        {
+            this.currentModuleModifyDate += check;
+        }
+
+        public void SetCallbackCurrentModuleMainPath(Action<string> check)
+        {
+            this.currentModuleMainPath += check;
+        }
+        public void SetCallbackCurrentModuleComment(Action<string> check)
+        {
+            this.currentModuleComment += check;
+        }
+
+
+
+        private ObservableCollection<ModuleConfig> _ModuleConfigCollection = new ObservableCollection<ModuleConfig>();
         public ObservableCollection<ModuleConfig> ModuleConfigCollection
         {
             get
             {
-                _ModuleConfigCollection ??= new ObservableCollection<ModuleConfig>();
                 return _ModuleConfigCollection;
             }
         }
 
-        private ObservableCollection<Module> _ModuleCollection = null;
+        private ObservableCollection<DependentDLL> _DependentDLLCollection = new ObservableCollection<DependentDLL>();
+        public ObservableCollection<DependentDLL> DependentDLLCollection
+        {
+            get
+            {
+                return _DependentDLLCollection;
+            }
+
+        }
+
+
+
+        private ObservableCollection<Module> _ModuleCollection = new ObservableCollection<Module>();
         public ObservableCollection<Module> ModuleCollection
         {
             get
             {
-                _ModuleCollection ??= new ObservableCollection<Module>();
                 return _ModuleCollection;
             }
         }
-        public string GetLibraryFromPath()
-        {
-            var maindll = DialogHelper.OpenFile("library file (.dll)|*.dll");
-            if (maindll.Length == 0) throw new Exception("File is not selected");
 
-            return maindll;
+        public void LoadModuleInfoFromConfig(ModuleConfig config)
+        {
+
+
+            try
+            {
+                if (config == null) return;
+                
+                FileSystemHelper.DeleteFiles(this.settingConfigService.TempModuleModPackagePath);
+               
+
+                var diagramPath = this.settingConfigService.ApplicationSetting.ModulePath + config.ModuleName + ".module";
+                FileSystemHelper.UnZipFile(diagramPath,
+                                           this.settingConfigService.TempModuleModPackagePath,
+                                           this.settingConfigService.SecurityPassword);
+
+                
+
+                this.currentModuleModifyDate.Invoke(config.ModuleModifyDate);
+                this.currentModuleComment.Invoke(config.ModuleComment);
+                this.currentModuleMainPath.Invoke(this.settingConfigService.TempModuleModPackagePath + config.ModuleName + ".dll");
+                this.currentModuleName.Invoke(config.ModuleName);
+                this.currentModuleVersion.Invoke(config.ModuleVersion);
+
+                var files = Directory.GetFiles(this.settingConfigService.TempModuleModPackagePath + "dependent" + Path.DirectorySeparatorChar).ToList();
+                var dependentDLLList = new List<DependentDLL>();
+                foreach(var file in files)
+                {
+                    var dependentLibrary = new DependentDLL()
+                    {
+                        FilePath = file,
+                        FileName = Path.GetFileName(file)
+                    };
+                    dependentDLLList.Add(dependentLibrary);
+                }
+
+                this.DependentDLLCollection.Clear();
+                this.DependentDLLCollection.AddRange(dependentDLLList);
+
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+           
+            
+
+        }
+
+
+        public void ImportModule()
+        {
+            try
+            {
+                var path = DialogHelper.OpenFile("module file (.module)|*.module");
+                var fileName = Path.GetFileName(path);
+
+                var targetPath = settingConfigService.ApplicationSetting.ModulePath + fileName;
+
+                if (File.Exists(targetPath) == true)
+                {
+                    if (DialogHelper.ShowConfirmMessage("모듈이 존재합니다. 덮어쓰시겠습니까?") == false)
+                    {
+                        return;
+                    }
+
+                    
+                }
+                File.Copy(path, targetPath, true);
+                this.UpdateModuleInfo();
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        public void ImportModule(string path)
+        {
+            try
+            {
+                var fileName = Path.GetFileName(path);
+
+                var targetPath = settingConfigService.ApplicationSetting.ModulePath + fileName;
+
+                if (File.Exists(targetPath) == true)
+                {
+                    if (DialogHelper.ShowConfirmMessage("모듈이 존재합니다. 덮어쓰시겠습니까?") == false)
+                    {
+                        return;
+                    }
+
+                    
+                }
+                File.Copy(path, targetPath, true);
+                this.UpdateModuleInfo();
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+        }
+
+        public void DeleteDeleteDependentDLL(DependentDLL dll)
+        {
+            if (dll == null) return;
+            this.DependentDLLCollection.Remove(dll);
+        }
+
+
+        public void LoadLibraryFromPath()
+        {
+
+            try
+            {
+                var maindll = DialogHelper.OpenFile("library file (.dll)|*.dll");
+                if (maindll.Length == 0) throw new Exception("File is not selected");
+
+                this.currentModuleMainPath.Invoke(maindll);
+
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        public void ClearMoudle()
+        {
+            this.currentModuleComment.Invoke("");
+            this.currentModuleMainPath.Invoke("");
+            this.currentModuleModifyDate.Invoke("");
+            this.currentModuleName.Invoke("");
+            this.currentModuleVersion.Invoke(1);
+           
+
+
+            this.DependentDLLCollection.Clear();
         }
 
         public void DeleteModule(Module module)
@@ -71,23 +251,24 @@ namespace VisionTool.Service
         }
 
 
-        public ObservableCollection<DependentDLL> Get3rdLibrariesFromPath()
+        public void Load3rdLibrariesFromPath()
         {
             try
             {
-                ObservableCollection<DependentDLL> thridlibrary = new ObservableCollection<DependentDLL>();
+                this.DependentDLLCollection.Clear();
+                ObservableCollection<DependentDLL> thirdlibrary = new ObservableCollection<DependentDLL>();
                 var dependentlibrary = DialogHelper.OpenFiles("library files (.dll)|*.dll");
                 
                 foreach(var library in dependentlibrary)
                 {
-                    thridlibrary.Add(new DependentDLL()
+                    thirdlibrary.Add(new DependentDLL()
                     {
                         FileName = Path.GetFileName(library),
                         FilePath = library
                     });
                 }
 
-                return thridlibrary;
+                this.DependentDLLCollection.AddRange(thirdlibrary);
             }
             catch(Exception e)
             {
@@ -162,14 +343,19 @@ namespace VisionTool.Service
         }
 
 
-
+        public bool CheckModuleExists(string _moduleName)
+        {
+            if (this.ModuleConfigCollection.ToList().Exists(x => x.ModuleName == _moduleName) == true)
+                return true;
+            else return false;
+        }
 
         public void CreateModulePackage(string _moduleName, 
                                         string _moduleModifyDate, 
                                         int _moduleVersion,
                                         string _moduleComment, 
                                         string _moduleMainPath,
-                                        ObservableCollection<DependentDLL> _dependentCollection)
+                                        bool _isOverwrite)
         {
             try
             {
@@ -185,6 +371,10 @@ namespace VisionTool.Service
                 {
                     throw new Exception("Module version is not correct");
                 }
+
+                if (this.ModuleConfigCollection.ToList().Exists(x => x.ModuleName == _moduleName) && _isOverwrite == false)
+                    throw new Exception("Module name is already exists");
+
                 //if (_moduleTargetPath.Length == 0) return false;
                 //if (_moduleTempPackagePath.Length == 0) return false;
                 //if (_moduleMainPath.Length == 0) return false;
@@ -210,7 +400,7 @@ namespace VisionTool.Service
 
                 var dependentDLL = this.settingConfigService.TempModulePackagePath + "dependent" + Path.DirectorySeparatorChar;
                 Directory.CreateDirectory(dependentDLL);
-                foreach (var file in _dependentCollection)
+                foreach (var file in this.DependentDLLCollection)
                 {
                     var targetFilePath = dependentDLL + file.FileName;
                     File.Copy(file.FilePath, targetFilePath);
@@ -242,6 +432,9 @@ namespace VisionTool.Service
                     archive.AddDirectory(this.settingConfigService.TempModulePackagePath, "/");
                     archive.Save(zipFileName);
                 }
+
+
+                this.UpdateModuleInfo();
 
             }
             catch(Exception e)

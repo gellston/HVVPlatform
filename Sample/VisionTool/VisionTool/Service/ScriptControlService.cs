@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Model;
+using VisionTool.Message;
+using GalaSoft.MvvmLight.Command;
 
 namespace VisionTool.Service
 {
@@ -39,8 +41,16 @@ namespace VisionTool.Service
             this.interpreter = new HV.V1.Interpreter();
             this.interpreter.TraceEvent += Trace;
 
-            
+
+           
+
         }
+
+
+
+
+
+
 
         ~ScriptControlService()
         {
@@ -56,11 +66,14 @@ namespace VisionTool.Service
             Thread.Sleep(1);
         }
 
+
+
+
         public void SaveScript(Script context)
         {
             try
             {
-                string filePath = DialogHelper.SaveFile("Script File (.js)|*.js");
+                string filePath = DialogHelper.SaveFile("Script File (.vsjs)|*.vsjs");
                 context.FilePath = filePath;
                 context.FileName = Path.GetFileName(filePath);
                 File.WriteAllText(filePath, context.ScriptContent, Encoding.UTF8);
@@ -79,7 +92,7 @@ namespace VisionTool.Service
                 ObservableCollection<Script> collection = new ObservableCollection<Script>();
 
                 var path = DialogHelper.OpenFolder();
-                var files = Directory.GetFiles(path, "*.js");
+                var files = Directory.GetFiles(path, "*.vsjs");
 
                 foreach (var file in files)
                 {
@@ -101,7 +114,7 @@ namespace VisionTool.Service
         {
             try
             {
-                var path = DialogHelper.OpenFile("Script File (.js)|*.js");
+                var path = DialogHelper.OpenFile("Script File (.vsjs)|*.vsjs");
                 var context = File.ReadAllText(path, Encoding.UTF8);
                 Script script = new Script(Path.GetFileName(path), context, path);
                 return script;
@@ -111,22 +124,80 @@ namespace VisionTool.Service
                 throw e;
             }
         }
-        
-        public Script CreateNewScript()
+
+        public void RemoveScript(Script model)
         {
-            return new Script("new.js", "/* Be the god of coding */", "");
+            if (model == null) return;
+            this.ScriptCollection.Remove(model);
+        }
+        
+        private Script CreateNewScript()
+        {
+            return new Script("new.vsjs", "/* Be the god of coding */", "");
+        }
+
+
+        public void LoadScriptFromPath()
+        {
+
+            try
+            {
+                var script = this.GetScriptFromPath();
+                this.ScriptCollection.Add(script);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                throw e;
+            }
+
+        }
+
+        public void AddNewScript()
+        {
+            this.ScriptCollection.Add(this.CreateNewScript());
+        }
+
+
+        public void LoadScriptFromPath(string path)
+        {
+            try
+            {
+
+                var fileName = Path.GetFileName(path);
+                var content = File.ReadAllText(path, Encoding.UTF8);
+
+                this.ScriptCollection.Add(new Script(fileName, content, path));
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                throw e;
+            }
+
         }
 
         public void ClearNativeModules()
         {
             this.NativeModuleCollection.Clear();
-            this.GlobalCollection.Clear();
-            this.interpreter.GlobalObjects.Clear();
+          
             
 
-            System.GC.Collect();
-            System.GC.WaitForPendingFinalizers();
-            System.GC.WaitForFullGCComplete();
+            foreach(var _object in this.GlobalCollection)
+            {
+                _object.Dispose();
+            }
+
+            this.GlobalCollection.Clear();
+
+
+            foreach(var _object in this.interpreter.GlobalObjects)
+            {
+                _object.Value.Dispose();
+            }
+            this.interpreter.GlobalObjects.Clear();
+
 
 
         }
@@ -139,7 +210,7 @@ namespace VisionTool.Service
             this.IsRunningScript = true;
 
             this.interpreter.SetModulePath(this.settingConfigService.ApplicationSetting.ModuleMainPath);
-
+            this.ScriptLogCollection.Clear();
             Task.Run(async () =>
             {
                 var currentFps = 0;
@@ -231,7 +302,8 @@ namespace VisionTool.Service
             if (context == null) return false;
 
             this.IsRunningScript = true;
-
+            this.ScriptLogCollection.Clear();
+            this.interpreter.SetModulePath(this.settingConfigService.ApplicationSetting.ModuleMainPath);
             Task.Run(() =>
             {
                 try
@@ -289,56 +361,61 @@ namespace VisionTool.Service
             return true;
         }
 
-        private ObservableCollection<Log> _ScriptLogCollection = null;
+        private ObservableCollection<Log> _ScriptLogCollection = new ObservableCollection<Log>();
         public ObservableCollection<Log> ScriptLogCollection
         {
             get
             {
-                _ScriptLogCollection ??= new ObservableCollection<Log>();
                 return _ScriptLogCollection;
             }
         }
 
-        private ObservableCollection<HV.V1.NativeModule> _NativeModuleCollection = null;
+        private ObservableCollection<Script> _ScriptCollection = new ObservableCollection<Script>();
+        public ObservableCollection<Script> ScriptCollection
+        {
+            get
+            {
+
+                return _ScriptCollection;
+            }
+            //set => Set(ref _ScriptCollection, value);
+        }
+
+        private ObservableCollection<HV.V1.NativeModule> _NativeModuleCollection = new ObservableCollection<HV.V1.NativeModule>();
         public ObservableCollection<HV.V1.NativeModule> NativeModuleCollection
         {
             get
             {
-                _NativeModuleCollection ??= new ObservableCollection<HV.V1.NativeModule>();
                 return _NativeModuleCollection;
             }
         }
 
-        private ObservableCollection<HV.V1.Object> _GlobalCollection = null;
+        private ObservableCollection<HV.V1.Object> _GlobalCollection = new ObservableCollection<HV.V1.Object>();
         public ObservableCollection<HV.V1.Object> GlobalCollection
         {
             get
             {
-                if (_GlobalCollection == null)
-                {
-                    _GlobalCollection = new ObservableCollection<HV.V1.Object>();
-                }
                 return _GlobalCollection;
             }
         }
 
-        public void SetCheckRunning(Action<bool> check)
+        public void SetCallbackRunning(Action<bool> check)
         {
             this.isRunningAction += check;
 
         }
 
-        public void SetCheckCurrentExecutionTime(Action<string> check)
+        public void SetCallbackCurrentExecutionTime(Action<string> check)
         {
             this.currentExecutiontimeAction += check;
         }
 
-        public void SetCheckCurrentFPS(Action<string> check)
+        public void SetCallbackCurrentFPS(Action<string> check)
         {
             this.currentFPSAction += check;
         }
 
-        public void SetCheckCurrentErrorLine(Action<int> check)
+        public void SetCallbackCurrentErrorLine(Action<int> check)
         {
             this.currentErrorLineAction += check;
         }
@@ -361,5 +438,8 @@ namespace VisionTool.Service
             this.interpreter.Terminate();
             this.IsRunningScript = false;
         }
+
+
+
     }
 }

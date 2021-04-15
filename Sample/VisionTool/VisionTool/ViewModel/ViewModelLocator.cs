@@ -1,14 +1,9 @@
 ﻿
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight;
-//using GalaSoft.MvvmLight;
-//using GalaSoft.MvvmLight.Ioc;
 using VisionTool.Service;
-using System;
-using System.Runtime.InteropServices;
-using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-
+using VisionTool.Message;
 
 namespace VisionTool.ViewModel
 {
@@ -17,24 +12,13 @@ namespace VisionTool.ViewModel
         public ViewModelLocator()
         {
 
-            //if (InitializeScript() == false)
-            //{
-            //    System.Diagnostics.Debug.WriteLine("error");
-            //}
-
-         
-            
-
-
 
             SimpleIoc.Default.Register<SettingConfigService>();
-            //SimpleIoc.Default.Register<FileDialogService>();
-            //SimpleIoc.Default.Register<DialogHelper>();
+
             SimpleIoc.Default.Register<ScriptControlService>();
             SimpleIoc.Default.Register<ModuleControlService>();
             SimpleIoc.Default.Register<DiagramControlService>();
             SimpleIoc.Default.Register<SequenceControlService>();
-            //SimpleIoc.Default.Register<DiagramEditService>();
             
             
             
@@ -46,20 +30,43 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<DiagramPackageManagementViewModel>();
 
 
-            //SimpleIoc.Default.Register<HV.V1.Interpreter>();
-
-
-
 
             //미리생성
+            SimpleIoc.Default.GetInstance<ScriptEditViewModel>();
             SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
             SimpleIoc.Default.GetInstance<DiagramPackageManagementViewModel>();
             SimpleIoc.Default.GetInstance<DiagramEditViewModel>();
+            SimpleIoc.Default.GetInstance<ApplicationSettingViewModel>();
+            SimpleIoc.Default.GetInstance<MainWindowViewModel>();
 
 
-            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("UpdateModule"));
-            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("InitialDiagramCollection"));
-            Messenger.Default.Send<NotificationMessage>(new NotificationMessage("ReloadDiagramCollection"));
+            if(ViewModelLocator.IsAssosicationMode == true)
+            {
+                var message = new AssociationModeMessage()
+                {
+                    FilePath = ViewModelLocator.AssosicationFilePath,
+                    AssociationMode = ViewModelLocator.AssosicationMode,
+                    
+                };
+
+                switch(message.AssociationMode)
+                {
+                    case "Script":
+                        message.CurrentViewModel = SimpleIoc.Default.GetInstance<ScriptEditViewModel>();
+                        break;
+                    case "Sequence":
+                        message.CurrentViewModel = SimpleIoc.Default.GetInstance<DiagramEditViewModel>();
+                        break;
+                    case "Module":
+                        message.CurrentViewModel = SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
+                        break;
+                    case "Diagram":
+                        message.CurrentViewModel = SimpleIoc.Default.GetInstance<DiagramPackageManagementViewModel>();
+                        break;
+                }
+
+                Messenger.Default.Send<AssociationModeMessage>(message);
+            }
 
             
 
@@ -80,13 +87,6 @@ namespace VisionTool.ViewModel
             }
         }
 
-        public ViewModelBase ModulePackageManagementViewModel
-        {
-            get
-            {
-                return SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
-            }
-        }
 
         public ViewModelBase ScriptEditViewModel
         {
@@ -95,6 +95,44 @@ namespace VisionTool.ViewModel
                 return SimpleIoc.Default.GetInstance<ScriptEditViewModel>();
             }
         }
+
+        public ViewModelBase ModulePackageManagementViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ModulePackageManagementViewModel>();
+            }
+        }
+
+        public ViewModelBase DiagramEditViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<DiagramEditViewModel>();
+            }
+        }
+
+        public ViewModelBase DiagramPackageManagementViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<DiagramPackageManagementViewModel>();
+            }
+        }
+
+        public ViewModelBase ApplicationSettingViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<ApplicationSettingViewModel>();
+            }
+        }
+
+
+        static public bool IsAssosicationMode { get; set; } = false;
+        static public string AssosicationFilePath { get; set; } = "";
+        static public string AssosicationMode { get; set; } = "";
+
 
         //static public bool InitializeScript()
         //{

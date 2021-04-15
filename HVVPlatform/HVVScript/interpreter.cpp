@@ -25,7 +25,6 @@
 
 #include "pimpl_define.h"
 #include "object.h"
-#include "converter.h"
 #include "exception.h"
 #include "string_cvt.h"
 #include "binding.h"
@@ -97,6 +96,9 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 	/// <summary>
 	/// Converter Lambda defionition
 	/// </summary>
+	/// /
+	/// 
+	/*
 	this->register_converter("boolean", new converter([&](std::shared_ptr<pimpl_local_var> local_variable) -> object* {
 		std::string key = local_variable->key();
 
@@ -211,7 +213,9 @@ interpreter::interpreter() : _isolate(std::make_shared<pimpl_v8_isolate>()),
 		}
 
 		return nullptr;
-	}));
+	}));*/
+
+
 }
 
 void hv::v1::interpreter::trace(std::string _input)
@@ -417,23 +421,39 @@ void interpreter::_loop() {
 
 				
 
-				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "array";
-				else if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) type = "map";
-				else if (val_local->IsObject()) type = "object";
-
-
-				if (this->_converter_lambda.find(type) == this->_converter_lambda.end()) continue;
-
-				std::shared_ptr<pimpl_local_var_solid> local_var_solid = std::make_shared<pimpl_local_var_solid>();
-				auto local_var = std::static_pointer_cast<pimpl_local_var>(local_var_solid);
-
-				local_var_solid->set(val_local, isolate->_instance, key);
-				
-				auto converter = this->_converter_lambda[type];
-				object* result = (*converter)(local_var);
-				if (result != nullptr) {
+				if (val_local->IsArray() == true && !val_local.IsEmpty() && val_local->IsObject()) {
+					// Array ;
+				}
+				else if (val_local->IsMap() == true && !val_local.IsEmpty() && val_local->IsObject()) {
+					// Map ;
+				}
+				else if (val_local->IsObject()) {
+					// Object
+					try {
+						auto data = v8pp::from_v8<std::shared_ptr<object>>(isolate->_instance, val_local);
+						if (data != nullptr)
+							(*this->_global_hash_map)[key] = data;
+					}
+					catch (std::exception e) {
+					}
+				}
+				else if (val_local->IsNumber()) {
+					auto value = v8pp::from_v8<double>(isolate->_instance, val_local);
 					this->_global_names.push_back(key);
-					(*this->_global_hash_map)[key] = std::shared_ptr<object>(result);
+					std::shared_ptr<hv::v1::number> object(new hv::v1::number(key, value));
+					(*this->_global_hash_map)[key] = object;
+				}
+				else if (val_local->IsBoolean()) {
+					auto value = v8pp::from_v8<bool>(isolate->_instance, val_local);
+					this->_global_names.push_back(key);
+					std::shared_ptr<hv::v1::boolean> object(new hv::v1::boolean(key, value));
+					(*this->_global_hash_map)[key] = object;
+				}
+				else if (val_local->IsString()) {
+					auto value = v8pp::from_v8<std::string>(isolate->_instance, val_local);
+					this->_global_names.push_back(key);
+					std::shared_ptr<hv::v1::string> object(new hv::v1::string(key, value));
+					(*this->_global_hash_map)[key] = object;
 				}
 
 			}
@@ -459,13 +479,6 @@ void interpreter::_loop() {
 	}
 }
 
-bool interpreter::register_converter(std::string _type , converter* _converter) {
-	if (this->_converter_lambda.find(_type) != this->_converter_lambda.end()) return false;
-
-	this->_converter_lambda[_type] = std::shared_ptr<converter>(_converter);
-
-	return true;
-}
 
 bool interpreter::set_module_path(std::string _path) {
 	if (this->_is_script_running == true) return false;

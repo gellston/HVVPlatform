@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActiproSoftware.Windows.Themes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -24,6 +25,8 @@ namespace VisionTool.View
         public MainWindowView()
         {
             InitializeComponent();
+
+            ThemeManager.CurrentTheme = ThemeNames.Office2010Black;
         }
 
         private void ThemedWindow_Closed(object sender, EventArgs e)

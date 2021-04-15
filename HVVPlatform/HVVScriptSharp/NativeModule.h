@@ -1,10 +1,6 @@
 #pragma once
 
-
-
 #include "native_module.hpp"
-
-
 #include "managed_shared_ptr.h"
 
 
