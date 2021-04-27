@@ -140,7 +140,7 @@
                                       ItemHeight="*"
                                       AllowClose="False">
 
-
+                            
                             <ucLib:FunctionDiagramViewer Grid.Column="0"
                                                       FunctionCollection="{Binding Path=FunctionCollection}"
                                                       InputSnapSpotCollection="{Binding Path=InputSnapSpotCollection}"
@@ -164,7 +164,10 @@
                                               ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden">
 
-
+                                <ucLib:ListResultViewer SelectedResultObject="{Binding SelectedResultObject}"
+                                                        ResultObjectCollection="{Binding ResultObjectCollection}">
+                                    
+                                </ucLib:ListResultViewer>
                             </dxdo:LayoutPanel>
 
                         </dxdo:TabbedGroup>

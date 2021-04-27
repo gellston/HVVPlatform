@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Model;
-using VisionTool.Message;
-using GalaSoft.MvvmLight.Command;
 
 namespace VisionTool.Service
 {
@@ -440,6 +438,52 @@ namespace VisionTool.Service
         }
 
 
+        private ObservableCollection<ResultObject> _ResultObjectCollection = null;
+        public ObservableCollection<ResultObject> ResultObjectCollection
+        {
+            get
+            {
+                _ResultObjectCollection ??= new ObservableCollection<ResultObject>();
+                return _ResultObjectCollection;
+            }
+        }
 
+        public void ClearResultObject()
+        {
+            foreach(var result in this.ResultObjectCollection)
+            {
+                result.Data.Dispose();
+            }
+
+            this.ResultObjectCollection.Clear();
+        }
+
+
+        public void AddResultObject(string name)
+        {
+            if(this.interpreter.GlobalNames.Contains(name) == true)
+            {
+
+                var globalObject = this.interpreter.GlobalObjects[name];
+
+                this.ResultObjectCollection.Add(new ResultObject()
+                {
+                    Name = globalObject.Name,
+                    Data = globalObject
+                });
+            }
+        }
+
+        public void AddResultObject(HV.V1.Object _object)
+        {
+            if(this.interpreter.GlobalNames.Contains(_object.Name) == true)
+            {
+                this.ResultObjectCollection.Add(new ResultObject()
+                {
+                    Name = _object.Name,
+                    Data = _object
+                });
+            }
+        }
     }
 }

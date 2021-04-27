@@ -31,7 +31,7 @@ namespace VisionTool.ViewModel
 
             this.diagramControlService = _diagramControlService;
             this.sequenceControlService = _sequenceControlService;
-            this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
+            
             this.scriptControlService = _scriptControlService;
             
 
@@ -41,15 +41,21 @@ namespace VisionTool.ViewModel
             this.scriptControlService.SetCallbackCurrentExecutionTime(data => this.CurrentExecutionTime = data);
             this.scriptControlService.SetCallbackCurrentErrorLine(data => this.CurrentErrorLine = data);
 
+
+            this.DiagramConfigCollection = this.diagramControlService.DiagramConfigCollection;
+
+
             this.LogCollection = this.scriptControlService.ScriptLogCollection;
             this.GlobalCollection = this.scriptControlService.GlobalCollection;
             this.NativeModuleCollection = this.scriptControlService.NativeModuleCollection;
+            this.ResultObjectCollection = this.scriptControlService.ResultObjectCollection;
 
 
             this.FunctionCollection = this.sequenceControlService.FunctionCollection;
             this.InputSnapSpotCollection = this.sequenceControlService.InputSnapSpotCollection;
             this.OutputSnapSpotCollection = this.sequenceControlService.OutputSnapSpotCollection;
             this.ConnectorCollection = this.sequenceControlService.ConnectorCollection;
+            
 
 
             this.MessengerInstance.Register<AssociationModeMessage>(this, FileAssociationCallback);
@@ -101,6 +107,21 @@ namespace VisionTool.ViewModel
             get => _DiagramConfigCollection;
             set => Set(ref _DiagramConfigCollection, value);
         }
+
+        private ObservableCollection<ResultObject> _ResultObjectCollection = null;
+        public ObservableCollection<ResultObject> ResultObjectCollection
+        {
+            get => _ResultObjectCollection;
+            set => Set(ref _ResultObjectCollection, value);
+        }
+
+        private Model.ResultObject _SelectedResultObject = null;
+        public Model.ResultObject SelectedResultObject
+        {
+            get => _SelectedResultObject;
+            set => Set(ref _SelectedResultObject, value);
+        }
+
 
 
         public ICommand NewDiagramSequenceCommand
@@ -326,6 +347,9 @@ namespace VisionTool.ViewModel
             get => _NativeModuleCollection;
             set => Set(ref _NativeModuleCollection, value);
         }
+
+
+
 
     }
 }

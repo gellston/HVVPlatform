@@ -19,4 +19,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="HVVScriptSharp">
+      <HintPath>..\..\..\HVVPlatform\x64\Debug\HVVScriptSharp.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

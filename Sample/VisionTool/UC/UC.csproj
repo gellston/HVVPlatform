@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="HVVScriptSharp">
+      <HintPath>..\..\..\HVVPlatform\x64\Debug\HVVScriptSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Model">
       <HintPath>..\Model\bin\netcoreapp3.1\Model.dll</HintPath>
     </Reference>

@@ -2,7 +2,15 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="ListResultViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="FunctionDiagramViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ListResultViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

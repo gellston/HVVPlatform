@@ -258,6 +258,7 @@ namespace VisionTool.Service
 
 
 
+
         private ObservableCollection<DiagramConfig> _DiagramConfigCollection = null;
         public ObservableCollection<DiagramConfig> DiagramConfigCollection
         {
