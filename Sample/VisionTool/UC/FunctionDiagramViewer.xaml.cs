@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Model;
 using Model.DiagramProperty;
+using System.Diagnostics;
 
 
 namespace UClib
@@ -1182,6 +1183,32 @@ namespace UClib
             _IsDragging = false;
             _dragSource = null;
 
+        }
+
+
+
+        private bool _IsOutputSnapPressed = false;
+        private void outputSnapSpot_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //Di.Console.WriteLine(sender);
+            System.Diagnostics.Debug.WriteLine(sender);
+
+            if (sender != null)
+            {
+                Thumb thumb = sender as Thumb;
+                OutputSnapSpot snapSpot = thumb.DataContext as OutputSnapSpot;
+                if (snapSpot == null) return;
+                DataObject dataObject = new DataObject();
+                dataObject.SetText(snapSpot.Hash);
+                DragDrop.DoDragDrop((Thumb)sender, dataObject, DragDropEffects.Copy);
+                _IsOutputSnapPressed = true;
+            }
+
+        }
+
+        private void outputSnapSpot_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _IsOutputSnapPressed = false;
         }
     }
 }

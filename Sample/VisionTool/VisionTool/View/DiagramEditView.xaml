@@ -165,8 +165,11 @@
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden">
 
                                 <ucLib:ListResultViewer SelectedResultObject="{Binding SelectedResultObject}"
-                                                        ResultObjectCollection="{Binding ResultObjectCollection}">
-                                    
+                                                        ResultObjectCollection="{Binding ResultObjectCollection}"
+                                                        >
+                                    <mvvm:Interaction.Behaviors>
+                                        <mvvm:EventToCommand EventName="PreviewDrop" Command="{Binding DropOutputSnapSpotCommand}" PassEventArgsToCommand="True"></mvvm:EventToCommand>
+                                    </mvvm:Interaction.Behaviors>
                                 </ucLib:ListResultViewer>
                             </dxdo:LayoutPanel>
 

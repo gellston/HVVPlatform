@@ -150,7 +150,15 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.scriptControlService.RunScript(this.SelectedScript.ScriptContent);
+                try
+                {
+                    this.scriptControlService.RunScript(this.SelectedScript.ScriptContent);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+                
             });
         }
 
@@ -158,7 +166,15 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-                this.scriptControlService.ContinuousRunScript(this.SelectedScript.ScriptContent);
+                try
+                {
+                    this.scriptControlService.ContinuousRunScript(this.SelectedScript.ScriptContent);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+                
             });
         }
 

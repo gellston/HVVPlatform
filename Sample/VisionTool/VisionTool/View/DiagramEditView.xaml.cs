@@ -24,8 +24,6 @@ namespace VisionTool.View
             InitializeComponent();
 
 
-
-
         }
 
     }

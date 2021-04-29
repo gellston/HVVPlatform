@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using GalaSoft.MvvmLight;
@@ -248,6 +249,16 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
                 this.scriptControlService.StopScriptRunning();
+            });
+        }
+
+        public ICommand DropOutputSnapSpotCommand
+        {
+            get => new RelayCommand<DragEventArgs>((sender) =>
+            {
+                string data = sender.Data.GetData(typeof(string)) as string;
+                if (data == null) return;
+                this.scriptControlService.AddResultObject(data);
             });
         }
 

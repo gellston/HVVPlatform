@@ -29,6 +29,7 @@ namespace HV {
 			System::String^ Data();
 			void Data(System::String^ data);
 
+
 		};
 	}
 

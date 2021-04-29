@@ -35,15 +35,15 @@ namespace HV {
 			!Object();
 
 
-			property String^ Name {
-				String^ get();
+			property System::String^ Name {
+				System::String^ get();
 			}
-			property String^ Type {
-				String^ get();
+			property System::String^ Type {
+				System::String^ get();
 			}
 
-			property virtual String^ ToString {
-				String^ get();
+			property virtual System::String^ ToString {
+				System::String^ get();
 			}
 
 		};

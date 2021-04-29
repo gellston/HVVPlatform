@@ -215,8 +215,11 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type model:OutputSnapSpot}">
                         <Thumb IsEnabled="{Binding IsSelected,RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}}}"
-                                   Height="30"
-                                   Width="100">
+                               Height="30"
+                               Width="100"
+                               Name="outputSnapSpot"
+                               PreviewMouseLeftButtonDown="outputSnapSpot_PreviewMouseLeftButtonDown"
+                               PreviewMouseUp="outputSnapSpot_PreviewMouseUp">
                             <Thumb.Template>
                                 <ControlTemplate>
                                     <Grid Height="30"

@@ -8,32 +8,39 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
              xmlns:model="clr-namespace:Model;assembly=Model"
-             xmlns:script="clr-namespace:HV.V1;assembly=HVVScriptSharp">
+             xmlns:script="clr-namespace:HV.V1;assembly=HVVScriptSharp"
+             AllowDrop="True">
 
 
     <ListView ScrollViewer.VerticalScrollBarVisibility="Visible"
               SelectedItem="{Binding ElementName=view, Path=SelectedResultObject}"
-              ItemsSource="{Binding ElementName=view, Path=ResultObjectCollection}">
+              ItemsSource="{Binding ElementName=view, Path=ResultObjectCollection}"
+              AllowDrop="True"
+              HorizontalAlignment="Stretch"
+              HorizontalContentAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              VerticalContentAlignment="Stretch">
         <ListView.Resources>
             <DataTemplate DataType="{x:Type model:ResultObject}">
                 <Grid>
-                    <Grid.Resources>
-                        <DataTemplate DataType="{x:Type script:String}">
-                            <TextBox  HorizontalContentAlignment="Left" VerticalContentAlignment="Top" TextAlignment="Left" TextWrapping="Wrap"></TextBox>
-                        </DataTemplate>
-                    </Grid.Resources>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" Text="Name" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="0" Text="Data"  HorizontalAlignment="Center" VerticalAlignment="Center"></TextBox>
-                    <ContentPresenter Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Content="{Binding Data}" HorizontalAlignment="Left" VerticalAlignment="Top"></ContentPresenter>
+                    <TextBox Grid.Row="0" Grid.Column="0" Text="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
+                    <TextBox Grid.Row="1" Grid.Column="0" Text="Data" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
+                    <ContentPresenter Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="2" Content="{Binding Data}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ContentPresenter.Resources>
+                            <DataTemplate DataType="{x:Type script:Number}">
+                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" TextAlignment="Left" TextWrapping="Wrap" Text="{Binding ToString, Mode=OneWay}"></TextBox>
+                            </DataTemplate>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
                 </Grid>
             </DataTemplate>
         </ListView.Resources>
