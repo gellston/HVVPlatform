@@ -45,17 +45,13 @@ namespace Model.DiagramProperty
             return string.Format("{0}", Value);
         }
 
-
         public override object Clone()
         {
             ThresholdDiagramProperty newCopy = new ThresholdDiagramProperty();
-            //newCopy.Name = this.Name;
             newCopy.Hash = this.Hash;
-            //newCopy.ParentFunctionHash = this.ParentFunctionHash;
             newCopy.Value = this.Value;
             newCopy.MaxValue = this.MaxValue;
             newCopy.MinValue = this.MinValue;
-
             return newCopy;
         }
     }

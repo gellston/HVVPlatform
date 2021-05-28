@@ -6,17 +6,236 @@
              xmlns:local="clr-namespace:VisionTool.View"
              xmlns:dxprg="http://schemas.devexpress.com/winfx/2008/xaml/propertygrid"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid">
+    <DockPanel Margin="5">
+        <dx:UniformStackPanel DockPanel.Dock="Bottom"
+                              Height="50" 
+                              ChildSpacing="0" 
+                              Orientation="Horizontal"
+                              HorizontalAlignment="Right"
+                              Name="TopControlMenu">
+            <Button ToolTip="프로그램 설정 초기화"
+                    Command="{Binding ResetApplicationSettingCommand}"
+                    Width="50">
+                <Image Source="{dx:DXImage 'SvgImages/Dashboards/GridResetColumnWidths.svg'}"></Image>
+            </Button>
+            <Button ToolTip="프로그램 설정 저장"
+                    Command="{Binding SaveApplicationSettingCommand}"
+                    Width="50">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/Action_SaveScript.svg'}"></Image>
+            </Button>
+            <Button ToolTip="프로그램 설정 로드"
+                    Command="{Binding LoadApplicationSettingCommand}"
+                    Width="50">
+                <Image Source="{dx:DXImage 'SvgImages/Dashboards/LoadMap.svg'}"></Image>
+            </Button>
+        </dx:UniformStackPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Visible">
+            <DockPanel>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="모듈 파일 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.ModulePath}" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="모듈 Config 파일 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.ModuleConfigPath }" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="모듈 메인 DLL 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.ModuleMainPath }" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="모듈 의존 DLL 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.ModuleThirdPartyDLLPath}" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="다이어그램 파일 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.DiagramPath}" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="다이어그램 Config 파일 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.DiagramConfigPath}" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="40" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="200"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Row="0" Grid.Column="0" IsReadOnly="True" Text="다이어그램 이미지 파일 경로" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AppConfig.DiagramImagePath}" VerticalContentAlignment="Center"></TextBox>
+                </Grid>
+                <Grid Height="400" DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Column="0" Grid.Row="0" Text="다이어그램 데이터 타입" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding CurrentDataType, Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <Button ToolTip="다이어그램 데이터 타입 추가"
+                            Command="{Binding AddNewDiagramDataTypeCommand}"
+                            Width="50"
+                            Grid.Column="3">
+                        <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Add.svg'}"></Image>
+                    </Button>
+                    <Button ToolTip="다이어그램 데이터 타입 삭제"
+                            Command="{Binding DeleteDiagramDataTypeCommand}"
+                            Width="50"
+                            Grid.Column="2">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Delete.svg'}"></Image>
+                    </Button>
+                    <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                     SelectionMode="Row"
+                                     AutoGenerateColumns="None"
+                                     ShowAllTableValuesInFilterPopup="False"
+                                     ItemsSource="{Binding DiagramDataTypeCollection, UpdateSourceTrigger=PropertyChanged}"
+                                     Grid.Row="1"
+                                     Grid.Column="0"
+                                     Grid.ColumnSpan="4"
+                                     SelectedItem="{Binding SelectedDataType}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn FieldName="데이터 타입" Width="*" IsSmart="False" Binding="{Binding Path=., Mode=TwoWay}" AllowEditing="True"/>
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView AllowPerPixelScrolling="True" 
+                                           ShowTotalSummary="False"
+                                           AllowGrouping="True"
+                                           AllowScrollToFocusedRow="False"
+                                           EnableImmediatePosting="True"
+                                           >
+
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+                    <TextBox Grid.Column="4" Grid.Row="0" Text="다이어그램 카테고리 " HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="5" Grid.Row="0"  Text="{Binding CurrentCategoryType, Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <Button ToolTip="다이어그램 카테고리 추가"
+                            Command="{Binding AddNewDiagramCategoryCommand}"
+                            Width="50"
+                            Grid.Column="7">
+                        <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Add.svg'}"></Image>
+                    </Button>
+                    <Button ToolTip="다이어그램 카테고리 삭제"
+                            Command="{Binding DeleteDiagramCategoryCommand}"
+                            Width="50"
+                            Grid.Column="6">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Delete.svg'}"></Image>
+                    </Button>
+                    <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                     SelectionMode="Row"
+                                     AutoGenerateColumns="None"
+                                     ShowAllTableValuesInFilterPopup="False"
+                                     ItemsSource="{Binding DiagramCategoryCollection, UpdateSourceTrigger=PropertyChanged}"
+                                     Grid.Row="1"
+                                     Grid.Column="4"
+                                     Grid.ColumnSpan="4"
+                                     SelectedItem="{Binding SelectedCategoryType}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn FieldName="카테고리 타입"  Width="*" IsSmart="False" Binding="{Binding Path=., Mode=TwoWay}" AllowEditing="True"/>
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView AllowPerPixelScrolling="True" 
+                                           ShowTotalSummary="False"
+                                           AllowGrouping="True"
+                                           AllowScrollToFocusedRow="False"
+                                           EnableImmediatePosting="True">
+
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+                    <!--DiagramProperty-->
+                    <TextBox Grid.Column="8" Grid.Row="0" Text="다이어그램 프로퍼티 " HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <TextBox Grid.Column="9" Grid.Row="0"  Text="{Binding CurrentPropertyDataType, Mode=TwoWay}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                    <Button ToolTip="다이어그램 프로퍼티 데이터 추가"
+                            Command="{Binding AddNewDiagramPropertyDataTypeCommand}"
+                            Width="50"
+                            Grid.Column="11">
+                        <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Add.svg'}"></Image>
+                    </Button>
+                    <Button ToolTip="다이어그램 프로퍼티 데이터 삭제"
+                            Command="{Binding DeleteDiagramPropertyDataTypeCommand}"
+                            Width="50"
+                            Grid.Column="10">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Delete.svg'}"></Image>
+                    </Button>
+                    <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                     SelectionMode="Row"
+                                     AutoGenerateColumns="None"
+                                     ShowAllTableValuesInFilterPopup="False"
+                                     ItemsSource="{Binding DiagramPropertyDataTypeCollection, UpdateSourceTrigger=PropertyChanged}"
+                                     Grid.Row="1"
+                                     Grid.Column="8"
+                                     Grid.ColumnSpan="4"
+                                     SelectedItem="{Binding SelectedPropertyDataType}">
+                        <dxg:GridControl.Columns>
+                            <dxg:GridColumn FieldName="프로퍼티 타입"  Width="*" IsSmart="False" Binding="{Binding Path=., Mode=TwoWay}" AllowEditing="True"/>
+                        </dxg:GridControl.Columns>
+                        <dxg:GridControl.View>
+                            <dxg:TableView AllowPerPixelScrolling="True" 
+                                           ShowTotalSummary="False"
+                                           AllowGrouping="True"
+                                           AllowScrollToFocusedRow="False"
+                                           EnableImmediatePosting="True">
+
+                            </dxg:TableView>
+                        </dxg:GridControl.View>
+                    </dxg:GridControl>
+
+                </Grid>
+                <Grid></Grid>
+            </DockPanel>
+        </ScrollViewer>
+    </DockPanel>
+    <!--<Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <dxprg:PropertyGridControl Grid.Row="0"
+        --><!--<dxprg:PropertyGridControl Grid.Row="0"
                                    SelectedObject="{Binding AppConfig}"
                                    ShowProperties="WithPropertyDefinitions" >
-            <!--<dxprg:PropertyDefinition Path="ModuleLocation" />-->
+            --><!--<dxprg:PropertyDefinition Path="ModuleLocation" />--><!--
             <dxprg:PropertyDefinition Path="ModuleLocation"></dxprg:PropertyDefinition>
-        </dxprg:PropertyGridControl>
-    </Grid>
+        </dxprg:PropertyGridControl>--><!--
+    </Grid>-->
 </UserControl>

@@ -15,6 +15,7 @@ using VisionTool.Helper;
 using System.Windows.Media;
 using DevExpress.Xpf.CodeView;
 using Model.DiagramProperty;
+using System.Reflection;
 
 namespace VisionTool.Service
 {
@@ -46,19 +47,6 @@ namespace VisionTool.Service
             this.settingConfigService = _settingConfigService;
 
 
-            this.DiagramDataType.Add("number");
-            
-
-
-            this.DiagramPropertyDataType.Add(new EmptyDiagramProperty());
-            this.DiagramPropertyDataType.Add(new BoolDiagramProperty());
-            this.DiagramPropertyDataType.Add(new ThresholdDiagramProperty());
-
-
-
-
-            this.DiagramCategory.Add("Filter");
-            this.DiagramCategory.Add("Binarization");
 
 
             this.UpdateDiagramInfo();
@@ -563,13 +551,41 @@ namespace VisionTool.Service
 
         }
 
+
         public void UpdateDiagramInfo()
         {
             this.DiagramConfigCollection.Clear();
             this.DiagramCollection.Clear();
 
-            FileSystemHelper.DeleteFiles(this.settingConfigService.ApplicationSetting.DiagramConfigPath);
+            this.DiagramDataType.Clear();
+            this.DiagramCategory.Clear();
+            this.DiagramDataType.AddRange(this.settingConfigService.ApplicationSetting.DiagramDataTypeCollection);
+            this.DiagramCategory.AddRange(this.settingConfigService.ApplicationSetting.DiagramCategoryCollection);
 
+            this.DiagramPropertyDataType.Clear();
+            //this.DiagramPropertyDataType.Add(new EmptyDiagramProperty());
+            //this.DiagramPropertyDataType.Add(new BoolDiagramProperty());
+            //this.DiagramPropertyDataType.Add(new ThresholdDiagramProperty());
+
+
+            foreach(var propertyName in this.settingConfigService.ApplicationSetting.DiagramPropertyDataTypeCollection)
+            {
+                try
+                {
+
+                    var assembly = Assembly.GetExecutingAssembly();
+
+                    Type propertyType = Type.GetType("Model.DiagramProperty." + propertyName + ", Model");
+                    var property = Activator.CreateInstance(propertyType);
+                    this.DiagramPropertyDataType.Add((BaseDiagramProperty)property);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+            }
+
+            FileSystemHelper.DeleteFiles(this.settingConfigService.ApplicationSetting.DiagramConfigPath);
             var diagrams = FileSystemHelper.GetFiles(this.settingConfigService.ApplicationSetting.DiagramPath, "*.diagram");
             foreach(var diagram in diagrams)
             {
@@ -610,14 +626,7 @@ namespace VisionTool.Service
                         module.DiagramImage = WpfSvgRenderer.CreateImageSource(SvgImageHelper.CreateImage(new Uri("pack://application:,,,/DevExpress.Images.v20.2;component/SvgImages/Dashboards/ShowWeightedLegendNone.svg")), 1d, null, null, true);
                     }
 
-
-
                     this.DiagramConfigCollection.Add(module);
-                   
-                    
-
-
-
                 }
                 catch (Exception e)
                 {
@@ -639,9 +648,6 @@ namespace VisionTool.Service
                                          string _diagramComment,
                                          string _diagramScript,
                                          string _diagramCategory,
-                                         //Function _function,
-                                         //ObservableCollection<InputSnapSpot> _inputCollection,
-                                         //ObservableCollection<OutputSnapSpot> _outputCollection,
                                          string _diagramImagePath,
                                          double _diagramWidth,
                                          double _diagramHeight,
@@ -650,7 +656,6 @@ namespace VisionTool.Service
             try
             {
                 if (_diagramName.Length == 0) throw new Exception("Diagram is not correct");
-                //if (_diagramModifyDate.Length == 0) throw new Exception("Diagram modification date is not correct");
                 if (_diagramVersion < 1) throw new Exception("Diagram version is not correct");
                 if (this.PreviewFunctionCollection.Count == 0) throw new Exception("Function info is not correct");
                 if (_diagramCategory == null) throw new Exception("Diagram category is not set");
@@ -694,7 +699,6 @@ namespace VisionTool.Service
                     InputSnapSpotCollection = this.PreviewInputSnapSpotCollection.ToList(),
                     OutputSnapSpotCollection = this.PreviewOutputSnapSpotCollection.ToList(),
                     DiagramScript = _diagramScript
-                    //FunctionProperties = _functionPropertyCollection.ToList()
 
                 };
 
@@ -702,11 +706,6 @@ namespace VisionTool.Service
                 {
                     TypeNameHandling = TypeNameHandling.All
                 };
-
-               // string jsonfunctionPropertiesContext = JsonConvert.SerializeObject(config, Formatting.Indented, );
-
-
-
 
                 var targetConfigPath = this.settingConfigService.TempDiagramPackagePath + _diagramName + ".json";
                 string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);

@@ -2,7 +2,19 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="ImageCanvasViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ListResultViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PropertyConfigurationViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="ROICanvasViewer.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="ROIConfigurationViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -10,7 +22,19 @@
     <Page Update="FunctionDiagramViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="ImageCanvasViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ListResultViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PropertyConfigurationViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ROICanvasViewer.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ROIConfigurationViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

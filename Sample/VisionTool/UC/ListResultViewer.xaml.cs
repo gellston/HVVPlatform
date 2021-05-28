@@ -1,4 +1,5 @@
-﻿using Model;
+﻿using GalaSoft.MvvmLight.Command;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,6 +54,15 @@ namespace UClib
                 SetValue(SelectedResultObjectProperty, value);
             }
         }
+
+        public ICommand DeleteScriptItemCommand
+        {
+            get => new RelayCommand<ResultObject>((data) =>
+            {
+                this.ResultObjectCollection.Remove(data);
+            });
+        }
+
 
     }
 }

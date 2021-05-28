@@ -11,7 +11,7 @@ using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace VisionTool.Converter
+namespace Converter
 {
 
 
@@ -72,11 +72,11 @@ namespace VisionTool.Converter
                     IntPtr backbuffer = bmp.BackBuffer;
 
                     bmp.WritePixels(rect, hvImage.Ptr(), size, stride);
-                 
+
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
-                    
+
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
                 finally

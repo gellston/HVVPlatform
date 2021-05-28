@@ -231,6 +231,15 @@ namespace VisionTool.Service
                             this.NativeModuleCollection.Clear();
                             this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
 
+                            foreach (var result in this.ResultObjectCollection)
+                            {
+                                foreach (var globalName in this.interpreter.GlobalNames)
+                                {
+                                    if (result.Name == globalName)
+                                        result.Data = this.interpreter.GlobalObjects[globalName];
+                                }
+                            }
+
                             //if (this._isTracking == false) return;
                             //try
                             //{
@@ -315,6 +324,16 @@ namespace VisionTool.Service
 
                         this.NativeModuleCollection.Clear();
                         this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values);
+
+
+                        foreach(var result in this.ResultObjectCollection)
+                        {
+                            foreach(var globalObject in this.GlobalCollection)
+                            {
+                                if (result.Name == globalObject.Name)
+                                    result.Data = globalObject;
+                            }
+                        }
 
                         if (this.IsRunningScript == false) return;
                         try
@@ -468,22 +487,22 @@ namespace VisionTool.Service
 
                 this.ResultObjectCollection.Add(new ResultObject()
                 {
-                    Name = globalObject.Name,
+                    Name = name,
                     Data = globalObject
                 });
             }
         }
 
-        public void AddResultObject(HV.V1.Object _object)
-        {
-            if(this.interpreter.GlobalNames.Contains(_object.Name) == true)
-            {
-                this.ResultObjectCollection.Add(new ResultObject()
-                {
-                    Name = _object.Name,
-                    Data = _object
-                });
-            }
-        }
+        //public void AddResultObject(HV.V1.Object _object)
+        //{
+        //    if(this.interpreter.GlobalNames.Contains(_object.Name) == true)
+        //    {
+        //        this.ResultObjectCollection.Add(new ResultObject()
+        //        {
+        //            Name = _object.Name,
+        //            Data = _object
+        //        });
+        //    }
+        //}
     }
 }

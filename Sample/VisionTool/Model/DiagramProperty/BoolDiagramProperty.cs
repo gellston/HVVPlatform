@@ -35,12 +35,8 @@ namespace Model.DiagramProperty
         public override object Clone()
         {
             BoolDiagramProperty newCopy = new BoolDiagramProperty();
-            //newCopy.Name = this.Name;
             newCopy.Hash = this.Hash;
-            //newCopy.ParentFunctionHash = this.ParentFunctionHash;
             newCopy.Value = this.Value;
-
-
             return newCopy;
         }
     }

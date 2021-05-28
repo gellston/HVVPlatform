@@ -27,6 +27,18 @@
         <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
     </UserControl.Resources>
     <DockPanel>
+        
+        <!--ROIConfigurationView-->
+        <Popup StaysOpen="False"
+               IsOpen="{Binding IsOpenROIConfigurationView}"
+               PopupAnimation="Fade"
+               Placement="Center">
+            <ucLib:ROIConfigurationViewer Width="1000" 
+                                          Height="700"
+                                          GlobalObjectCollection="{Binding GlobalCollection}"
+                                          ></ucLib:ROIConfigurationViewer>
+            
+        </Popup>
 
         <dx:UniformStackPanel DockPanel.Dock="Top"
                               Height="40" 
@@ -278,58 +290,12 @@
                                     </dxg:TableView>
                                 </dxg:GridControl.View>
                             </dxg:GridControl>
-
-                            <ListView Grid.Row="1"
-                                      HorizontalContentAlignment="Stretch"
-                                      ItemsSource="{Binding ElementName=FunctionDiagramViewer,Path=SelectedInputSnapSpotCollection}"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                      ScrollViewer.VerticalScrollBarVisibility="Visible">
-                                <ListView.Resources>
-                                    <DataTemplate DataType="{x:Type model:InputSnapSpot}">
-                                        <DockPanel Height="40" HorizontalAlignment="Stretch">
-                                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsProperty, Mode=TwoWay}" DockPanel.Dock="Left">
-                                                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Security_Visibility.svg'}"></Image>
-                                            </dx:SimpleButton>
-                                            <TextBox Text="{Binding Name, Mode=OneWay}" 
-                                                     HorizontalAlignment="Stretch" 
-                                                     VerticalAlignment="Stretch" 
-                                                     HorizontalContentAlignment="Left" 
-                                                     VerticalContentAlignment="Center" 
-                                                     TextAlignment="Left"
-                                                     Width="80"
-                                                     DockPanel.Dock="Left"
-                                                     IsReadOnly="True"></TextBox>
-                                            <ContentPresenter Content="{Binding DiagramProperty}" HorizontalAlignment="Stretch">
-                                                <ContentPresenter.Resources>
-                                                    <!--데이터 프로퍼티 정의-->
-                                                    <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
-                                                        <DockPanel>
-                                                            <TextBlock TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" Text="지원되지 않는 속성"></TextBlock>
-                                                        </DockPanel>
-                                                    </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
-                                                        <DockPanel>
-                                                            <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
-                                                                <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
-                                                            </dx:SimpleButton>
-                                                            <TextBlock></TextBlock>
-                                                            <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="불 변수"></TextBox>-->
-                                                        </DockPanel>
-                                                    </DataTemplate>
-                                                    <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
-                                                        <DockPanel>
-                                                            <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
-                                                            <Slider DockPanel.Dock="Right" Value="{Binding Value, Mode=TwoWay}" Width="80" IsSnapToTickEnabled="True" Maximum="{Binding MaxValue}" Minimum="{Binding MinValue}" HorizontalAlignment="Left" VerticalAlignment="Center"></Slider>
-                                                            <TextBlock></TextBlock>
-                                                            <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="경계 값"></TextBox>-->
-                                                        </DockPanel>
-                                                    </DataTemplate>
-                                                </ContentPresenter.Resources>
-                                            </ContentPresenter>
-                                        </DockPanel>
-                                    </DataTemplate>
-                                </ListView.Resources>
-                            </ListView>
+                            <ucLib:PropertyConfigurationViewer Grid.Row="1"
+                                                               InputSnapSpotCollection="{Binding ElementName=FunctionDiagramViewer,Path=SelectedInputSnapSpotCollection}"
+                                                               IsOpenROIConfigurationView="{Binding IsOpenROIConfigurationView,Mode=TwoWay}">
+                                
+                            </ucLib:PropertyConfigurationViewer>
+                            
                         </Grid>
                     </dxdo:LayoutPanel>
 

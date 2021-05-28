@@ -7,12 +7,6 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="UC\Direct2DCanvas.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Update="UC\ImageCanvasViewer.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="View\ApplicationSettingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -33,12 +27,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UC\Direct2DCanvas.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="UC\ImageCanvasViewer.xaml">
-      <SubType>Designer</SubType>
-    </Page>
     <Page Update="View\ApplicationSettingView.xaml">
       <SubType>Designer</SubType>
     </Page>

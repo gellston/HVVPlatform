@@ -23,7 +23,7 @@
     <ProjectGuid>{DBB9E2BF-E127-4B89-AC83-2EF582AE5FD6}</ProjectGuid>
     <Keyword>NetCoreCProj</Keyword>
     <RootNamespace>HVVScriptSharp</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -137,6 +137,7 @@
     <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
@@ -150,6 +151,7 @@
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Rect.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>

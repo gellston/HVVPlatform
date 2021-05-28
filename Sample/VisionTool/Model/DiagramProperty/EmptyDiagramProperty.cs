@@ -15,11 +15,7 @@ namespace Model.DiagramProperty
         public override object Clone()
         {
             EmptyDiagramProperty newCopy = new EmptyDiagramProperty();
-            //newCopy.Name = this.Name;
             newCopy.Hash = this.Hash;
-            //newCopy.ParentFunctionHash = this.ParentFunctionHash;
-
-
             return newCopy;
         }
 

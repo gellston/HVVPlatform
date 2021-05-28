@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using Model;
+using Newtonsoft.Json;
 
 namespace VisionTool.Service
 {
@@ -11,6 +13,11 @@ namespace VisionTool.Service
         public SettingConfigService()
         {
 
+            this.LoadApplicationSetting();
+        }
+
+        public void LoadApplicationSetting()
+        {
             if (File.Exists(this.CurrentApplicationSettingFilePath) == false)
             {
                 this.ApplicationSetting = new ApplicationSetting()
@@ -22,12 +29,14 @@ namespace VisionTool.Service
                     DiagramPath = this.CurrentApplicationPath + "Diagram" + Path.DirectorySeparatorChar,
                     DiagramConfigPath = this.CurrentApplicationPath + "DiagramConfig" + Path.DirectorySeparatorChar,
                     DiagramImagePath = this.CurrentApplicationPath + "DiagramImage" + Path.DirectorySeparatorChar
-                    
+
                 };
             }
             else
             {
-                // 파일 생성 코드 짜는게 필요함.
+                string jsonContent = File.ReadAllText(this.CurrentApplicationSettingFilePath, Encoding.UTF8);
+                var applicationSetting = JsonConvert.DeserializeObject<ApplicationSetting>(jsonContent);
+                this.ApplicationSetting = applicationSetting;
             }
 
             Directory.CreateDirectory(this.ApplicationSetting.ModulePath);
@@ -37,8 +46,42 @@ namespace VisionTool.Service
             Directory.CreateDirectory(this.ApplicationSetting.DiagramPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramConfigPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramImagePath);
-
             Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + this.ApplicationSetting.ModuleThirdPartyDLLPath);
+        }
+
+        public void SaveApplicationSetting()
+        {
+            if(DialogHelper.ShowConfirmMessage("프로그램 설정을 저장하시겠습니까?") == true)
+            {
+
+                try
+                {
+
+                    string jsonString = JsonConvert.SerializeObject(this.ApplicationSetting, Formatting.Indented);
+                    File.WriteAllText(this.CurrentApplicationSettingFilePath, jsonString, Encoding.UTF8);
+                }
+                catch(Exception e)
+                {
+                    DialogHelper.ShowToastErrorMessage("설정 저장", "설정 저장이 실패했습니다.");
+                }
+            }
+        }
+
+        public void ResetApplicationSetting()
+        {
+            if (DialogHelper.ShowConfirmMessage("프로그램 설정을 초기화 하시겠습니까?") == true)
+            {
+
+                try
+                {
+                    File.Delete(this.CurrentApplicationSettingFilePath);
+                    this.LoadApplicationSetting();
+                }
+                catch (Exception e)
+                {
+                    DialogHelper.ShowToastErrorMessage("설정 초기화", "설정 초기화가 실패했습니다.");
+                }
+            }
         }
 
         public string CurrentApplicationPath
@@ -90,7 +133,7 @@ namespace VisionTool.Service
         {
             get
             {
-                return CurrentApplicationSettingPath + "config.xml";
+                return CurrentApplicationSettingPath + "Config.json";
             }
         }
 
@@ -107,8 +150,5 @@ namespace VisionTool.Service
         {
             get;set;
         }
-
-        
-        
     }
 }

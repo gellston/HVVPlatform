@@ -4,10 +4,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisionTool", "VisionTool\VisionTool.csproj", "{653CE775-53BE-439B-A582-173A63E7FEC6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C9A3BC42-1953-4AB1-AB19-74297BBA5213} = {C9A3BC42-1953-4AB1-AB19-74297BBA5213}
+		{FA2C3053-9ABC-486A-A30E-339D9712D0CC} = {FA2C3053-9ABC-486A-A30E-339D9712D0CC}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{C9A3BC42-1953-4AB1-AB19-74297BBA5213}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UC", "UC\UC.csproj", "{FA2C3053-9ABC-486A-A30E-339D9712D0CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C9A3BC42-1953-4AB1-AB19-74297BBA5213} = {C9A3BC42-1953-4AB1-AB19-74297BBA5213}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

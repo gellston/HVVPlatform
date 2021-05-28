@@ -1,18 +1,24 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace VisionTool.UC
+namespace UClib
 {
     /// <summary>
     /// ImageCanvasViewer.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class ImageCanvasViewer : UserControl, INotifyPropertyChanged
+    public partial class ROICanvasViewer : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyRaised(string propertyname)
@@ -33,19 +39,13 @@ namespace VisionTool.UC
         }
 
 
-        public ImageCanvasViewer()
+        public ROICanvasViewer()
         {
             InitializeComponent();
 
-            this.ZoomStep = 0.5;
-            this.ZoomMax = 5;
-            this.ZoomMin = 0.2;
-            this.Zoom = 1;
-
-
         }
 
-        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ImageCanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
+        public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ROICanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
         public ImageSource Image
         {
             get
@@ -61,27 +61,19 @@ namespace VisionTool.UC
 
         private static void OnCustomerChangedCallBack(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            ImageCanvasViewer control = sender as ImageCanvasViewer;
+            ROICanvasViewer control = sender as ROICanvasViewer;
             if (control != null)
             {
                 ImageSource image = e.NewValue as ImageSource;
                 if (image == null) return;
 
-                //if (control.ActualWidth == 0 || control.ActualHeight == 0) return;
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
-                //control.Zoom = (image.Width > image.Height ? (control.ActualWidth / image.Width) : (control.ActualHeight / image.Height));
-                //control.ZoomMax = control.Zoom * 20;
-                //control.ZoomMin = control.Zoom / 20;
-                //control.ZoomStep = (control.ZoomMax - control.ZoomMin) / 40;
 
                 control.OutScrollViewer.UpdateLayout();
 
                 control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
                 control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
-
-                //control.Image = image;
-
 
             }
         }
@@ -100,7 +92,7 @@ namespace VisionTool.UC
             set => Set<double>(nameof(CanvasHeight), ref _CanvasHeight, value);
         }
 
-        public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register("Zoom", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty ZoomProperty = DependencyProperty.Register("Zoom", typeof(double), typeof(ROICanvasViewer), new PropertyMetadata(1.0));
         public double Zoom
         {
             get
@@ -114,7 +106,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty ZoomMaxProperty = DependencyProperty.Register("ZoomMax", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty ZoomMaxProperty = DependencyProperty.Register("ZoomMax", typeof(double), typeof(ROICanvasViewer), new PropertyMetadata(10.0));
         public double ZoomMax
         {
             get
@@ -128,7 +120,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty ZoomMinProperty = DependencyProperty.Register("ZoomMin", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty ZoomMinProperty = DependencyProperty.Register("ZoomMin", typeof(double), typeof(ROICanvasViewer), new PropertyMetadata(0.1));
         public double ZoomMin
         {
             get
@@ -142,7 +134,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty ZoomStepProperty = DependencyProperty.Register("ZoomStep", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty ZoomStepProperty = DependencyProperty.Register("ZoomStep", typeof(double), typeof(ROICanvasViewer), new PropertyMetadata(0.505));
         public double ZoomStep
         {
             get
@@ -156,7 +148,7 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty TranslationXProperty = DependencyProperty.Register("TranslationX", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty TranslationXProperty = DependencyProperty.Register("TranslationX", typeof(double), typeof(ROICanvasViewer));
         public double TranslationX
         {
             get
@@ -171,7 +163,7 @@ namespace VisionTool.UC
         }
 
 
-        public static readonly DependencyProperty TranslationYProperty = DependencyProperty.Register("TranslationY", typeof(double), typeof(ImageCanvasViewer));
+        public static readonly DependencyProperty TranslationYProperty = DependencyProperty.Register("TranslationY", typeof(double), typeof(ROICanvasViewer));
         public double TranslationY
         {
             get
@@ -185,22 +177,22 @@ namespace VisionTool.UC
             }
         }
 
-        public static readonly DependencyProperty DrawObjectsCollectionProperty = DependencyProperty.Register("DrawObjectsCollection", typeof(ObservableCollection<HV.V1.Object>), typeof(ImageCanvasViewer));
-        public ObservableCollection<HV.V1.Object> DrawObjectsCollection
-        {
-            get
-            {
-                return (ObservableCollection<HV.V1.Object>)GetValue(DrawObjectsCollectionProperty);
-            }
+        //public static readonly DependencyProperty DrawObjectsCollectionProperty = DependencyProperty.Register("DrawObjectsCollection", typeof(ObservableCollection<HV.V1.Object>), typeof(ROICanvasViewer));
+        //public ObservableCollection<HV.V1.Object> DrawObjectsCollection
+        //{
+        //    get
+        //    {
+        //        return (ObservableCollection<HV.V1.Object>)GetValue(DrawObjectsCollectionProperty);
+        //    }
 
-            set
-            {
-                SetValue(DrawObjectsCollectionProperty, value);
-            }
-        }
+        //    set
+        //    {
+        //        SetValue(DrawObjectsCollectionProperty, value);
+        //    }
+        //}
 
 
-        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(HV.V1.Object), typeof(ImageCanvasViewer), new PropertyMetadata(OnSelectedItemChangedCallBack));
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(HV.V1.Object), typeof(ROICanvasViewer), new PropertyMetadata(OnSelectedItemChangedCallBack));
         public HV.V1.Object SelectedItem
         {
             get
@@ -215,10 +207,10 @@ namespace VisionTool.UC
         }
         private static void OnSelectedItemChangedCallBack(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            ImageCanvasViewer control = sender as ImageCanvasViewer;
+            ROICanvasViewer control = sender as ROICanvasViewer;
             if (control != null)
             {
-                //control.SelectedItem = e.NewValue as HV.V1.Object;
+
             }
         }
 

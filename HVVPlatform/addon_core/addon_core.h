@@ -1,26 +1,15 @@
 #pragma once
-
-
 #include <binding.h>
 
 #include "image.h"
 #include "point.h"
+#include "rect.h"
 #include "_math.h"
 #include "_system.h"
 
 HV_CREATE_SHARED_CONVERTER(hv::v1::image);
 HV_CREATE_SHARED_CONVERTER(hv::v1::point);
-
-//static v8::Local<v8::Value> error_test(std::string test) {
-//
-//
-//	auto isolate = v8::Isolate::GetCurrent();
-//	hv::v1::EscapeHandleScope handle_scope(isolate);
-//
-//	auto exception = v8pp::throw_ex(isolate, "test");
-//
-//	return handle_scope.Escape(exception);
-//}
+HV_CREATE_SHARED_CONVERTER(hv::v1::rect);
 
 HV_PLUGIN_INIT(hv::v1::isolate* _isolate)
 {
@@ -59,6 +48,17 @@ HV_PLUGIN_INIT(hv::v1::isolate* _isolate)
 		.set("y", &hv::v1::point::y);
 
 
+	hv::v1::class_<hv::v1::rect, hv::v1::shared_ptr_traits> rect_class(_isolate);
+	rect_class.ctor<std::string, double, double, double, double>()
+		.auto_wrap_objects(true)
+		.inherit<hv::v1::object>()
+		.set("x", &hv::v1::rect::x)
+		.set("y", &hv::v1::rect::y)
+		.set("width", &hv::v1::rect::width)
+		.set("height", &hv::v1::rect::height);
+
+
+
 	hv::v1::module m(_isolate);
 	m.set_const("u8c1_image", hv::v1::image_data_type::u8c1_image)
 		.set_const("u16c1_image", hv::v1::image_data_type::u16c1_image)
@@ -66,8 +66,10 @@ HV_PLUGIN_INIT(hv::v1::isolate* _isolate)
 		.set_const("u64c1_image", hv::v1::image_data_type::u64c1_image)
 		.set("image", image_class)
 		.set("point", point_class)
+		.set("rect", rect_class)
 		.set("to_image", &hv::v1::to_image)
 		.set("to_point", &hv::v1::to_point)
+		.set("to_rect", &hv::v1::to_rectt)
 		.set("sleep", _sleep)
 		.set("round", hv::v1::round)
 		.set("rand", hv::v1::rand);

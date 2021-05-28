@@ -9,40 +9,62 @@
              x:Name="view"
              xmlns:model="clr-namespace:Model;assembly=Model"
              xmlns:script="clr-namespace:HV.V1;assembly=HVVScriptSharp"
-             AllowDrop="True">
+             xmlns:converter="clr-namespace:Converter"
+             AllowDrop="True"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking">
 
+    <UserControl.Resources>
+        <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
+    </UserControl.Resources>
+    <dx:DXTabControl ItemsSource="{Binding ElementName=view, Path=ResultObjectCollection}"
+                     SelectedItem="{Binding ElementName=view, Path=SelectedResultObject}"
+                     Margin="0,3,0,0"
+                     Grid.Row="0"
+                     Grid.RowSpan="2"
+                     IsSynchronizedWithCurrentItem="True">
+        <dx:DXTabControl.ItemTemplate>
+            <ItemContainerTemplate>
+                <ItemContainerTemplate.Resources>
+                    <DataTemplate DataType="{x:Type script:Image}">
+                        <local:ImageCanvasViewer Image="{Binding Path=., Converter={StaticResource HVObjectBitmapImageConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                                 Background="Red">
+                        </local:ImageCanvasViewer>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type script:String}">
+                        <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type script:Boolean}">
+                        <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type script:Number}">
+                        <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </DataTemplate>
+                    <DataTemplate DataType="{x:Type script:Rect}">
+                        <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </DataTemplate>
+                </ItemContainerTemplate.Resources>
+                <ContentPresenter Content="{Binding Path=Data}"></ContentPresenter>
 
-    <ListView ScrollViewer.VerticalScrollBarVisibility="Visible"
-              SelectedItem="{Binding ElementName=view, Path=SelectedResultObject}"
-              ItemsSource="{Binding ElementName=view, Path=ResultObjectCollection}"
-              AllowDrop="True"
-              HorizontalAlignment="Stretch"
-              HorizontalContentAlignment="Stretch"
-              VerticalAlignment="Stretch"
-              VerticalContentAlignment="Stretch">
-        <ListView.Resources>
-            <DataTemplate DataType="{x:Type model:ResultObject}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBox Grid.Row="0" Grid.Column="0" Text="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Name}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
-                    <TextBox Grid.Row="1" Grid.Column="0" Text="Data" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True"></TextBox>
-                    <ContentPresenter Grid.Row="1" Grid.Column="1"  Grid.ColumnSpan="2" Content="{Binding Data}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type script:Number}">
-                                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" IsReadOnly="True" TextAlignment="Left" TextWrapping="Wrap" Text="{Binding ToString, Mode=OneWay}"></TextBox>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
-                </Grid>
-            </DataTemplate>
-        </ListView.Resources>
-    </ListView>
+            </ItemContainerTemplate>
+        </dx:DXTabControl.ItemTemplate>
+
+        <dx:DXTabControl.ItemContainerStyle>
+            <Style TargetType="dx:DXTabItem">
+                <Setter Property="Header" Value="{Binding Name}"/>
+                <Setter Property="CloseCommand" Value="{Binding ElementName=view, Path=DeleteScriptItemCommand}"/>
+                <Setter Property="CloseCommandParameter" Value="{Binding Path=.}"/>
+            </Style>
+        </dx:DXTabControl.ItemContainerStyle>
+
+        <dx:DXTabControl.View>
+            <dx:TabControlStretchView HideButtonShowMode="InAllTabs"
+                                      NewButtonShowMode="NoWhere"
+                                      HeaderLocation="Top">
+            </dx:TabControlStretchView>
+        </dx:DXTabControl.View>
+
+    </dx:DXTabControl>
+
 </UserControl>

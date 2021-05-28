@@ -20,7 +20,6 @@
     <UserControl.Resources>
         <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
         <converter:ObjectTypeTriggerConverter x:Key="ObjectTypeTriggerConverter"></converter:ObjectTypeTriggerConverter>
-        <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
         <converter:BooleanToVisibility x:Key="BooleanToVisibility"></converter:BooleanToVisibility>
         <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
        

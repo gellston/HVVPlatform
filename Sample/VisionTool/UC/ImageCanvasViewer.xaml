@@ -1,15 +1,17 @@
-﻿<UserControl x:Class="VisionTool.UC.ImageCanvasViewer"
+﻿<UserControl x:Class="UClib.ImageCanvasViewer"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VisionTool.UC"
+             xmlns:local="clr-namespace:UClib"
              xmlns:hv="clr-namespace:HV.V1;assembly=HVVScriptSharp"
-             xmlns:converter="clr-namespace:VisionTool.Converter"
+             xmlns:converter="clr-namespace:Converter"
              xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="view"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core">
 
     <UserControl.Resources>
         <converter:RadiusCordinateConverter x:Key="RadiusCordinateConverter"></converter:RadiusCordinateConverter>
@@ -17,12 +19,11 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
-                  PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel"
-                  >
-        <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=DrawObjectsCollection, Mode=OneWay}">
+                  PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+        <ItemsControl ItemsSource="{Binding ElementName=view, Path=DrawObjectsCollection, Mode=OneWay}">
             <ItemsControl.Resources>
-                <DataTemplate DataType="{x:Type hv:Point}">
-                    
+                <!--<DataTemplate DataType="{x:Type hv:Point}">
+
                     <Grid Name="parent">
                         <Grid.ToolTip>
                             <ToolTip Width="110">
@@ -49,12 +50,12 @@
                         <Line  X1="0" Y1="0" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="{Binding ElementName='parent', Path='ActualHeight'}" Stroke="Green" StrokeThickness="4" />
                         <Line  X1="0" Y1="{Binding ElementName='parent', Path='ActualHeight'}" X2="{Binding ElementName='parent', Path='ActualWidth'}" Y2="0" Stroke="Green" StrokeThickness="4" />
                     </Grid>
-                </DataTemplate>
-            </ItemsControl.Resources> 
+                </DataTemplate>-->
+            </ItemsControl.Resources>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Canvas Width="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=CanvasWidth, Mode=OneWay}" 
-                            Height="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=CanvasHeight, Mode=OneWay}"
+                    <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}" 
+                            Height="{Binding ElementName=view, Path=CanvasHeight, Mode=OneWay}"
                             Name="ChildCanvas" 
                             MouseMove="ChildCanvas_MouseMove"
                             MouseLeftButtonDown="ChildCanvas_MouseLeftButtonDown"
@@ -62,14 +63,14 @@
                             RenderTransformOrigin="0.5,0.5"
                             ClipToBounds="True">
                         <Canvas.Background>
-                            <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Image, Mode=OneWay}"></ImageBrush>
+                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, FallbackValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
                         </Canvas.Background>
                         <Canvas.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Zoom, Mode=OneWay}"
-                                                ScaleY="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=Zoom, Mode=OneWay}"/>
-                                <TranslateTransform X="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=TranslationX, Mode=OneWay}" 
-                                                    Y="{Binding RelativeSource={RelativeSource AncestorType=local:ImageCanvasViewer}, Path=TranslationY, Mode=OneWay}"/>
+                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"
+                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"/>
+                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, FallbackValue=0}" 
+                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, FallbackValue=0}"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
                     </Canvas>
@@ -82,7 +83,7 @@
                     </Style.Resources>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=Type}" Value="point">
-                            
+
                             <Setter Property="Canvas.Top">
                                 <Setter.Value>
                                     <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">

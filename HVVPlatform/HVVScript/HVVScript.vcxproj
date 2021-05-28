@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{e73da591-3539-4ed8-a5d3-04da60649ccb}</ProjectGuid>
     <RootNamespace>HVVScript</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -157,6 +157,7 @@ copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%p
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
 copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
 copy /Y "$(SolutionDir)core\point.h" "%OUT_INCLUDE_PATH%point.h"
+copy /Y "$(SolutionDir)core\rect.h" "%OUT_INCLUDE_PATH%rect.h"
 
 xcopy /y /c /e /h /k $(SolutionDir)v8fullset\bin\$(Configuration)\*.* $(SolutionDir)x64\$(Configuration)\
 
@@ -210,6 +211,7 @@ copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%p
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
 copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
 copy /Y "$(SolutionDir)core\point.h" "%OUT_INCLUDE_PATH%point.h"
+copy /Y "$(SolutionDir)core\rect.h" "%OUT_INCLUDE_PATH%rect.h"
 
 xcopy /y /c /e /h /k $(SolutionDir)v8fullset\bin\$(Configuration)\*.* $(SolutionDir)x64\$(Configuration)\
 

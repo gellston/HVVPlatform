@@ -262,6 +262,13 @@ namespace VisionTool.ViewModel
             });
         }
 
+        private bool _IsOpenROIConfigurationView = false;
+        public bool IsOpenROIConfigurationView
+        {
+            get => _IsOpenROIConfigurationView;
+            set => Set(ref _IsOpenROIConfigurationView, value);
+        }
+
 
         private bool _IsRunningScript = false;
         public bool IsRunningScript

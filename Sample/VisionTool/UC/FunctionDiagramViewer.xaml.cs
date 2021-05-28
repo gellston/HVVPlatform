@@ -588,42 +588,6 @@ namespace UClib
             }
         }
 
-        /*
-        private static void FunctionCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-           // var calendar = d as RadCalendar;
-
-            if (e.OldValue != null)
-            {
-                var coll = (INotifyCollectionChanged)e.OldValue;
-                // Unsubscribe from CollectionChanged on the old collection
-                coll.CollectionChanged -= FunctionCollectinItemChanged;
-            }
-
-            if (e.NewValue != null)
-            {
-                var coll = (ObservableCollection<Function>)e.NewValue;
-                //calendar.DayTemplateSelector = new SpecialDaySelector(coll, GetSpecialDayTemplate(d));
-                // Subscribe to CollectionChanged on the new collection
-                coll.CollectionChanged += FunctionCollectinItemChanged;
-               
-            }
-        }
-
-
-        private static void FunctionCollectinItemChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            ObservableCollection<Function> collection = sender as ObservableCollection<Function>;
-            
-            //if(control != null)
-            //{
-            //    control.UpdateFunctionDiagramLayout();
-           // }
-
-
-        }*/
-
-
         public static readonly DependencyProperty SelectedDiagramProperty = DependencyProperty.Register("SelectedDiagram", typeof(DiagramObject), typeof(FunctionDiagramViewer), new PropertyMetadata(OnSelectedDiagramChanged));
         public DiagramObject SelectedDiagram
         {
@@ -647,12 +611,6 @@ namespace UClib
                 control.ShowMidPoint = false;
 
                 DiagramObject newValue = (DiagramObject)e.NewValue;
-
-
-                //if (newValue is InputSnapSpot) 
-                //    return;
-                //if (newValue is OutputSnapSpot) 
-                //    return;
 
                 if (newValue is Connector)
                 {
@@ -712,42 +670,6 @@ namespace UClib
             get => _SelectedInputSnapSpotCollection;
             set => Set(ref _SelectedInputSnapSpotCollection, value);
         }
-
-        //private static void OnFunctionCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    if (e.OldValue != null)
-        //    {
-        //        var coll = (INotifyCollectionChanged)e.OldValue;
-        //        coll.CollectionChanged -= OnFunctionItemChanged;
-        //    }
-
-        //    if (e.NewValue != null)
-        //    {
-        //        var coll = (ObservableCollection<Function>)e.NewValue;
-        //        coll.CollectionChanged += OnFunctionItemChanged;
-        //    }
-        //}
-        //private static void OnFunctionItemChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        switch (e.Action)
-        //        {
-        //            case NotifyCollectionChangedAction.Add:
-        //                System.Diagnostics.Debug.WriteLine("test");
-        //                break;
-
-        //            case NotifyCollectionChangedAction.Remove:
-        //                System.Diagnostics.Debug.WriteLine("test");
-        //                break;
-
-        //        }
-
-        //    }catch(Exception exception)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(exception.Message);
-        //    }
-        //}
 
 
         public static readonly DependencyProperty InputSnapSpotCollectionProperty = DependencyProperty.Register("InputSnapSpotCollection", typeof(ObservableCollection<InputSnapSpot>), typeof(FunctionDiagramViewer));
@@ -837,12 +759,6 @@ namespace UClib
             this.CurrentY = e.GetPosition(listbox).Y;
 
 
-            //if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew)
-            //{
-            //    SelectedDiagram.Location.X = e.GetPosition(listbox).X;
-            //    SelectedDiagram.Location.Y = e.GetPosition(listbox).Y;
-            //}else 
-
             if (SelectedDiagram != null && SelectedDiagram is Connector && SelectedDiagram.IsNew)
             {
                 // InputSnapSpot
@@ -907,21 +823,6 @@ namespace UClib
 
         private void DiagramList_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //if (this.IsFunctionCreate == true)
-            //{
-            //    if (SelectedDiagram != null && SelectedDiagram is Function && SelectedDiagram.IsNew == true)
-            //    {
-            //        var function = SelectedDiagram as Function;
-            //        function.Activate();
-            //        IsFunctionCreate = false;
-            //        IsFunctionCreate = true;
-
-            //        this.UpdateFunctionDiagramLayout();
-
-            //        e.Handled = true;
-            //        return;
-            //    }
-            //}
 
             if (this.IsConnectorCreate == true && this.SelectedDiagram != null)
             {
@@ -964,9 +865,6 @@ namespace UClib
                     IsConnectorCreate = false;
                     IsConnectorCreate = true;
 
-                    //this.UpdateDiagramLayout();
-                    //this.UpdateConnectorDiagramLayout();
-
                     e.Handled = true;
                     return;
                 }
@@ -977,7 +875,6 @@ namespace UClib
 
         private void DiagramList_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //this.IsFunctionCreate = false;
             this.IsConnectorCreate = false;
             this.IsNoAction = true;
         }
@@ -1125,22 +1022,6 @@ namespace UClib
 
         private void FunctionSequenceListView_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            //ListView listview = sender as ListView;
-            //if (listview != null && _IsDragging && _dragSource != null)
-            //{
-            //    UIElement element = listview.InputHitTest(e.GetPosition(listview)) as UIElement;
-            //    if (element is Image)
-            //    {
-            //        var dataContext = ((Image)element).DataContext as Function;
-            //        if (dataContext != null)
-            //        {
-            //            _dragSource = element as Image;
-            //        }
-
-
-
-            //    }
-            //}
 
             _IsDragging = false;
             _dragSource = null;
