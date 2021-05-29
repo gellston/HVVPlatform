@@ -61,16 +61,17 @@
                             MouseLeftButtonDown="ChildCanvas_MouseLeftButtonDown"
                             MouseLeftButtonUp="ChildCanvas_MouseLeftButtonUp"
                             RenderTransformOrigin="0.5,0.5"
-                            ClipToBounds="True">
+                            ClipToBounds="True"
+                            IsItemsHost="True">
                         <Canvas.Background>
-                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, FallbackValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
+                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, TargetNullValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
                         </Canvas.Background>
                         <Canvas.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"
-                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"/>
-                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, FallbackValue=0}" 
-                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, FallbackValue=0}"/>
+                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1}"
+                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1}"/>
+                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, TargetNullValue=1}" 
+                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, TargetNullValue=1}"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
                     </Canvas>

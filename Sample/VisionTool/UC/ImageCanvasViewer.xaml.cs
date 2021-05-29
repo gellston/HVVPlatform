@@ -238,13 +238,13 @@ namespace UClib
 
             if (e.Delta > 0)
             {
-                this.Zoom -= this.ZoomStep;
+                this.Zoom -= ((this.ZoomMax - this.ZoomMin)/100);
                 if (this.Zoom <= this.ZoomMin)
                     this.Zoom = this.ZoomMin;
             }
             else
             {
-                this.Zoom += this.ZoomStep;
+                this.Zoom += ((this.ZoomMax - this.ZoomMin) / 100);
                 if (this.Zoom >= this.ZoomMax)
                     this.Zoom = this.ZoomMax;
 

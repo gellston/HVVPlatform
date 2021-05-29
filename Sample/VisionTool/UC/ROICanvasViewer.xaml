@@ -11,17 +11,37 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
-             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core">
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:property="clr-namespace:Model.DiagramProperty;assembly=Model">
 
     <UserControl.Resources>
+        <ControlTemplate x:Key="DesignerItemTemplate" TargetType="ContentControl">
+            <Grid>
+                <local:MoveThumb DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" 
+                                 Cursor="SizeAll"/>
+                <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
+            </Grid>
+        </ControlTemplate>
         <converter:RadiusCordinateConverter x:Key="RadiusCordinateConverter"></converter:RadiusCordinateConverter>
+        <CompositeCollection x:Key="compositeCollection">
+            <ContentControl Name="DesignerItem"
+                            Width="100"
+                            Height="100"
+                            Canvas.Top="100"
+                            Canvas.Left="100"
+                   Template="{StaticResource DesignerItemTemplate}">
+                <Ellipse Fill="Blue" 
+                         IsHitTestVisible="False"
+                         />
+            </ContentControl>
+        </CompositeCollection>
     </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
                   PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
-        <ListBox>
-            <ListBox.ItemsPanel>
+        <ItemsControl>
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}" 
                             Height="{Binding ElementName=view, Path=CanvasHeight, Mode=OneWay}"
@@ -44,37 +64,11 @@
                         </Canvas.RenderTransform>
                     </Canvas>
                 </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ContentPresenter">
-                    <Style.Resources>
-                        <sys:Double x:Key="DefaultRadius">5</sys:Double>
-                    </Style.Resources>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=Type}" Value="rect">
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemsSource>
+                <StaticResource ResourceKey="compositeCollection"></StaticResource>
+            </ItemsControl.ItemsSource>
 
-                            <Setter Property="Canvas.Top">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
-                                        <Binding Path="Y"></Binding>
-                                        <Binding Source="{StaticResource DefaultRadius}"/>
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Canvas.Left">
-                                <Setter.Value>
-                                    <MultiBinding Converter="{StaticResource RadiusCordinateConverter}">
-                                        <Binding Path="X"></Binding>
-                                        <Binding Source="{StaticResource DefaultRadius}"/>
-                                    </MultiBinding>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="Width" Value="10"></Setter>
-                            <Setter Property="Height" Value="10"></Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
+        </ItemsControl>
     </ScrollViewer>
 </UserControl>

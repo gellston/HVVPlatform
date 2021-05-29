@@ -28,9 +28,9 @@
             <ItemContainerTemplate>
                 <ItemContainerTemplate.Resources>
                     <DataTemplate DataType="{x:Type script:Image}">
-                        <local:ImageCanvasViewer Image="{Binding Path=., Converter={StaticResource HVObjectBitmapImageConverter}, UpdateSourceTrigger=PropertyChanged}"
-                                                 Background="Red">
-                        </local:ImageCanvasViewer>
+                        <local:ROICanvasViewer Image="{Binding Path=., Converter={StaticResource HVObjectBitmapImageConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                               Background="Red">
+                        </local:ROICanvasViewer>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type script:String}">
                         <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>

@@ -23,9 +23,10 @@
                       VerticalAlignment="Stretch"></GridSplitter>
         
 
-        <local:ImageCanvasViewer Grid.Column="0"
-                                 Image="{Binding ElementName=view, Path=SelectedImage, Converter={StaticResource HVObjectBitmapImageConverter}}"
-                                 ></local:ImageCanvasViewer>
+        <local:ROICanvasViewer Grid.Column="0"
+                               Image="{Binding ElementName=view, Path=SelectedImage, Converter={StaticResource HVObjectBitmapImageConverter}}"
+                               ZoomMin="0.001"
+                               ZoomMax="1000"></local:ROICanvasViewer>
         <ListView Grid.Column="2"
                   HorizontalContentAlignment="Stretch"
                   HorizontalAlignment="Stretch"
