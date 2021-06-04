@@ -76,6 +76,9 @@
     <Reference Include="DevExpress.Xpf.Themes.VS2019Dark.v20.2">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\DevExpress 20.2\.NET Core Desktop Libraries\Bin\NetCore\DevExpress.Xpf.Themes.VS2019Dark.v20.2.dll</HintPath>
     </Reference>
+    <Reference Include="Device">
+      <HintPath>..\Device\bin\x64\Debug\netcoreapp3.1\Device.dll</HintPath>
+    </Reference>
     <Reference Include="HVVScriptSharp">
       <HintPath>..\..\..\HVVPlatform\x64\Debug\HVVScriptSharp.dll</HintPath>
     </Reference>

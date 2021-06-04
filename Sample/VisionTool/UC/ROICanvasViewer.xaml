@@ -12,6 +12,10 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+<<<<<<< HEAD
+             xmlns:model="clr-namespace:Model;assembly=Model"
+=======
+>>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
              xmlns:property="clr-namespace:Model.DiagramProperty;assembly=Model">
 
     <UserControl.Resources>
@@ -23,6 +27,15 @@
             </Grid>
         </ControlTemplate>
         <converter:RadiusCordinateConverter x:Key="RadiusCordinateConverter"></converter:RadiusCordinateConverter>
+<<<<<<< HEAD
+        <converter:HVObjectBitmapImageConverter x:Key="HVObjectBitmapImageConverter"></converter:HVObjectBitmapImageConverter>
+        <converter:DiagramPropertyToStringConverter x:Key="DiagramPropertyToStringConverter"></converter:DiagramPropertyToStringConverter>
+        <converter:DiagramPropertyToBoolConverter x:Key="DiagramPropertyToBoolConverter"></converter:DiagramPropertyToBoolConverter>
+        <converter:CenterCordinateConverter x:Key="CenterCordinateConverter"></converter:CenterCordinateConverter>
+        <converter:CenterCordinateWithSizeConverter x:Key="CenterCordinateWithSizeConverter"></converter:CenterCordinateWithSizeConverter>
+        <converter:RatioToSizeConverter x:Key="RatioToSizeConverter"></converter:RatioToSizeConverter>
+        
+=======
         <CompositeCollection x:Key="compositeCollection">
             <ContentControl Name="DesignerItem"
                             Width="100"
@@ -35,12 +48,381 @@
                          />
             </ContentControl>
         </CompositeCollection>
+>>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
     </UserControl.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
                   PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+<<<<<<< HEAD
+        <ItemsControl ItemsSource="{Binding ElementName=view, Path=SelectedFunction.Input}">
+            <ItemsControl.Resources>
+                <DataTemplate DataType="{x:Type model:InputSnapSpot}">
+                    <DataTemplate.Resources>
+                        <!--사각ROI-->
+                        <DataTemplate DataType="{x:Type property:RectROIDiagramProperty}">
+                            <Grid>
+                                <local:MoveThumb HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 Width="10"
+                                                 Height="10"
+                                                 DataContext="{Binding Path=.}"
+                                                 Panel.ZIndex="1"
+                                                 Cursor="ScrollAll"
+                                                 Opacity="0.5"
+                                                 Zoom="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"></local:MoveThumb>
+                                <local:ResizeThumb HorizontalAlignment="Left"
+                                                   VerticalAlignment="Top"
+                                                   Width="10"
+                                                   Height="10"
+                                                   DataContext="{Binding Path=.}"
+                                                   Panel.ZIndex="1"
+                                                   Cursor="Hand"
+                                                   Opacity="0.5"
+                                                   Margin="-5,-5"></local:ResizeThumb>
+                                <local:ResizeThumb HorizontalAlignment="Right"
+                                                   VerticalAlignment="Top"
+                                                   Width="10"
+                                                   Height="10"
+                                                   DataContext="{Binding Path=.}"
+                                                   Panel.ZIndex="1"
+                                                   Cursor="Hand"
+                                                   Opacity="0.5"
+                                                   Margin="-5,-5"></local:ResizeThumb>
+                                <local:ResizeThumb HorizontalAlignment="Left"
+                                                   VerticalAlignment="Bottom"
+                                                   Width="10"
+                                                   Height="10"
+                                                   DataContext="{Binding Path=.}"
+                                                   Panel.ZIndex="1"
+                                                   Cursor="Hand"
+                                                   Opacity="0.5"
+                                                   Margin="-5,0,0,-5"></local:ResizeThumb>
+                                <local:ResizeThumb HorizontalAlignment="Right"
+                                                   VerticalAlignment="Bottom"
+                                                   Width="10"
+                                                   Height="10"
+                                                   DataContext="{Binding Path=.}"
+                                                   Panel.ZIndex="1"
+                                                   Cursor="Hand"
+                                                   Opacity="0.5"
+                                                   Margin="0,0,-5,-5"></local:ResizeThumb>
+                                <Rectangle Panel.ZIndex="0"
+                                           Opacity="0.5"
+                                           Stroke="Green"></Rectangle>
+                            </Grid>
+                        </DataTemplate>
+
+                        <!--LineROI-->
+                        <DataTemplate DataType="{x:Type property:LineFitROIDiagramProperty}">
+                            <Grid>
+                                <Grid.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform CenterX="{Binding Width, Converter={StaticResource CenterCordinateWithSizeConverter}}" 
+                                                         CenterY="{Binding Height, Converter={StaticResource CenterCordinateWithSizeConverter}}" 
+                                                         Angle="{Binding Angle, FallbackValue=0, TargetNullValue=0}"></RotateTransform>
+                       
+                                    </TransformGroup>
+                                </Grid.RenderTransform>
+
+                                <local:MoveThumb HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 DataContext="{Binding Path=.}"
+                                                 Panel.ZIndex="1"
+                                                 Width="10"
+                                                 Height="10"
+                                                 Cursor="ScrollAll"
+                                                 Zoom="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"
+                                                 Opacity="0.5"></local:MoveThumb>
+                                <!--Right Center-->
+                                <local:ResizeThumb HorizontalAlignment="Right"
+                                                 VerticalAlignment="Center"
+                                                 DataContext="{Binding Path=.}"
+                                                 Panel.ZIndex="1"
+                                                 Width="10"
+                                                 Height="10"
+                                                 Cursor="Hand"
+                                                 Margin="0,0,-5,0"
+                                                 Opacity="0.5"></local:ResizeThumb>
+                                <!--BottomCenter-->
+                                <local:ResizeThumb HorizontalAlignment="Center"
+                                                   VerticalAlignment="Bottom"
+                                                   DataContext="{Binding Path=.}"
+                                                   Panel.ZIndex="1"
+                                                   Width="10"
+                                                   Height="10"
+                                                   Cursor="Hand"
+                                                   Margin="0,0,0,-5"
+                                                   Opacity="0.5"></local:ResizeThumb>
+                                
+                                <Rectangle Panel.ZIndex="0"
+                                           Opacity="0.5"
+                                           Stroke="Green"></Rectangle>
+                            </Grid>
+                        </DataTemplate>
+
+                        <!--CircleFitROI-->
+                        <DataTemplate DataType="{x:Type property:CircleFitROIDiagramProperty}">
+                            <Grid>
+
+                                <Grid HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Panel.ZIndex="0">
+                                    <Ellipse Stroke="Blue"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Opacity="0.5">
+                                        <Ellipse.Width>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="DoesNotExist" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="1" TargetNullValue="1"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Width>
+                                        <Ellipse.Height>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="DoesNotExist" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="1" TargetNullValue="1"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Height>
+                                    </Ellipse>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="-5,0,0,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,0,-5,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Top"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,-5,0,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Bottom"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,0,0,-5"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                </Grid>
+
+                                <Grid HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Panel.ZIndex="1">
+                                    <Ellipse HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stroke="Green"
+                                             Opacity="0.5">
+                                        <Ellipse.Width>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="StartRatio" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="0" TargetNullValue="0"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Width>
+                                        <Ellipse.Height>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="StartRatio" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="0" TargetNullValue="0"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Height>
+                                    </Ellipse>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding StartRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="-5,0,0,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding StartRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Right"
+                                                      VerticalAlignment="Center"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,0,-5,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding StartRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Top"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,-5,0,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding StartRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Bottom"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,0,0,-5"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                </Grid>
+
+                                <Grid HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Panel.ZIndex="2">
+                                    <Ellipse HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stroke="Red"
+                                             Opacity="0.5">
+                                        <Ellipse.Width>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="EndRatio" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="0" TargetNullValue="0"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Width>
+                                        <Ellipse.Height>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="EndRatio" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="0" TargetNullValue="0"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Height>
+                                    </Ellipse>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding EndRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="-5,0,0,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding EndRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Right"
+                                                      VerticalAlignment="Center"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,0,-5,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding EndRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Top"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,-5,0,0"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                    <local:RatioThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                      Ratio="{Binding EndRatio, Mode=TwoWay}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Bottom"
+                                                      Opacity="0.5"
+                                                      Width="10"
+                                                      Height="10"
+                                                      Margin="0,0,0,-5"
+                                                      Cursor="Hand"></local:RatioThumb>
+                                </Grid>
+                                
+                                <local:MoveThumb HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 DataContext="{Binding Path=.}"
+                                                 Panel.ZIndex="1"
+                                                 Width="10"
+                                                 Height="10"
+                                                 Cursor="ScrollAll"
+                                                 Zoom="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"
+                                                 Opacity="0.5"></local:MoveThumb>
+                                
+                            </Grid>
+                        </DataTemplate>
+
+                        <!--CircleROI-->
+                        <DataTemplate DataType="{x:Type property:CircleROIDiagramProperty}">
+                            <Grid>
+                                <Grid HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Panel.ZIndex="0">
+                                    <Ellipse Stroke="Blue"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Opacity="0.5">
+                                        <Ellipse.Width>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="DoesNotExist" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="1" TargetNullValue="1"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Width>
+                                        <Ellipse.Height>
+                                            <MultiBinding Converter="{StaticResource RatioToSizeConverter}">
+                                                <Binding Path="DoesNotExist" FallbackValue="1" TargetNullValue="1"></Binding>
+                                                <Binding Path="Radius" FallbackValue="1" TargetNullValue="1"></Binding>
+                                            </MultiBinding>
+                                        </Ellipse.Height>
+                                    </Ellipse>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="-5,0,0,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Right"
+                                                       VerticalAlignment="Center"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,0,-5,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Top"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,-5,0,0"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                    <local:RadiusThumb Radius="{Binding Radius, Mode=TwoWay}"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Bottom"
+                                                       Opacity="0.5"
+                                                       Width="10"
+                                                       Height="10"
+                                                       Margin="0,0,0,-5"
+                                                       Cursor="Hand"></local:RadiusThumb>
+                                </Grid>
+                                <local:MoveThumb HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center"
+                                                 DataContext="{Binding Path=.}"
+                                                 Panel.ZIndex="1"
+                                                 Width="10"
+                                                 Height="10"
+                                                 Cursor="ScrollAll"
+                                                 Zoom="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"
+                                                 Opacity="0.5"></local:MoveThumb>
+
+                            </Grid>
+                        </DataTemplate>
+                    </DataTemplate.Resources>
+                    <ContentPresenter Content="{Binding DiagramProperty}"></ContentPresenter>
+                </DataTemplate>
+            </ItemsControl.Resources>
+=======
         <ItemsControl>
+>>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Canvas Width="{Binding ElementName=view, Path=CanvasWidth, Mode=OneWay}" 
@@ -50,25 +432,126 @@
                             MouseLeftButtonDown="ChildCanvas_MouseLeftButtonDown"
                             MouseLeftButtonUp="ChildCanvas_MouseLeftButtonUp"
                             RenderTransformOrigin="0.5,0.5"
-                            ClipToBounds="True">
+                            ClipToBounds="True"
+                            >
                         <Canvas.Background>
-                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, FallbackValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
+                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, FallbackValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}, UpdateSourceTrigger=PropertyChanged}"></ImageBrush>
                         </Canvas.Background>
                         <Canvas.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"
-                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1}"/>
-                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, FallbackValue=0}" 
-                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, FallbackValue=0}"/>
+                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"
+                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, FallbackValue=1, TargetNullValue=1}"/>
+                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, FallbackValue=0, TargetNullValue=0}" 
+                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, FallbackValue=0, TargetNullValue=0}"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
                     </Canvas>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
+<<<<<<< HEAD
+            <ItemsControl.ItemContainerStyle>
+                <Style TargetType="ContentPresenter">
+                    <Style.Resources>
+                        <sys:Double x:Key="DefaultRadius">5</sys:Double>
+                    </Style.Resources>
+
+                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                    
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DiagramProperty, Converter={StaticResource DiagramPropertyToStringConverter}}" 
+                                     Value="RectROIDiagramProperty">
+                            <Setter Property="Canvas.Left" Value="{Binding DiagramProperty.X}"></Setter>
+                            <Setter Property="Canvas.Top" Value="{Binding DiagramProperty.Y}"></Setter>
+                            <Setter Property="Width" Value="{Binding DiagramProperty.Width, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                            <Setter Property="Height" Value="{Binding DiagramProperty.Height, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding DiagramProperty, Converter={StaticResource DiagramPropertyToStringConverter}}" 
+                                     Value="CircleROIDiagramProperty">
+                            <Setter Property="Canvas.Left">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}"
+                                                  >
+                                        <Binding Path="DiagramProperty.X" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Width" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}">
+                                        <Binding Path="DiagramProperty.Y" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Height" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Width" Value="{Binding DiagramProperty.Width, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                            <Setter Property="Height" Value="{Binding DiagramProperty.Height, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding DiagramProperty, Converter={StaticResource DiagramPropertyToStringConverter}}" 
+                                     Value="CircleFitROIDiagramProperty">
+                            <Setter Property="Canvas.Left">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}"
+                                                  >
+                                        <Binding Path="DiagramProperty.X" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Width" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}">
+                                        <Binding Path="DiagramProperty.Y" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Height" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Width" Value="{Binding DiagramProperty.Width, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                            <Setter Property="Height" Value="{Binding DiagramProperty.Height, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding DiagramProperty, Converter={StaticResource DiagramPropertyToStringConverter}}"
+                                     Value="LineFitROIDiagramProperty">
+                            <Setter Property="Canvas.Left">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}"
+                                                  >
+                                        <Binding Path="DiagramProperty.X" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Width" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Canvas.Top">
+                                <Setter.Value>
+                                    <MultiBinding Converter="{StaticResource CenterCordinateConverter}">
+                                        <Binding Path="DiagramProperty.Y" FallbackValue="10" TargetNullValue="10"></Binding>
+                                        <Binding Path="DiagramProperty.Height" FallbackValue="10" TargetNullValue="10"></Binding>
+                                    </MultiBinding>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Width" Value="{Binding DiagramProperty.Width, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                            <Setter Property="Height" Value="{Binding DiagramProperty.Height, Mode=TwoWay, FallbackValue=10, TargetNullValue=10}"></Setter>
+                        </DataTrigger>
+                        
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=DiagramProperty, Converter={StaticResource DiagramPropertyToBoolConverter}}" Value="True"></Condition>
+                                <Condition Binding="{Binding Path=IsProperty}"  Value="True"></Condition>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"></Setter>
+                        </MultiDataTrigger>
+
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+=======
             <ItemsControl.ItemsSource>
                 <StaticResource ResourceKey="compositeCollection"></StaticResource>
             </ItemsControl.ItemsSource>
 
+>>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
         </ItemsControl>
     </ScrollViewer>
 </UserControl>

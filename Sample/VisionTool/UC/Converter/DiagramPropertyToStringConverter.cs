@@ -18,7 +18,8 @@ namespace Converter
             {
                 var property = value as BaseDiagramProperty;
                 if (property == null) return "Invalid Value";
-                return property.GetType().ToString();
+                var propertyTypeString = property.GetType().Name;
+                return propertyTypeString;
             }
             catch (Exception e)
             {

@@ -75,28 +75,28 @@ namespace UClib
 
 
 
-        public ICommand ShowROISettingWindowCommand
-        {
-            get => new RelayCommand(() =>
-            {
-                IsOpenROIConfigurationView = true;
-            });
-        }
+        //public ICommand ShowROISettingWindowCommand
+        //{
+        //    get => new RelayCommand(() =>
+        //    {
+        //        IsOpenROIConfigurationView = true;
+        //    });
+        //}
 
 
-        public static readonly DependencyProperty IsOpenROIConfigurationViewProperty = DependencyProperty.Register("IsOpenROIConfigurationView", typeof(bool), typeof(PropertyConfigurationViewer));
-        public bool IsOpenROIConfigurationView
-        {
-            get
-            {
-                return (bool)GetValue(IsOpenROIConfigurationViewProperty);
-            }
+        //public static readonly DependencyProperty IsOpenROIConfigurationViewProperty = DependencyProperty.Register("IsOpenROIConfigurationView", typeof(bool), typeof(PropertyConfigurationViewer));
+        //public bool IsOpenROIConfigurationView
+        //{
+        //    get
+        //    {
+        //        return (bool)GetValue(IsOpenROIConfigurationViewProperty);
+        //    }
 
-            set
-            {
-                SetValue(IsOpenROIConfigurationViewProperty, value);
-            }
-        }
+        //    set
+        //    {
+        //        SetValue(IsOpenROIConfigurationViewProperty, value);
+        //    }
+        //}
 
 
  

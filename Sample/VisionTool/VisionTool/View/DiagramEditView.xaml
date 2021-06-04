@@ -27,19 +27,7 @@
         <converter:IntPtrToStringConverter x:Key="IntPtrToStringConverter"></converter:IntPtrToStringConverter>
     </UserControl.Resources>
     <DockPanel>
-        
-        <!--ROIConfigurationView-->
-        <Popup StaysOpen="False"
-               IsOpen="{Binding IsOpenROIConfigurationView}"
-               PopupAnimation="Fade"
-               Placement="Center">
-            <ucLib:ROIConfigurationViewer Width="1000" 
-                                          Height="700"
-                                          GlobalObjectCollection="{Binding GlobalCollection}"
-                                          ></ucLib:ROIConfigurationViewer>
-            
-        </Popup>
-
+      
         <dx:UniformStackPanel DockPanel.Dock="Top"
                               Height="40" 
                               ChildSpacing="0" 
@@ -67,9 +55,6 @@
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
             </dx:SimpleButton>
 
-            <!--<dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsFunctionCreate, Mode=TwoWay}" ToolTip="다이어그램 생성" ButtonKind="Toggle" Width="40">
-                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Business_Diagram.svg'}"></Image>
-            </dx:SimpleButton>-->
 
             <Button ToolTip="다이어그램 삭제"
                     Command="{Binding DeleteDiagramCommand}"
@@ -184,6 +169,21 @@
                                     </mvvm:Interaction.Behaviors>
                                 </ucLib:ListResultViewer>
                             </dxdo:LayoutPanel>
+                            <dxdo:LayoutPanel Caption="ROI 설정"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <ucLib:ROICanvasViewer SelectedFunction="{Binding Path=SelectedFunction}"
+                                                       GlobalObjectCollection="{Binding Path=GlobalCollection}"
+                                                       ConnectorCollection="{Binding Path=ConnectorCollection}"
+                                                       TargetImageType="Image"
+                                                       GlobalNames="{Binding Path=GlobalNames}">
+                                    
+                                </ucLib:ROICanvasViewer>
+                            
+                            </dxdo:LayoutPanel>
 
                         </dxdo:TabbedGroup>
                     </dxdo:LayoutGroup>
@@ -291,8 +291,8 @@
                                 </dxg:GridControl.View>
                             </dxg:GridControl>
                             <ucLib:PropertyConfigurationViewer Grid.Row="1"
-                                                               InputSnapSpotCollection="{Binding ElementName=FunctionDiagramViewer,Path=SelectedInputSnapSpotCollection}"
-                                                               IsOpenROIConfigurationView="{Binding IsOpenROIConfigurationView,Mode=TwoWay}">
+                                                               InputSnapSpotCollection="{Binding Path=SelectedFunction.Input}"
+                                                               >
                                 
                             </ucLib:PropertyConfigurationViewer>
                             

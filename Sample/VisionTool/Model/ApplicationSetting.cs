@@ -20,8 +20,14 @@ namespace Model
 
         public string DiagramPath { get; set; }
         public string DiagramConfigPath { get; set; }
-
         public string DiagramImagePath { get; set; }
+
+
+        
+        public string DevicePath { get; set; }
+        public string DeviceConfigPath { get; set; }
+        public string DeviceMainPath { get; set; }
+        //public string DeviceThirdPartyDLLPath { get; set; }
 
 
 
@@ -55,6 +61,16 @@ namespace Model
             {
                 _DiagramPropertyDataTypeCollection ??= new ObservableCollection<string>();
                 return _DiagramPropertyDataTypeCollection;
+            }
+        }
+
+        private ObservableCollection<string> _DeviceTypeCollection = null;
+        public ObservableCollection<string> DeviceTypeCollection
+        {
+            get
+            {
+                _DeviceTypeCollection ??= new ObservableCollection<string>();
+                return _DeviceTypeCollection;
             }
         }
 

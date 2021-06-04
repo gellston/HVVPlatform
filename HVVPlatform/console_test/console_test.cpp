@@ -48,7 +48,8 @@ int main()
  
     while (true) {
         try {
-            interpreter1.run_file("C:\\Github\\HVVPlatform\\test_script\\opencv.js");
+            interpreter1.run_script("var test = 2");
+            auto names = interpreter1.global_names();
         }
         catch (hv::v1::script_error e) {
             std::cout << e.what() << std::endl;

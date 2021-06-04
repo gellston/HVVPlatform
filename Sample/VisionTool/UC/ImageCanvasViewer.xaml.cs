@@ -81,10 +81,10 @@ namespace UClib
                 //control.ZoomMin = control.Zoom / 20;
                 //control.ZoomStep = (control.ZoomMax - control.ZoomMin) / 40;
 
-                control.OutScrollViewer.UpdateLayout();
+                //control.OutScrollViewer.UpdateLayout();
 
-                control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
-                control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
+                //control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
+                //control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
 
             }
         }

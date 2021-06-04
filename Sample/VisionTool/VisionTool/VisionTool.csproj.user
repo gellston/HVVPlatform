@@ -10,6 +10,12 @@
     <Compile Update="View\ApplicationSettingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\DeviceControlView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="View\DeviceManagementView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\DiagramEditView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -28,6 +34,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\ApplicationSettingView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DeviceControlView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\DeviceManagementView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\DiagramEditView.xaml">

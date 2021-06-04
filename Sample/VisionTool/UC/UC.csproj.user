@@ -11,10 +11,10 @@
     <Compile Update="PropertyConfigurationViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ROICanvasViewer.xaml.cs">
+    <Compile Update="PropertySettingViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="ROIConfigurationViewer.xaml.cs">
+    <Compile Update="ROICanvasViewer.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -31,10 +31,10 @@
     <Page Update="PropertyConfigurationViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ROICanvasViewer.xaml">
+    <Page Update="PropertySettingViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ROIConfigurationViewer.xaml">
+    <Page Update="ROICanvasViewer.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

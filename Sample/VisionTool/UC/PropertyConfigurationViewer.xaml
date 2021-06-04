@@ -29,7 +29,7 @@
                              HorizontalContentAlignment="Left" 
                              VerticalContentAlignment="Center" 
                              TextAlignment="Left"
-                             Width="80"
+                             Width="60"
                              DockPanel.Dock="Left"
                              IsReadOnly="True"
                              IsEnabled="False"></TextBox>
@@ -52,7 +52,7 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
                                 <DockPanel>
-                                    <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>
                                     <Slider DockPanel.Dock="Right" Value="{Binding Value, Mode=TwoWay}" Width="80" IsSnapToTickEnabled="True" Maximum="{Binding MaxValue}" Minimum="{Binding MinValue}" HorizontalAlignment="Left" VerticalAlignment="Center"></Slider>
                                     <TextBlock></TextBlock>
                                     <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="경계 값"></TextBox>-->
@@ -60,15 +60,51 @@
                             </DataTemplate>
                             <DataTemplate DataType="{x:Type property:RectROIDiagramProperty}">
                                 <DockPanel>
-                                    <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding X, Mode=TwoWay}"></TextBox>
-                                    <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Y, Mode=TwoWay}"></TextBox>
-                                    <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Width, Mode=TwoWay}"></TextBox>
-                                    <TextBox Width="80" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Height, Mode=TwoWay}"></TextBox>
-                                    <Button DockPanel.Dock="Right" Width="40" HorizontalAlignment="Left" Height="40" VerticalAlignment="Center" Command="{Binding ElementName=view, Path=ShowROISettingWindowCommand}">
-                                        <Image Source="{dx:DXImage 'SvgImages/Dashboards/LayoutDirection.svg'}"></Image>
-                                    </Button>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Height, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Height"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Width, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Width"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Y, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Y"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding X, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="X"></TextBox>
+
                                     <TextBlock></TextBlock>
-                                    <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="경계 값"></TextBox>-->
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:LineFitROIDiagramProperty}">
+                                <DockPanel>
+                                    <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsBlack2White, Mode=TwoWay}" DockPanel.Dock="Right" ToolTip="IsBlackToWhite">
+                                        <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                    </dx:SimpleButton>
+                                    <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsFlip, Mode=TwoWay}" DockPanel.Dock="Right" ToolTip="IsFlip">
+                                        <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                    </dx:SimpleButton>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Height, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Height"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Width, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Width"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Angle, Mode=TwoWay, StringFormat={}{0:#,0.00}}" ToolTip="Angle"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Y, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Y"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding X, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="X"></TextBox>
+
+                                    <TextBlock></TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:CircleFitROIDiagramProperty}">
+                                <DockPanel>
+                                    <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding IsBlack2White, Mode=TwoWay}" DockPanel.Dock="Right" ToolTip="IsBlackToWhite">
+                                        <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
+                                    </dx:SimpleButton>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding EndRatio, Mode=TwoWay, StringFormat={}{0:#,0.00}}" ToolTip="EndRatio"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding StartRatio, Mode=TwoWay, StringFormat={}{0:#,0.00}}" ToolTip="StartRatio"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Radius, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Radius"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Y, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Y"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding X, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="X"></TextBox>
+
+                                    <TextBlock></TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:CircleROIDiagramProperty}">
+                                <DockPanel>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Radius, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Radius"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Y, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="Y"></TextBox>
+                                    <TextBox Width="40" DockPanel.Dock="Right" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding X, Mode=TwoWay, StringFormat={}{0:F0}}" ToolTip="X"></TextBox>
+                                    <TextBlock></TextBlock>
                                 </DockPanel>
                             </DataTemplate>
                         </ContentPresenter.Resources>

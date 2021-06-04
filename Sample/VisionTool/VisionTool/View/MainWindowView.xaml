@@ -49,6 +49,9 @@
                         <DataTemplate DataType="{x:Type viewModel:DiagramPackageManagementViewModel}">
                             <view:DiagramPackageManagementView></view:DiagramPackageManagementView>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:DeviceManagementViewModel}">
+                            <view:DeviceManagementView></view:DeviceManagementView>
+                        </DataTemplate>
                     </ContentPresenter.Resources>
                 </ContentPresenter>
             </dxwui:HamburgerMenu.Content>
@@ -91,6 +94,27 @@
                             <Image Source="{dx:DXImage 'SvgImages/XAF/Action_OrganizeDashboard.svg'}"></Image>
                         </dxwui:HamburgerSubMenuNavigationButton.RightContent>
                     </dxwui:HamburgerSubMenuNavigationButton>
+                </dxwui:HamburgerSubMenu.Items>
+            </dxwui:HamburgerSubMenu>
+
+            <dxwui:HamburgerSubMenu Content="디바이스" Glyph="{dx:DXImage 'SvgImages/Reports/GaugeStyleThreeForthCircular.svg'}"  MoreButtonVisibilityMode="Hidden"  ToolTip="디바이스">
+                <dxwui:HamburgerSubMenu.Items>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="디바이스 관리"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=DeviceManagementViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/Reports/GaugeStyleThreeForthCircular.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
+                    <!--<dxwui:HamburgerSubMenuNavigationButton Content="다이어그램 관리"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=DiagramPackageManagementViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/XAF/Action_OrganizeDashboard.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>-->
                 </dxwui:HamburgerSubMenu.Items>
             </dxwui:HamburgerSubMenu>
 

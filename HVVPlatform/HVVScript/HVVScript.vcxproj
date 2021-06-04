@@ -157,7 +157,10 @@ copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%p
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
 copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
 copy /Y "$(SolutionDir)core\point.h" "%OUT_INCLUDE_PATH%point.h"
-copy /Y "$(SolutionDir)core\rect.h" "%OUT_INCLUDE_PATH%rect.h"
+copy /Y "$(SolutionDir)core\rectROI.h" "%OUT_INCLUDE_PATH%rectROI.h"
+copy /Y "$(SolutionDir)core\lineFitROI.h" "%OUT_INCLUDE_PATH%lineFitROI.h"
+copy /Y "$(SolutionDir)core\circleFitROI.h" "%OUT_INCLUDE_PATH%circleFitROI.h"
+copy /Y "$(SolutionDir)core\circleROI.h" "%OUT_INCLUDE_PATH%circleROI.h"
 
 xcopy /y /c /e /h /k $(SolutionDir)v8fullset\bin\$(Configuration)\*.* $(SolutionDir)x64\$(Configuration)\
 
@@ -211,7 +214,10 @@ copy /Y "$(SolutionDir)primitive_object\primitive_object.h" "%OUT_INCLUDE_PATH%p
 copy /Y "$(SolutionDir)core\image.h" "%OUT_INCLUDE_PATH%image.h"
 copy /Y "$(SolutionDir)core\data_type.h" "%OUT_INCLUDE_PATH%""data_type.h"
 copy /Y "$(SolutionDir)core\point.h" "%OUT_INCLUDE_PATH%point.h"
-copy /Y "$(SolutionDir)core\rect.h" "%OUT_INCLUDE_PATH%rect.h"
+copy /Y "$(SolutionDir)core\rectROI.h" "%OUT_INCLUDE_PATH%rectROI.h"
+copy /Y "$(SolutionDir)core\lineFitROI.h" "%OUT_INCLUDE_PATH%lineFitROI.h"
+copy /Y "$(SolutionDir)core\circleFitROI.h" "%OUT_INCLUDE_PATH%circleFitROI.h"
+copy /Y "$(SolutionDir)core\circleROI.h" "%OUT_INCLUDE_PATH%circleROI.h"
 
 xcopy /y /c /e /h /k $(SolutionDir)v8fullset\bin\$(Configuration)\*.* $(SolutionDir)x64\$(Configuration)\
 

@@ -1,0 +1,254 @@
+﻿<UserControl x:Class="VisionTool.View.DeviceManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VisionTool.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="1500" d:DesignWidth="1500"
+             x:Name="view"
+             xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+             xmlns:converter="clr-namespace:VisionTool.Converter"
+             xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"
+             xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid">
+    
+    <UserControl.Resources>
+        <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
+    </UserControl.Resources>
+
+    <UserControl.IsEnabled>
+        <Binding Path="ScriptEditViewModel.IsRunningScript" Source="{StaticResource ViewModelLocator}" Converter="{StaticResource InverseBooleanConverter}"></Binding>
+    </UserControl.IsEnabled>
+
+    <DockPanel>
+        <Grid Height="40"
+              DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button ToolTip="디바이스 임포트"
+                    Grid.Column="0"
+                    Command="{Binding ImportDeviceCommand}">
+                <Image Source="{dx:DXImage 'Images/Support/PackageProduct_32x32.png'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 수정"
+                    Grid.Column="1"
+                    Command="{Binding ModifyDeviceCommand}">
+                <Image Source="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 삭제"
+                    Grid.Column="2"
+                    Command="{Binding DeleteDeviceCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Dashboards/Delete.svg'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 리로드"
+                    Grid.Column="3"
+                    Command="{Binding ReLoadDeviceCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Reload.svg'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 정보 초기화"
+                    Grid.Column="4"
+                    Command="{Binding ClearDeviceCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ClearAll.svg'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 패키징 시작"
+                    Grid.Column="5"
+                    Command="{Binding PackageDeviceCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Shopping_Package.svg'}"></Image>
+            </Button>
+        </Grid>
+        <!--수정이 필요할것 같아요-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Button Grid.Column="0" Grid.Row="0" ToolTip="디바이스 네임">
+                    <Image Source="{dx:DXImage 'SvgImages/Dashboards/RenameDataSource.svg'}"></Image>
+                </Button>
+                <Button Grid.Column="0" Grid.Row="1" ToolTip="디바이스 업데이트 날짜">
+                    <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/LongDate.svg'}"></Image>
+                </Button>
+                <Button Grid.Column="0" Grid.Row="2" ToolTip="디바이스 실행 프로그램">
+                    <Image Source="{dx:DXImage 'Images/Support/PackageProduct_32x32.png'}"></Image>
+                </Button>
+                <Button Grid.Column="0" Grid.Row="3" ToolTip="디바이스 버전">
+                    <Image Source="{dx:DXImage 'Images/Support/Version_32x32.png'}"></Image>
+                </Button>
+                <Button Grid.Column="0" Grid.Row="5" ToolTip="디바이스 코멘트">
+                    <Image Source="{dx:DXImage 'Images/Comments/ShowHideComment_32x32.png'}"></Image>
+                </Button>
+
+
+                <Button Grid.Column="2" Grid.Row="2" ToolTip="메인 디바이스 실행 프로그램 선택" Command="{Binding AddMainDeviceCommand}">
+                    <Image Source="{dx:DXImage 'Images/Actions/Download_32x32.png'}"></Image>
+                </Button>
+
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding DeviceName}"></TextBox>
+                <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding DeviceModifyDate}"></TextBox>
+                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" VerticalContentAlignment="Center" Text="{Binding DeviceMainPath}" IsEnabled="False"></TextBox>
+                <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding DeviceVersion}"></TextBox>
+
+
+                <!--//작업 필요-->
+                <DockPanel Height="40"
+                           Grid.Row="4"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3">
+                    <Button ToolTip="디바이스 카테고리" 
+                            Width="40" 
+                            DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/XAF/ModelEditor_Categorized.svg'}"></Image>
+                    </Button>
+                    <ComboBox ItemsSource="{Binding DeviceTypeCollection}"
+                              HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center"
+                              SelectedItem="{Binding SelectedDeviceType}"
+                              IsSynchronizedWithCurrentItem="True"></ComboBox>
+                </DockPanel>
+
+
+                <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" Text="디바이스 코멘트" 
+                         HorizontalAlignment="Stretch" 
+                         VerticalAlignment="Stretch" 
+                         TextAlignment="Center" 
+                         VerticalContentAlignment="Center"></TextBox>
+                <TextBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" Text="{Binding DeviceComment}"/>
+
+                <Button Grid.Column="0" Grid.Row="7" ToolTip="디바이스 의존 DLL">
+                    <Image Source="{dx:DXImage 'Images/XAF/Action_Printing_PageSetup_32x32.png'}"></Image>
+                </Button>
+                <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False" Text="디바이스 의존 DLL" 
+                         HorizontalAlignment="Stretch" 
+                         VerticalAlignment="Stretch" 
+                         TextAlignment="Center" 
+                         VerticalContentAlignment="Center"></TextBox>
+
+                <Button Grid.Column="2" Grid.Row="7" ToolTip="디바이스 의존 DLL 선택" Command="{Binding AddDependentDLLCommand}">
+                    <Image Source="{dx:DXImage 'Images/Actions/Download_32x32.png'}"></Image>
+                </Button>
+
+                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                 SelectionMode="Row"
+                                 AutoGenerateColumns="None"
+                                 ShowAllTableValuesInFilterPopup="False"
+                                 Grid.Column="0"
+                                 Grid.Row="9"
+                                 Grid.ColumnSpan="3"
+                                 ItemsSource="{Binding DependentDLLCollection}"
+                                 x:Name="DependentDLLList"
+                                 AllowUpdateTwoWayBoundPropertiesOnSynchronization="True"
+                                 >
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="DLL 이름" Binding="{Binding FileName}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="DLL 경로" Binding="{Binding FilePath}" IsSmart="False" Width="*"/>
+                    </dxg:GridControl.Columns>
+                    <dxg:GridControl.View>
+                        <dxg:TableView AllowPerPixelScrolling="True" 
+                                       ShowTotalSummary="False"
+                                       AllowGrouping="False"
+                                       AllowScrollToFocusedRow="False"
+                                       >
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Delete" 
+                                                   Command="{Binding ElementName=view, Path=DataContext.DeleteDependentDLLCommand}"
+                                                   CommandParameter="{Binding ElementName=DependentDLLList, Path=SelectedItem}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                 SelectionMode="Row"
+                                 AutoGenerateColumns="None"
+                                 ShowAllTableValuesInFilterPopup="False"
+                                 ItemsSource="{Binding DeviceConfigCollection}"
+                                 SelectedItem="{Binding SelectedDeviceConfig}"
+                                 Grid.Row="0">
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="이름" Binding="{Binding DeviceName, Mode=OneWay}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="버전" Binding="{Binding DeviceVersion, Mode=OneWay}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="수정날짜" Binding="{Binding DeviceModifyDate, Mode=OneWay}" IsSmart="False" Width="*"/>
+                    </dxg:GridControl.Columns>
+                    <dxg:GridControl.View>
+                        <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
+                            <dxg:TableView.RowCellMenuCustomizations>
+                                <dxb:BarButtonItem Content="Modification" Glyph="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}" Command="{Binding ElementName=view, Path=DataContext.ModifyUpdateDeviceCommand}"/>
+                            </dxg:TableView.RowCellMenuCustomizations>
+                            <dxg:TableView.RowStyle>
+                                <Style TargetType="dxg:RowControl">
+                                    <Setter Property="ToolTipService.ToolTip">
+                                        <Setter.Value>
+                                            <ContentControl Content="{Binding}"  >
+                                                <ContentControl.ContentTemplate>
+                                                    <DataTemplate>
+                                                        <Label Content="{Binding Row.DeviceComment}"/>
+                                                    </DataTemplate>
+                                                </ContentControl.ContentTemplate>
+                                            </ContentControl>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </dxg:TableView.RowStyle>
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+
+                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                 SelectionMode="Row"
+                                 AutoGenerateColumns="None"
+                                 ShowAllTableValuesInFilterPopup="False"
+                                 ItemsSource="{Binding DeviceCollection}"
+                                 SelectedItem="{Binding SelectedDevice}"
+                                 Grid.Row="1">
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn FieldName="모듈이름" Binding="{Binding FileName}" IsSmart="False" Width="*"/>
+                        <dxg:GridColumn FieldName="모듈경로" Binding="{Binding FilePath}"  IsSmart="False" Width="*"/>
+                    </dxg:GridControl.Columns>
+                    <dxg:GridControl.View>
+                        <dxg:TableView AllowPerPixelScrolling="True" 
+                                               ShowTotalSummary="False"
+                                               AllowGrouping="True"
+                                               AllowScrollToFocusedRow="False">
+                        </dxg:TableView>
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+            </Grid>
+
+
+        </Grid>
+
+    </DockPanel>
+</UserControl>

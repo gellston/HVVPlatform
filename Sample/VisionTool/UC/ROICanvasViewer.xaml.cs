@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Converter;
+using Model;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -70,13 +73,21 @@ namespace UClib
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
 
-                control.OutScrollViewer.UpdateLayout();
+                //control.OutScrollViewer.UpdateLayout();
 
-                control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
-                control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
+                //control.OutScrollViewer.ScrollToVerticalOffset(control.OutScrollViewer.ScrollableHeight / 2);
+                //control.OutScrollViewer.ScrollToHorizontalOffset(control.OutScrollViewer.ScrollableWidth / 2);
 
             }
         }
+
+        //private HV.V1.Object _ImageObject = null;
+        //public HV.V1.Object ImageObject
+        //{
+        //    get => _ImageObject;
+
+        //    set => Set(nameof(ImageObject), ref _ImageObject, value);
+        //}
 
         private double _CanvasWidth = 0;
         public double CanvasWidth
@@ -177,19 +188,6 @@ namespace UClib
             }
         }
 
-        //public static readonly DependencyProperty DrawObjectsCollectionProperty = DependencyProperty.Register("DrawObjectsCollection", typeof(ObservableCollection<HV.V1.Object>), typeof(ROICanvasViewer));
-        //public ObservableCollection<HV.V1.Object> DrawObjectsCollection
-        //{
-        //    get
-        //    {
-        //        return (ObservableCollection<HV.V1.Object>)GetValue(DrawObjectsCollectionProperty);
-        //    }
-
-        //    set
-        //    {
-        //        SetValue(DrawObjectsCollectionProperty, value);
-        //    }
-        //}
 
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof(HV.V1.Object), typeof(ROICanvasViewer), new PropertyMetadata(OnSelectedItemChangedCallBack));
@@ -215,6 +213,144 @@ namespace UClib
         }
 
 
+
+
+        public static readonly DependencyProperty SelectedFunctionProperty = DependencyProperty.Register("SelectedFunction", typeof(Function), typeof(ROICanvasViewer), new PropertyMetadata(OnInputSnapSpotCollectionChanged));
+        public Function SelectedFunction
+        {
+            get
+            {
+                return (Function)GetValue(SelectedFunctionProperty);
+            }
+
+            set
+            {
+                SetValue(SelectedFunctionProperty, value);
+            }
+        }
+
+
+        public static readonly DependencyProperty ConnectorCollectionProperty = DependencyProperty.Register("ConnectorCollection", typeof(ObservableCollection<Connector>), typeof(ROICanvasViewer));
+        public ObservableCollection<Connector> ConnectorCollection
+        {
+            get
+            {
+                return (ObservableCollection<Connector>)GetValue(ConnectorCollectionProperty);
+            }
+
+            set
+            {
+                SetValue(ConnectorCollectionProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty GlobalObjectCollectionProperty = DependencyProperty.Register("GlobalObjectCollection", typeof(ObservableCollection<HV.V1.Object>), typeof(ROICanvasViewer));
+        public ObservableCollection<HV.V1.Object> GlobalObjectCollection
+        {
+            get
+            {
+                return (ObservableCollection<HV.V1.Object>)GetValue(GlobalObjectCollectionProperty);
+            }
+
+            set
+            {
+                SetValue(GlobalObjectCollectionProperty, value);
+            }
+        }
+
+        public static readonly DependencyProperty TargetImageTypeProperty = DependencyProperty.Register("TargetImageType", typeof(string), typeof(ROICanvasViewer));
+        public string TargetImageType
+        {
+            get
+            {
+                return (string)GetValue(TargetImageTypeProperty);
+            }
+
+            set
+            {
+                SetValue(TargetImageTypeProperty, value);
+            }
+        }
+
+        private static void OnInputSnapSpotCollectionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs exception)
+        {
+            ROICanvasViewer control = sender as ROICanvasViewer;
+            if (control != null)
+            {
+
+                try
+                {
+                    Function function = exception.NewValue as Function;
+                    if (function == null) return;
+                    ObservableCollection<InputSnapSpot> inputCollection = function.Input;
+                    bool imageCheck = false;
+                    foreach (var input in inputCollection)
+                    {
+                        if (input.DataType == control.TargetImageType)
+                        {
+                            try
+                            {
+                                var connector = control.ConnectorCollection.ToList().Where(x => x.EndSnapHash == input.Hash).First();
+                                var outputSnapSpotHash = connector.StartSnapHash;
+
+                                for (int index = 0; index < control.GlobalNames.Count(); index++)
+                                {
+                                    if (outputSnapSpotHash == control.GlobalNames[index])
+                                    {
+                                        var imageObject = control.GlobalObjectCollection[index];
+
+
+                                        HVObjectBitmapImageConverter converter = new HVObjectBitmapImageConverter();
+                                        var bitmap = converter.Convert(imageObject, null,null,null);
+                                        control.Image = bitmap as WriteableBitmap;
+
+                                        imageCheck = true;
+                                        break;
+                                    }
+                                }
+
+
+                            }
+                            catch (Exception e)
+                            {
+                                System.Diagnostics.Debug.WriteLine(e.Message);
+                                continue;
+                            }
+
+                        }
+
+
+                    }
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+               
+
+            }
+        }
+
+
+
+
+        public static readonly DependencyProperty GlobalNamesProperty = DependencyProperty.Register("GlobalNames", typeof(ObservableCollection<string>), typeof(ROICanvasViewer));
+        public ObservableCollection<string> GlobalNames
+        {
+            get
+            {
+                return (ObservableCollection<string>)GetValue(GlobalNamesProperty);
+            }
+            set
+            {
+                SetValue(GlobalNamesProperty, value);
+            }
+        }
+
+
+
+
+
         private Point CanvasStart;
         private Point CanvasOrigin;
         private bool IsCanvasCaptured = false;
@@ -223,6 +359,9 @@ namespace UClib
             e.Handled = true;
 
             if (this.IsMouseCaptured == true)
+                return;
+
+            if (Keyboard.IsKeyDown(Key.LeftShift) != true)
                 return;
 
             if (e.Delta > 0)
@@ -237,7 +376,9 @@ namespace UClib
                 if (this.Zoom >= this.ZoomMax)
                     this.Zoom = this.ZoomMax;
 
+                
             }
+            System.Diagnostics.Debug.WriteLine("zoom value = " + this.Zoom);
             OutScrollViewer.ScrollToVerticalOffset(OutScrollViewer.ScrollableHeight / 2);
             OutScrollViewer.ScrollToHorizontalOffset(OutScrollViewer.ScrollableWidth / 2);
         }

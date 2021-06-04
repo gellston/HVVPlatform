@@ -54,5 +54,7 @@ namespace Model.DiagramProperty
             newCopy.MinValue = this.MinValue;
             return newCopy;
         }
+
+
     }
 }

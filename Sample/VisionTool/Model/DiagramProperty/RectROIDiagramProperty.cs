@@ -12,34 +12,6 @@ namespace Model.DiagramProperty
 
         }
 
-        public double _X = 0;
-        public double X
-        {
-            get => _X;
-            set => Set(ref _X, value);
-        }
-
-        public double _Y = 0;
-        public double Y
-        {
-            get => _Y;
-            set => Set(ref _Y, value);
-        }
-
-        public double _Width = 0;
-        public double Width
-        {
-            get => _Width;
-            set => Set(ref _Width, value);
-        }
-
-        public double _Height = 0;
-        public double Height
-        {
-            get => _Height;
-            set => Set(ref _Height, value);
-        }
-
 
         public override string ToString()
         {
@@ -50,7 +22,7 @@ namespace Model.DiagramProperty
         public override string ToCode()
         {
             var code = "";
-            code += "new core.rect(\"temp\"," + X + "," + Y + "," + Width + "," + Height + ")";
+            code += "new core.rectROI(\"temp\"," + X + "," + Y + "," + Width + "," + Height + ")";
             return code;
         }
 

@@ -431,9 +431,11 @@ void interpreter::_loop() {
 					// Object
 					try {
 						auto data = v8pp::from_v8<std::shared_ptr<object>>(isolate->_instance, val_local);
-						if (data != nullptr)
+						if (data != nullptr) {
 							(*this->_global_hash_map)[key] = data;
-						this->_global_names.push_back(key);
+							this->_global_names.push_back(key);
+						}
+
 					}
 					catch (std::exception e) {
 					}

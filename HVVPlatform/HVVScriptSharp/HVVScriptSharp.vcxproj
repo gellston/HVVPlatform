@@ -128,30 +128,36 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Boolean.h" />
+    <ClInclude Include="CircleFitROI.h" />
+    <ClInclude Include="CircleROI.h" />
     <ClInclude Include="DataType.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="HVVScriptSharp.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="LineFitROI.h" />
     <ClInclude Include="managed_shared_ptr.h" />
     <ClInclude Include="NativeModule.h" />
     <ClInclude Include="Number.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="Rect.h" />
+    <ClInclude Include="RectROI.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="String.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Boolean.cpp" />
+    <ClCompile Include="CircleFitROI.cpp" />
+    <ClCompile Include="CircleROI.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="HVVScriptSharp.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="LineFitROI.cpp" />
     <ClCompile Include="NativeModule.cpp" />
     <ClCompile Include="Number.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Point.cpp" />
-    <ClCompile Include="Rect.cpp" />
+    <ClCompile Include="RectROI.cpp" />
     <ClCompile Include="String.cpp" />
   </ItemGroup>
   <ItemGroup>

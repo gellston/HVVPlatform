@@ -151,18 +151,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="circleFitROI.h" />
+    <ClInclude Include="circleROI.h" />
     <ClInclude Include="data_type.h" />
     <ClInclude Include="image.h" />
-    <ClInclude Include="rect.h" />
+    <ClInclude Include="lineFitROI.h" />
+    <ClInclude Include="rectROI.h" />
     <ClInclude Include="_math.h" />
     <ClInclude Include="point.h" />
     <ClInclude Include="_system.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="circleFitROI.cpp" />
+    <ClCompile Include="circleROI.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="image.cpp" />
+    <ClCompile Include="lineFitROI.cpp" />
     <ClCompile Include="point.cpp" />
-    <ClCompile Include="rect.cpp" />
+    <ClCompile Include="rectROI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

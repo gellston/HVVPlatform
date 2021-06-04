@@ -26,6 +26,15 @@ namespace VisionTool.Service
                     ModuleConfigPath = this.CurrentApplicationPath + "ModuleConfig" + Path.DirectorySeparatorChar,
                     ModuleMainPath = this.CurrentApplicationPath + "ModuleMain" + Path.DirectorySeparatorChar,
                     ModuleThirdPartyDLLPath = this.CurrentApplicationPath + "ModuleThirdParty" + Path.DirectorySeparatorChar,
+
+
+                    DevicePath = this.CurrentApplicationPath + "Device" + Path.DirectorySeparatorChar,
+                    DeviceConfigPath = this.CurrentApplicationPath + "DeviceConfig" + Path.DirectorySeparatorChar,
+                    DeviceMainPath = this.CurrentApplicationPath + "DeviceMain" + Path.DirectorySeparatorChar,
+        
+
+
+
                     DiagramPath = this.CurrentApplicationPath + "Diagram" + Path.DirectorySeparatorChar,
                     DiagramConfigPath = this.CurrentApplicationPath + "DiagramConfig" + Path.DirectorySeparatorChar,
                     DiagramImagePath = this.CurrentApplicationPath + "DiagramImage" + Path.DirectorySeparatorChar
@@ -43,6 +52,11 @@ namespace VisionTool.Service
             Directory.CreateDirectory(this.ApplicationSetting.ModuleConfigPath);
             Directory.CreateDirectory(this.ApplicationSetting.ModuleMainPath);
             Directory.CreateDirectory(this.ApplicationSetting.ModuleThirdPartyDLLPath);
+
+            Directory.CreateDirectory(this.ApplicationSetting.DevicePath);
+            Directory.CreateDirectory(this.ApplicationSetting.DeviceConfigPath);
+            Directory.CreateDirectory(this.ApplicationSetting.DeviceMainPath);
+
             Directory.CreateDirectory(this.ApplicationSetting.DiagramPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramConfigPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramImagePath);
@@ -113,6 +127,28 @@ namespace VisionTool.Service
             get
             {
                 var path = this.CurrentApplicationPath + "TempModuleModPackage" + Path.DirectorySeparatorChar;
+                Directory.CreateDirectory(path);
+                return path;
+            }
+
+        }
+
+        public string TempDevicePackagePath
+        {
+            get
+            {
+                var path = this.CurrentApplicationPath + "TempDevicePackagePath" + Path.DirectorySeparatorChar;
+                Directory.CreateDirectory(path);
+                return path;
+            }
+
+        }
+
+        public string TempDeviceModPackagePath
+        {
+            get
+            {
+                var path = this.CurrentApplicationPath + "TempDeviceModPackagePath" + Path.DirectorySeparatorChar;
                 Directory.CreateDirectory(path);
                 return path;
             }

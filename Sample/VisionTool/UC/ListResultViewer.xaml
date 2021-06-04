@@ -41,7 +41,7 @@
                     <DataTemplate DataType="{x:Type script:Number}">
                         <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type script:Rect}">
+                    <DataTemplate DataType="{x:Type script:RectROI}">
                         <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     </DataTemplate>
                 </ItemContainerTemplate.Resources>

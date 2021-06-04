@@ -212,12 +212,14 @@ namespace VisionTool.Service
             Task.Run(async () =>
             {
                 var currentFps = 0;
-                var stacked_time = 0.0;
+                //var stacked_time = 0.0;
 
+                var startTime = DateTime.Now;
                 while (IsRunningScript)
                 {
-                    await Task.Delay(10);
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    //await Task.Delay(10);
+                    //var watch = System.Diagnostics.Stopwatch.StartNew();
+                    var startStepTime = DateTime.Now;
                     try
                     {
 
@@ -228,8 +230,17 @@ namespace VisionTool.Service
                             this.GlobalCollection.Clear();
                             this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values.ToList());
 
+
+                            this.GlobalNames.Clear();
+                            this.GlobalNames.AddRange(this.interpreter.GlobalNames.ToList());
+
+
                             this.NativeModuleCollection.Clear();
                             this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values.ToList());
+
+                            
+                            
+
 
                             foreach (var result in this.ResultObjectCollection)
                             {
@@ -240,30 +251,6 @@ namespace VisionTool.Service
                                 }
                             }
 
-                            //if (this._isTracking == false) return;
-                            //try
-                            //{
-                            //    var image = this.interpreter.GlobalObjects.Values.ToList().Where((_object) =>
-                            //    {
-                            //        return _object.Name.Contains(this._trackingName) && _object.Type.Contains(this._trackingType);
-                            //    }).First();
-
-                            //    var hvImage = new HV.V1.Image(image);
-                            //    var width = hvImage.Width;
-                            //    var height = hvImage.Height;
-                            //    var stride = hvImage.Stride;
-                            //    var size = hvImage.Size;
-                            //    if (TrackingImagePresenter == null || TrackingImagePresenter.Width != width || TrackingImagePresenter.Height != height)
-                            //    {
-                            //        TrackingImagePresenter = new WriteableBitmap(width, height, 96, 96, PixelFormats.Gray8, null);
-                            //        TrackingImagePresenter.Freeze();
-                            //    }
-                            //    TrackingImagePresenter.WritePixels(new System.Windows.Int32Rect(0, 0, width, height), hvImage.Ptr(), size, stride);
-                            //}
-                            //catch (Exception e)
-                            //{
-
-                            //}
                         }, DispatcherPriority.Send);
                     }
                     catch (HV.V1.ScriptError e)
@@ -282,19 +269,20 @@ namespace VisionTool.Service
                         break;
                     }
 
-                    watch.Stop();
-                    var elapsedMs = watch.ElapsedMilliseconds;
-                    stacked_time += elapsedMs;
+                    var endTime = DateTime.Now;
+                    var measureSecond = (endTime - startTime).TotalMilliseconds;
+                    var measureTaktTime = (endTime - startStepTime).TotalMilliseconds;
                     currentFps++;
-                    if (stacked_time > 1000)
+                    if (measureSecond > 1000)
                     {
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             this.currentFPSAction.Invoke(currentFps.ToString("F2"));
-                            this.currentExecutiontimeAction.Invoke(elapsedMs.ToString() + " ms");
+                            this.currentExecutiontimeAction.Invoke(measureTaktTime.ToString() + " ms");
                         }, DispatcherPriority.Send);
                         currentFps = 0;
-                        stacked_time = 0;
+                        startTime = DateTime.Now;
+
                     }
                 }
 
@@ -321,6 +309,10 @@ namespace VisionTool.Service
                     {
                         this.GlobalCollection.Clear();
                         this.GlobalCollection.AddRange(this.interpreter.GlobalObjects.Values);
+
+                        this.GlobalNames.Clear();
+                        this.GlobalNames.AddRange(this.interpreter.GlobalNames.ToList());
+
 
                         this.NativeModuleCollection.Clear();
                         this.NativeModuleCollection.AddRange(this.interpreter.NativeModules.Values);
@@ -415,6 +407,17 @@ namespace VisionTool.Service
                 return _GlobalCollection;
             }
         }
+
+
+        private ObservableCollection<string> _GlobalNames = new ObservableCollection<string>();
+        public ObservableCollection<string> GlobalNames
+        {
+            get
+            {
+                return _GlobalNames;
+            }
+        }
+
 
         public void SetCallbackRunning(Action<bool> check)
         {

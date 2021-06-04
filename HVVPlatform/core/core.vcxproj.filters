@@ -30,7 +30,16 @@
     <ClInclude Include="_system.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="rect.h">
+    <ClInclude Include="rectROI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lineFitROI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="circleFitROI.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="circleROI.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,7 +53,16 @@
     <ClCompile Include="point.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="rect.cpp">
+    <ClCompile Include="rectROI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lineFitROI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="circleFitROI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="circleROI.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

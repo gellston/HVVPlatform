@@ -19,15 +19,25 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.Register<ModuleControlService>();
             SimpleIoc.Default.Register<DiagramControlService>();
             SimpleIoc.Default.Register<SequenceControlService>();
-            
-            
-            
+            SimpleIoc.Default.Register<DeviceControlService>();
+
+            //미리생성
+            SimpleIoc.Default.GetInstance<SettingConfigService>();
+            SimpleIoc.Default.GetInstance<ModuleControlService>();
+            SimpleIoc.Default.GetInstance<DiagramControlService>();
+            SimpleIoc.Default.GetInstance<SequenceControlService>();
+            SimpleIoc.Default.GetInstance<DeviceControlService>();
+
+
+
+
             SimpleIoc.Default.Register<MainWindowViewModel>();
             SimpleIoc.Default.Register<ScriptEditViewModel>();
             SimpleIoc.Default.Register<ModulePackageManagementViewModel>();
             SimpleIoc.Default.Register<ApplicationSettingViewModel>();
             SimpleIoc.Default.Register<DiagramEditViewModel>();
             SimpleIoc.Default.Register<DiagramPackageManagementViewModel>();
+            SimpleIoc.Default.Register<DeviceManagementViewModel>();
 
 
 
@@ -38,6 +48,7 @@ namespace VisionTool.ViewModel
             SimpleIoc.Default.GetInstance<DiagramEditViewModel>();
             SimpleIoc.Default.GetInstance<ApplicationSettingViewModel>();
             SimpleIoc.Default.GetInstance<MainWindowViewModel>();
+            SimpleIoc.Default.GetInstance<DeviceManagementViewModel>();
 
 
             if(ViewModelLocator.IsAssosicationMode == true)
@@ -125,6 +136,14 @@ namespace VisionTool.ViewModel
             get
             {
                 return SimpleIoc.Default.GetInstance<ApplicationSettingViewModel>();
+            }
+        }
+
+        public ViewModelBase DeviceManagementViewModel
+        {
+            get
+            {
+                return SimpleIoc.Default.GetInstance<DeviceManagementViewModel>();
             }
         }
 

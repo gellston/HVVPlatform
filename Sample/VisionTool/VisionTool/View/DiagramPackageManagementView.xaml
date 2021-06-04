@@ -11,14 +11,13 @@
              xmlns:uclib="clr-namespace:UClib;assembly=UC"
              xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
              xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
-             xmlns:property="clr-namespace:Model.DiagramProperty;assembly=Model"
              xmlns:converter="clr-namespace:VisionTool.Converter"
              x:Name="view"
              xmlns:syntaxEditor="http://schemas.actiprosoftware.com/winfx/xaml/syntaxeditor">
     <DockPanel>
 
         <DockPanel.Resources>
-            <converter:DiagramPropertyToStringConverter x:Key="DiagramPropertyToStringConverter"></converter:DiagramPropertyToStringConverter>
+
         </DockPanel.Resources>
 
         <dx:UniformStackPanel DockPanel.Dock="Top"
@@ -208,43 +207,9 @@
                         </TextBox>
                     </Grid>
 
-                    <ContentPresenter Content="{Binding Path=SelectedInputSnapSpot.DiagramProperty}">
-                        <ContentPresenter.Resources>
-                            <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
-                                <DockPanel Height="40" HorizontalAlignment="Stretch">
-                                    <Button Width="40" DockPanel.Dock="Left">
-                                        <Image Source="{dx:DXImage 'SvgImages/Snap/CalcBool.svg'}"></Image>
-                                    </Button>
-                                    <dx:SimpleButton Width="40" ButtonKind="Toggle" IsChecked="{Binding Value, Mode=TwoWay}" DockPanel.Dock="Right">
-                                        <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Validation.svg'}"></Image>
-                                    </dx:SimpleButton>
-                                    <TextBox IsReadOnly="True" Text="BoolDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                                </DockPanel>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
-                                <DockPanel Height="40" HorizontalAlignment="Stretch">
-                                    <Button Width="40" DockPanel.Dock="Left">
-                                        <Image Source="{dx:DXImage 'SvgImages/Reports/GaugeStyleLinearHorizontal.svg'}"></Image>
-                                    </Button>
-                                    <TextBox Width="100" DockPanel.Dock="Right" Text="{Binding MaxValue, Mode=TwoWay}" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
-                                    <TextBox Width="80" DockPanel.Dock="Right" Text="Max Value"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
-
-                                    <TextBox Width="100" DockPanel.Dock="Right" Text="{Binding MinValue, Mode=TwoWay}"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
-                                    <TextBox Width="80" DockPanel.Dock="Right" Text="Min Value"  HorizontalContentAlignment="Left" VerticalContentAlignment="Center"></TextBox>
-                                    <TextBox IsReadOnly="True" Text="ThresholdDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                                </DockPanel>
-                            </DataTemplate>
-                            <DataTemplate DataType="{x:Type property:EmptyDiagramProperty}">
-                                <DockPanel Height="40" HorizontalAlignment="Stretch">
-                                    <Button Width="40" DockPanel.Dock="Left">
-                                        <Image Source="{dx:DXImage 'SvgImages/Snap/EmptyTableRowSeparatorList.svg'}"></Image>
-                                    </Button>
-
-                                    <TextBox IsReadOnly="True" Text="상수 편집을 지원하지 않는 속성입니다." HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
-                                </DockPanel>
-                            </DataTemplate>
-                        </ContentPresenter.Resources>
-                    </ContentPresenter>
+                    <uclib:PropertySettingViewer SelectedDiagramProperty="{Binding Path=SelectedInputSnapSpot.DiagramProperty}">
+                        
+                    </uclib:PropertySettingViewer>
                 </DockPanel>
 
                 <!--입력 노드 추가--> 

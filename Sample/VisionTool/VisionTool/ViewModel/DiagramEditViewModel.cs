@@ -48,6 +48,7 @@ namespace VisionTool.ViewModel
 
             this.LogCollection = this.scriptControlService.ScriptLogCollection;
             this.GlobalCollection = this.scriptControlService.GlobalCollection;
+            this.GlobalNames = this.scriptControlService.GlobalNames;
             this.NativeModuleCollection = this.scriptControlService.NativeModuleCollection;
             this.ResultObjectCollection = this.scriptControlService.ResultObjectCollection;
 
@@ -56,6 +57,8 @@ namespace VisionTool.ViewModel
             this.InputSnapSpotCollection = this.sequenceControlService.InputSnapSpotCollection;
             this.OutputSnapSpotCollection = this.sequenceControlService.OutputSnapSpotCollection;
             this.ConnectorCollection = this.sequenceControlService.ConnectorCollection;
+
+
             
 
 
@@ -262,12 +265,12 @@ namespace VisionTool.ViewModel
             });
         }
 
-        private bool _IsOpenROIConfigurationView = false;
-        public bool IsOpenROIConfigurationView
-        {
-            get => _IsOpenROIConfigurationView;
-            set => Set(ref _IsOpenROIConfigurationView, value);
-        }
+        //private bool _IsOpenROIConfigurationView = false;
+        //public bool IsOpenROIConfigurationView
+        //{
+        //    get => _IsOpenROIConfigurationView;
+        //    set => Set(ref _IsOpenROIConfigurationView, value);
+        //}
 
 
         private bool _IsRunningScript = false;
@@ -364,6 +367,14 @@ namespace VisionTool.ViewModel
         {
             get => _NativeModuleCollection;
             set => Set(ref _NativeModuleCollection, value);
+        }
+
+
+        private ObservableCollection<string> _GlobalNames = null;
+        public ObservableCollection<string> GlobalNames
+        {
+            get => _GlobalNames;
+            set => Set(ref _GlobalNames, value);
         }
 
 

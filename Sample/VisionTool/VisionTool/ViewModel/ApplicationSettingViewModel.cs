@@ -23,6 +23,7 @@ namespace VisionTool.ViewModel
             this.DiagramCategoryCollection = this.appConfigService.ApplicationSetting.DiagramCategoryCollection;
             this.DiagramDataTypeCollection = this.appConfigService.ApplicationSetting.DiagramDataTypeCollection;
             this.DiagramPropertyDataTypeCollection = this.appConfigService.ApplicationSetting.DiagramPropertyDataTypeCollection;
+            this.DeviceTypeCollection = this.appConfigService.ApplicationSetting.DeviceTypeCollection;
         }
 
 
@@ -56,6 +57,14 @@ namespace VisionTool.ViewModel
         }
 
 
+        private ObservableCollection<string> _DeviceTypeCollection = null;
+        public ObservableCollection<string> DeviceTypeCollection
+        {
+            get => _DeviceTypeCollection;
+            set => Set(ref _DeviceTypeCollection, value);
+        }
+
+
 
         private string _SelectedDataType = null;
         public string SelectedDataType
@@ -76,6 +85,13 @@ namespace VisionTool.ViewModel
         {
             get => _SelectedPropertyDataType;
             set => Set(ref _SelectedPropertyDataType, value);
+        }
+
+        private string _SelectedDeviceType = null;
+        public string SelectedDeviceType
+        {
+            get => _SelectedDeviceType;
+            set => Set(ref _SelectedDeviceType, value);
         }
 
 
@@ -101,6 +117,14 @@ namespace VisionTool.ViewModel
         }
 
 
+        private string _CurrentDeviceType = null;
+        public string CurrentDeviceType
+        {
+            get => _CurrentDeviceType;
+            set => Set(ref _CurrentDeviceType, value);
+        }
+
+
         public ICommand ResetApplicationSettingCommand
         {
             get => new RelayCommand(() =>
@@ -110,6 +134,7 @@ namespace VisionTool.ViewModel
                 this.DiagramCategoryCollection = this.appConfigService.ApplicationSetting.DiagramCategoryCollection;
                 this.DiagramDataTypeCollection = this.appConfigService.ApplicationSetting.DiagramDataTypeCollection;
                 this.DiagramPropertyDataTypeCollection = this.appConfigService.ApplicationSetting.DiagramPropertyDataTypeCollection;
+                this.DeviceTypeCollection = this.appConfigService.ApplicationSetting.DeviceTypeCollection;
 
                 this.diagramControlService.UpdateDiagramInfo();
             });
@@ -189,6 +214,29 @@ namespace VisionTool.ViewModel
             {
                 if (this.SelectedPropertyDataType != null)
                     this.DiagramPropertyDataTypeCollection.Remove(this.SelectedPropertyDataType);
+
+            });
+        }
+
+
+
+
+        public ICommand AddNewDeviceTypeCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                if (this.CurrentDeviceType != null)
+                    this.DeviceTypeCollection.Add(CurrentDeviceType);
+
+            });
+        }
+
+        public ICommand DeleteDeviceTypeCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                if (this.SelectedDeviceType != null)
+                    this.DeviceTypeCollection.Remove(this.SelectedDeviceType);
 
             });
         }
