@@ -18,13 +18,13 @@ namespace Converter
                 var function = value as Function;
                 return function;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
                 System.Diagnostics.Trace.WriteLine(e.Message);
                 return null;
             }
-            
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

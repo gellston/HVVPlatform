@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-﻿using Model.DiagramProperty;
+using Model.DiagramProperty;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-=======
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
->>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
+
+
 
 namespace UClib
 {
@@ -23,7 +17,6 @@ namespace UClib
         public MoveThumb()
         {
             DragDelta += new DragDeltaEventHandler(this.MoveThumb_DragDelta);
-<<<<<<< HEAD
 
         }
 
@@ -39,16 +32,13 @@ namespace UClib
             {
                 SetValue(ZoomProperty, value);
             }
-=======
->>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
         }
 
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-<<<<<<< HEAD
             BaseDiagramProperty property = this.DataContext as BaseDiagramProperty;
 
-            if (property !=  null)
+            if (property != null)
             {
 
                 Point locationUIFromWindow = this.TranslatePoint(new Point(0, 0), this);
@@ -72,20 +62,10 @@ namespace UClib
                 if ((property.Y + yChange) <= 0)
                     return;
 
-                property.X += xChange - this.Width/2;
-                property.Y += yChange - this.Height/2;
+                property.X += xChange - this.Width / 2;
+                property.Y += yChange - this.Height / 2;
 
-=======
-            Control item = this.DataContext as Control;
 
-            if (item != null)
-            {
-                double left = Canvas.GetLeft(item);
-                double top = Canvas.GetTop(item);
-
-                Canvas.SetLeft(item, left + e.HorizontalChange);
-                Canvas.SetTop(item, top + e.VerticalChange);
->>>>>>> a57f593ead8c8ac5c8981bedbfa63d7d3abbc5ac
             }
         }
     }

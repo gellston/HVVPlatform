@@ -12,6 +12,6 @@ namespace Model
         public int DeviceVersion { get; set; }
         public string DeviceComment { get; set; }
 
-        public string DevicePropertyName { get; set; }
+        public string DeviceType { get; set; }
     }
 }

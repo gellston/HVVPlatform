@@ -43,11 +43,10 @@ namespace Device
             Device newCopy = new Device()
             {
                 IsAlive = this.IsAlive,
-                IsDeviceRunning = this.IsDeviceRunning,
                 HasError = this.HasError,
                 ErrorText = this.ErrorText,
                 Pid = this.Pid,
-                Type = this.Type,
+                DeviceName = this.DeviceName,
                 Name = this.Name,
             };
             
@@ -56,6 +55,7 @@ namespace Device
 
 
         private string _ErrorText = "";
+        [Newtonsoft.Json.JsonIgnore]
         public string ErrorText
         {
             get => _ErrorText;
@@ -64,6 +64,7 @@ namespace Device
 
 
         private bool _HasError = false;
+        [Newtonsoft.Json.JsonIgnore]
         public bool HasError
         {
             get => _HasError;
@@ -77,45 +78,52 @@ namespace Device
             set => Set(ref _Name, value);
         }
 
-        private string _Type = "";
-        public string Type
+        private string _DeviceName = "";
+        public string DeviceName
         {
-            get => _Type;
-            set => Set(ref _Type, value);
+            get => _DeviceName;
+            set => Set(ref _DeviceName, value);
         }
 
-        private string _Uid = "";
+        private string _Uid = null;
+        [Newtonsoft.Json.JsonIgnore]
         public string Uid
         {
             get
             {
-                _Uid ??= Guid.NewGuid().ToString("N");
+                var randSeed = Guid.NewGuid().ToString("N");
+                _Uid ??= randSeed;
                 return _Uid;
             }
         }
 
 
         private string _Pid = "";
+        [Newtonsoft.Json.JsonIgnore]
         public string Pid
         {
             get => _Pid;
             set => Set(ref _Pid, value);
         }
 
-        private bool _IsDeviceRunning = false;
-        public bool IsDeviceRunning
-        {
-            get => _IsDeviceRunning;
-            set => Set(ref _IsDeviceRunning, value);
-        }
+        //private bool _IsDeviceRunning = false;
+        //[Newtonsoft.Json.JsonIgnore]
+        //public bool IsDeviceRunning
+        //{
+        //    get => _IsDeviceRunning;
+        //    set => Set(ref _IsDeviceRunning, value);
+        //}
 
         private bool _IsAlive = false;
+        [Newtonsoft.Json.JsonIgnore]
         public bool IsAlive
         {
             get => _IsAlive;
             set => Set(ref _IsAlive, value);
         }
 
+
+        [Newtonsoft.Json.JsonIgnore]
         public ICommand CheckAliveCommand
         {
             get => new RelayCommand(() =>
@@ -129,7 +137,7 @@ namespace Device
                     this.AliveCheckFunction.Returns()
                                            .Get<bool>("isalive", out isAlive);
 
-                    this.IsDeviceRunning = isAlive;
+                    this.IsAlive = isAlive;
                 }
                 catch (Exception e)
                 {
@@ -142,6 +150,7 @@ namespace Device
         }
 
 
+        [Newtonsoft.Json.JsonIgnore]
         public ICommand ExitDeviceCommand
         {
             get => new RelayCommand(() =>
@@ -156,7 +165,7 @@ namespace Device
                     this.ExitFunction.Returns()
                                            .Get<bool>("isexit", out isexit);
                     if(isexit == true)
-                        this.IsDeviceRunning = false;
+                        this.IsAlive = false;
                 }
                 catch (Exception e)
                 {

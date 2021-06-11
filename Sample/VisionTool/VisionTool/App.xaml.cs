@@ -27,7 +27,11 @@ namespace VisionTool
         protected override void OnStartup(StartupEventArgs e)
         {
 
+            ActiproSoftware.Products.ActiproLicenseManager.RegisterLicense("hyvision system", "WPF211-6PW5H-108N4-0W3L4-0KCG");
+
             base.OnStartup(e);
+
+
 
             Helper.Extensions.EnsureAssociationsSet();
 
@@ -107,7 +111,7 @@ namespace VisionTool
                 App.Current.Shutdown();
             }
 
-            
+
 
 
             var splashViewModel = new DevExpress.Mvvm.DXSplashScreenViewModel

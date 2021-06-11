@@ -52,6 +52,9 @@
                         <DataTemplate DataType="{x:Type viewModel:DeviceManagementViewModel}">
                             <view:DeviceManagementView></view:DeviceManagementView>
                         </DataTemplate>
+                        <DataTemplate DataType="{x:Type viewModel:DeviceEditViewModel}">
+                            <view:DeviceEditView></view:DeviceEditView>
+                        </DataTemplate>
                     </ContentPresenter.Resources>
                 </ContentPresenter>
             </dxwui:HamburgerMenu.Content>
@@ -99,6 +102,14 @@
 
             <dxwui:HamburgerSubMenu Content="디바이스" Glyph="{dx:DXImage 'SvgImages/Reports/GaugeStyleThreeForthCircular.svg'}"  MoreButtonVisibilityMode="Hidden"  ToolTip="디바이스">
                 <dxwui:HamburgerSubMenu.Items>
+                    <dxwui:HamburgerSubMenuNavigationButton Content="디바이스 편집"
+                                                            SelectOnClick="False"
+                                                            Command="{Binding SelectCurrentMenuCommand}"
+                                                            CommandParameter="{Binding Source={StaticResource ViewModelLocator}, Path=DeviceEditViewModel}">
+                        <dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                            <Image Source="{dx:DXImage 'SvgImages/Reports/GaugeStyleThreeForthCircular.svg'}"></Image>
+                        </dxwui:HamburgerSubMenuNavigationButton.RightContent>
+                    </dxwui:HamburgerSubMenuNavigationButton>
                     <dxwui:HamburgerSubMenuNavigationButton Content="디바이스 관리"
                                                             SelectOnClick="False"
                                                             Command="{Binding SelectCurrentMenuCommand}"

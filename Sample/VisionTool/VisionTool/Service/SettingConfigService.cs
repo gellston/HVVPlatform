@@ -31,15 +31,31 @@ namespace VisionTool.Service
                     DevicePath = this.CurrentApplicationPath + "Device" + Path.DirectorySeparatorChar,
                     DeviceConfigPath = this.CurrentApplicationPath + "DeviceConfig" + Path.DirectorySeparatorChar,
                     DeviceMainPath = this.CurrentApplicationPath + "DeviceMain" + Path.DirectorySeparatorChar,
-        
+                    DeviceSettingPath = this.CurrentApplicationPath + "DeviceSetting" + Path.DirectorySeparatorChar,
 
 
 
                     DiagramPath = this.CurrentApplicationPath + "Diagram" + Path.DirectorySeparatorChar,
                     DiagramConfigPath = this.CurrentApplicationPath + "DiagramConfig" + Path.DirectorySeparatorChar,
-                    DiagramImagePath = this.CurrentApplicationPath + "DiagramImage" + Path.DirectorySeparatorChar
+                    DiagramImagePath = this.CurrentApplicationPath + "DiagramImage" + Path.DirectorySeparatorChar,
+
+
+
+                    ProgramUniqueID = Guid.NewGuid().ToString("N")
 
                 };
+
+
+                try
+                {
+
+                    string jsonString = JsonConvert.SerializeObject(this.ApplicationSetting, Formatting.Indented);
+                    File.WriteAllText(this.CurrentApplicationSettingFilePath, jsonString, Encoding.UTF8);
+                }
+                catch (Exception e)
+                {
+                    DialogHelper.ShowToastErrorMessage("설정 저장", "설정 저장이 실패했습니다.");
+                }
             }
             else
             {
@@ -56,6 +72,7 @@ namespace VisionTool.Service
             Directory.CreateDirectory(this.ApplicationSetting.DevicePath);
             Directory.CreateDirectory(this.ApplicationSetting.DeviceConfigPath);
             Directory.CreateDirectory(this.ApplicationSetting.DeviceMainPath);
+            Directory.CreateDirectory(this.ApplicationSetting.DeviceSettingPath);
 
             Directory.CreateDirectory(this.ApplicationSetting.DiagramPath);
             Directory.CreateDirectory(this.ApplicationSetting.DiagramConfigPath);

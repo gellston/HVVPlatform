@@ -69,6 +69,8 @@ namespace VisionTool.ViewModel
             });
         }
 
+
+
         public ICommand ModifyUpdateDeviceCommand
         {
             get => new RelayCommand(() =>
@@ -79,7 +81,6 @@ namespace VisionTool.ViewModel
                 {
 
                     this.deviceControlService.LoadDeviceInfoFromConfig(this.SelectedDeviceConfig);
-
                     this.RaisePropertyChanged("DependentDLLCollection");
                 }
                 catch (Exception e)
@@ -87,6 +88,7 @@ namespace VisionTool.ViewModel
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             });
+
         }
 
         public ICommand ModifyDeviceCommand

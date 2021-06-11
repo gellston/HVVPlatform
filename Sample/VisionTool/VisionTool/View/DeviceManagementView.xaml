@@ -205,9 +205,9 @@
                                                AllowGrouping="True"
                                                AllowScrollToFocusedRow="False">
                             <dxg:TableView.RowCellMenuCustomizations>
-                                <dxb:BarButtonItem Content="Modification" Glyph="{dx:DXImage 'Images/RichEdit/ModifyTableStyle_32x32.png'}" Command="{Binding ElementName=view, Path=DataContext.ModifyUpdateDeviceCommand}"/>
+                                <dxb:BarButtonItem Content="Modification" Command="{Binding ElementName=view, Path=DataContext.ModifyUpdateDeviceCommand}"/>
                             </dxg:TableView.RowCellMenuCustomizations>
-                            <dxg:TableView.RowStyle>
+                            <!--<dxg:TableView.RowStyle>
                                 <Style TargetType="dxg:RowControl">
                                     <Setter Property="ToolTipService.ToolTip">
                                         <Setter.Value>
@@ -221,7 +221,7 @@
                                         </Setter.Value>
                                     </Setter>
                                 </Style>
-                            </dxg:TableView.RowStyle>
+                            </dxg:TableView.RowStyle>-->
                         </dxg:TableView>
                     </dxg:GridControl.View>
                 </dxg:GridControl>

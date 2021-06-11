@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +19,8 @@ namespace VisionTool.Service
     {
 
         private readonly SettingConfigService settingConfigService;
+
+
         private Action<string> currentDeviceComment;
         private Action<string> currentDeviceMainPath;
         private Action<int> currentDeviceVersion;
@@ -25,7 +28,8 @@ namespace VisionTool.Service
         private Action<string> currentDeviceName;
 
 
-        public DeviceControlService(SettingConfigService _settingConfigService)
+        public DeviceControlService(SettingConfigService _settingConfigService,
+                                    ProcessManagerService _processManagerService)
         {
             this.settingConfigService = _settingConfigService;
 
@@ -99,6 +103,9 @@ namespace VisionTool.Service
             }
         }
 
+
+        
+
         public void LoadDeviceInfoFromConfig(DeviceConfig config)
         {
 
@@ -119,7 +126,7 @@ namespace VisionTool.Service
 
                 this.currentDeviceModifyDate.Invoke(config.DeviceModifyDate);
                 this.currentDeviceComment.Invoke(config.DeviceComment);
-                this.currentDeviceMainPath.Invoke(this.settingConfigService.TempDeviceModPackagePath + config.DeviceName + Path.DirectorySeparatorChar + config.DeviceName + ".exe");
+                this.currentDeviceMainPath.Invoke(this.settingConfigService.TempDeviceModPackagePath + Path.DirectorySeparatorChar + config.DeviceName + ".exe");
                 this.currentDeviceName.Invoke(config.DeviceName);
                 this.currentDeviceVersion.Invoke(config.DeviceVersion);
 
@@ -294,6 +301,9 @@ namespace VisionTool.Service
         public void UpdateDeviceInfo()
         {
 
+
+
+
             FileSystemHelper.DeleteFiles(this.settingConfigService.ApplicationSetting.DeviceConfigPath);
             FileSystemHelper.DeleteFiles(this.settingConfigService.ApplicationSetting.DeviceMainPath);
 
@@ -382,6 +392,8 @@ namespace VisionTool.Service
             else return false;
         }
 
+
+
         public void CreateDevicePackage(string _deviceName,
                                         string _deviceModifyDate,
                                         int _deviceVersion,
@@ -455,7 +467,8 @@ namespace VisionTool.Service
                     DeviceComment = _deviceComment,
                     DeviceName = _deviceName,
                     DeviceVersion = _deviceVersion,
-                    DeviceModifyDate = _deviceModifyDate
+                    DeviceModifyDate = _deviceModifyDate,
+                    DeviceType = _deviceType
                 };
 
 

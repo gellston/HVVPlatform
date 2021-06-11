@@ -27,7 +27,13 @@ namespace Model
         public string DevicePath { get; set; }
         public string DeviceConfigPath { get; set; }
         public string DeviceMainPath { get; set; }
-        //public string DeviceThirdPartyDLLPath { get; set; }
+        
+
+
+
+        public string DeviceSettingPath { get; set; }
+        
+        public string ProgramUniqueID { get; set; }
 
 
 
