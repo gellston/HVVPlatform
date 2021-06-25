@@ -32,7 +32,7 @@ HV::V1::Number::Number(hv::v1::object* object) : HV::V1::Object(object){
 }
 
 HV::V1::Number::~Number() {
-
+	this->!Number();
 }
 
 HV::V1::Number::!Number() {

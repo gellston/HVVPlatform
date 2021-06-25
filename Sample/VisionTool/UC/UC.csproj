@@ -21,14 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Device">
-      <HintPath>..\Device\bin\x64\Debug\netcoreapp3.1\Device.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Device\Device.csproj" />
+    <ProjectReference Include="..\Logger\Logger.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="HVVScriptSharp">
       <HintPath>..\Model\bin\netcoreapp3.1\HVVScriptSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Model">
-      <HintPath>..\Model\bin\netcoreapp3.1\Model.dll</HintPath>
     </Reference>
   </ItemGroup>
 

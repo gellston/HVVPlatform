@@ -18,6 +18,19 @@
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
                   PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+        <ScrollViewer.Background>
+            <VisualBrush TileMode="Tile"
+                         Viewport="0,0,50,50" ViewportUnits="Absolute" 
+                         Viewbox="0,0,50,50" ViewboxUnits="Absolute">
+                <VisualBrush.Visual>
+                    <Rectangle Stroke="White" 
+                               StrokeThickness="1" 
+                               Height="50" 
+                               Width="50"
+                               StrokeDashArray="1 1"/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </ScrollViewer.Background>
         <ItemsControl ItemsSource="{Binding ElementName=view, Path=DrawObjectsCollection, Mode=OneWay}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -31,14 +44,15 @@
                             ClipToBounds="True"
                             IsItemsHost="True">
                         <Canvas.Background>
-                            <ImageBrush ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, TargetNullValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
+                            <ImageBrush x:Name="ImageBackground" 
+                                        ImageSource="{Binding ElementName=view, Path=Image, Mode=OneWay, TargetNullValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'},  FallbackValue={dx:DXImage 'SvgImages/Icon Builder/Security_Warning.svg'}}"></ImageBrush>
                         </Canvas.Background>
                         <Canvas.RenderTransform>
                             <TransformGroup>
-                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1}"
-                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1}"/>
-                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, TargetNullValue=1}" 
-                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, TargetNullValue=1}"/>
+                                <ScaleTransform ScaleX="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1, FallbackValue=1}"
+                                                ScaleY="{Binding ElementName=view, Path=Zoom, Mode=OneWay, TargetNullValue=1, FallbackValue=1}"/>
+                                <TranslateTransform X="{Binding ElementName=view, Path=TranslationX, Mode=OneWay, TargetNullValue=1, FallbackValue=1}" 
+                                                    Y="{Binding ElementName=view, Path=TranslationY, Mode=OneWay, TargetNullValue=1, FallbackValue=1}"/>
                             </TransformGroup>
                         </Canvas.RenderTransform>
                     </Canvas>

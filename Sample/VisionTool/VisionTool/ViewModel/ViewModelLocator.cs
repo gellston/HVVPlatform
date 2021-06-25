@@ -4,6 +4,7 @@ using GalaSoft.MvvmLight;
 using VisionTool.Service;
 using GalaSoft.MvvmLight.Messaging;
 using VisionTool.Message;
+using System;
 
 namespace VisionTool.ViewModel
 {
@@ -14,7 +15,6 @@ namespace VisionTool.ViewModel
 
 
             SimpleIoc.Default.Register<SettingConfigService>();
-
             SimpleIoc.Default.Register<ScriptControlService>();
             SimpleIoc.Default.Register<ModuleControlService>();
             SimpleIoc.Default.Register<DiagramControlService>();
@@ -24,15 +24,53 @@ namespace VisionTool.ViewModel
 
 
             //미리생성
-            SimpleIoc.Default.GetInstance<ProcessManagerService>();
             SimpleIoc.Default.GetInstance<SettingConfigService>();
             SimpleIoc.Default.GetInstance<ModuleControlService>();
             SimpleIoc.Default.GetInstance<DiagramControlService>();
             SimpleIoc.Default.GetInstance<SequenceControlService>();
             SimpleIoc.Default.GetInstance<DeviceControlService>();
             SimpleIoc.Default.GetInstance<ScriptControlService>();
-            
+            // 프로세스는 마지막에 실행해야함.
+            SimpleIoc.Default.GetInstance<ProcessManagerService>();
 
+
+            // 장치 초기화 
+            try
+            {
+                SimpleIoc.Default.GetInstance<ProcessManagerService>().ShutDownAllChildProcess();
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
+            try
+            {
+                SimpleIoc.Default.GetInstance<DeviceControlService>().UpdateDeviceInfo();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
+            try
+            {
+                SimpleIoc.Default.GetInstance<ProcessManagerService>().LoadDevice();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
+
+            try
+            {
+                SimpleIoc.Default.GetInstance<ProcessManagerService>().RunAllChildProcess();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
 
 
 

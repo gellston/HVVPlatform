@@ -14,6 +14,24 @@
         
         
         <ContentPresenter.Resources>
+            <DataTemplate DataType="{x:Type property:SymbolDiagramProperty}">
+                <DockPanel Height="40" HorizontalAlignment="Stretch">
+                    <Button Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/RichEdit/Symbol.svg'}"></Image>
+                    </Button>
+                    <TextBox Width="120" Text="{Binding Value, Mode=TwoWay}" VerticalContentAlignment="Center" DockPanel.Dock="Right"></TextBox>
+                    <TextBox IsReadOnly="True" Text="StringDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                </DockPanel>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type property:StringDiagramProperty}">
+                <DockPanel Height="40" HorizontalAlignment="Stretch">
+                    <Button Width="40" DockPanel.Dock="Left">
+                        <Image Source="{dx:DXImage 'SvgImages/Snap/CalcString.svg'}"></Image>
+                    </Button>
+                    <TextBox Width="120" Text="{Binding Value, Mode=TwoWay}" VerticalContentAlignment="Center" DockPanel.Dock="Right"></TextBox>
+                    <TextBox IsReadOnly="True" Text="StringDiagramProperty" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
+                </DockPanel>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type property:BoolDiagramProperty}">
                 <DockPanel Height="40" HorizontalAlignment="Stretch">
                     <Button Width="40" DockPanel.Dock="Left">

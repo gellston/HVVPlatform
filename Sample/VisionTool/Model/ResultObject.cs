@@ -22,8 +22,9 @@ namespace Model
 
 
 
+
         private HV.V1.Object _Data = null;
-        public HV.V1.Object Data
+        public virtual HV.V1.Object Data
         {
             get => _Data;
             set => Set(ref _Data, value);

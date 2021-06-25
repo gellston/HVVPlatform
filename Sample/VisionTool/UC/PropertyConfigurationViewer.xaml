@@ -50,6 +50,22 @@
                                     <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="불 변수"></TextBox>-->
                                 </DockPanel>
                             </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:StringDiagramProperty}">
+                                <DockPanel>
+                                    <TextBox Width="120" DockPanel.Dock="Right" Text="{Binding Value, Mode=TwoWay}"  VerticalContentAlignment="Center"></TextBox>
+
+                                    <TextBlock></TextBlock>
+                                    <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="불 변수"></TextBox>-->
+                                </DockPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="{x:Type property:SymbolDiagramProperty}">
+                                <DockPanel>
+                                    <TextBox Width="120" DockPanel.Dock="Right" Text="{Binding Value, Mode=TwoWay}"  VerticalContentAlignment="Center"></TextBox>
+
+                                    <TextBlock></TextBlock>
+                                    <!--<TextBox IsReadOnly="True" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="불 변수"></TextBox>-->
+                                </DockPanel>
+                            </DataTemplate>
                             <DataTemplate DataType="{x:Type property:ThresholdDiagramProperty}">
                                 <DockPanel>
                                     <TextBox Width="40" DockPanel.Dock="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Text="{Binding Value, Mode=TwoWay}"></TextBox>

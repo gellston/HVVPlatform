@@ -29,6 +29,7 @@
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
                 <ColumnDefinition Width="40"></ColumnDefinition>
+                <ColumnDefinition Width="40"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Button ToolTip="디바이스 추가"
                     Grid.Column="0"
@@ -42,54 +43,59 @@
             </Button>
             <Button ToolTip="전체 디바이스 프로세스 실행"
                     Grid.Column="2"
-                    Command="{Binding ProcessExecutionCommand}">
+                    Command="{Binding ProcessAllExecutionCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/Business Objects/BO_Security_Permission_Action.svg'}"></Image>
+            </Button>
+            <Button ToolTip="디바이스 프로세스 실행"
+                    Grid.Column="3"
+                    Command="{Binding ProcessExecutionCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/XAF/ModelEditor_Actions.svg'}"></Image>
             </Button>
 
             <Button ToolTip="디바이스 정보 초기화"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Command="{Binding ClearDeviceCommand}"
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Spreadsheet/ClearAll.svg'}"></Image>
             </Button>
 
             <Button ToolTip="디바이스 정보 저장"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Command="{Binding SaveDeviceCommand}"
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/save as.svg'}"></Image>
             </Button>
 
             <Button ToolTip="디바이스 정보 리로드"
-                    Grid.Column="5"
+                    Grid.Column="6"
                     Command="{Binding LoadDeviceCommand}"
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Icon Builder/Actions_Reload.svg'}"></Image>
             </Button>
 
             <Button ToolTip="디바이스 설정 불러오기"
-                    Grid.Column="6"
+                    Grid.Column="7"
                     Command="{Binding ImportDeviceSettingCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_LocalizationImport.svg'}"></Image>
             </Button>
             <Button ToolTip="디바이스 설정 내보내기"
-                    Grid.Column="7"
+                    Grid.Column="8"
                     Command="{Binding ExportDeviceSettingCommand}">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_LocalizationExport.svg'}"></Image>
             </Button>
             
-            <Slider Grid.Column="8"
+            <Slider Grid.Column="9"
                     Grid.ColumnSpan="2"
                     Minimum="200"
-                    Maximum="600"
+                    Maximum="1450"
                     Value="{Binding ItemsWidth, Mode=TwoWay}"
                     ToolTip="아이텀 너비"
                     Margin="5"></Slider>
             
-            <Slider Grid.Column="10"
+            <Slider Grid.Column="11"
                     Grid.ColumnSpan="2"
                     Minimum="200"
-                    Maximum="600"
+                    Maximum="1450"
                     Value="{Binding ItemsHeight, Mode=TwoWay}"
                     ToolTip="아이템 높이"
                     Margin="5"></Slider>

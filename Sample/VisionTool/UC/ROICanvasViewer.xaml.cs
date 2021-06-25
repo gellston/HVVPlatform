@@ -45,8 +45,72 @@ namespace UClib
         public ROICanvasViewer()
         {
             InitializeComponent();
-
+            //CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
+
+        ~ROICanvasViewer()
+        {
+            //CompositionTarget.Rendering -= CompositionTarget_Rendering;
+        }
+
+        //private void CompositionTarget_Rendering(object sender, EventArgs e)
+        //{
+
+        //    ROICanvasViewer control = this;
+        //    if (control != null)
+        //    {
+
+        //        try
+        //        {
+        //            Function function = this.SelectedFunction;
+        //            if (function == null) return;
+        //            ObservableCollection<InputSnapSpot> inputCollection = function.Input;
+        //            foreach (var input in inputCollection)
+        //            {
+        //                if (input.DataType == control.TargetImageType)
+        //                {
+        //                    try
+        //                    {
+        //                        var connector = control.ConnectorCollection.ToList().Where(x => x.EndSnapHash == input.Hash).First();
+        //                        var outputSnapSpotHash = connector.StartSnapHash;
+
+        //                        for (int index = 0; index < control.GlobalNames.Count(); index++)
+        //                        {
+        //                            if (outputSnapSpotHash == control.GlobalNames[index])
+        //                            {
+        //                                var imageObject = control.GlobalObjectCollection[index];
+
+
+        //                                HVObjectBitmapImageConverter converter = new HVObjectBitmapImageConverter();
+        //                                var bitmap = converter.Convert(imageObject, null, null, null);
+        //                                control.Image = bitmap as WriteableBitmap;
+        //                                break;
+        //                            }
+        //                        }
+
+
+        //                    }
+        //                    catch (Exception exception1)
+        //                    {
+        //                        System.Diagnostics.Debug.WriteLine(exception1.Message);
+        //                        continue;
+        //                    }
+
+        //                }
+        //            }
+        //        }
+        //        catch (Exception exception2)
+        //        {
+        //            System.Diagnostics.Debug.WriteLine(exception2.Message);
+        //        }
+
+
+        //    }
+
+
+        //    this.InvalidateVisual();
+
+        //}
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ROICanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
         public ImageSource Image
@@ -72,6 +136,7 @@ namespace UClib
 
                 control.CanvasWidth = image.Width;
                 control.CanvasHeight = image.Height;
+                //control.OnPropertyRaised("Image");
 
                 //control.OutScrollViewer.UpdateLayout();
 
@@ -283,7 +348,6 @@ namespace UClib
                     Function function = exception.NewValue as Function;
                     if (function == null) return;
                     ObservableCollection<InputSnapSpot> inputCollection = function.Input;
-                    bool imageCheck = false;
                     foreach (var input in inputCollection)
                     {
                         if (input.DataType == control.TargetImageType)
@@ -303,8 +367,6 @@ namespace UClib
                                         HVObjectBitmapImageConverter converter = new HVObjectBitmapImageConverter();
                                         var bitmap = converter.Convert(imageObject, null,null,null);
                                         control.Image = bitmap as WriteableBitmap;
-
-                                        imageCheck = true;
                                         break;
                                     }
                                 }
@@ -318,8 +380,6 @@ namespace UClib
                             }
 
                         }
-
-
                     }
                 }
                 catch(Exception e)
@@ -353,7 +413,7 @@ namespace UClib
 
         private Point CanvasStart;
         private Point CanvasOrigin;
-        private bool IsCanvasCaptured = false;
+        //private bool IsCanvasCaptured = false;
         private void OutScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
@@ -418,7 +478,7 @@ namespace UClib
 
                 var draggableControl = sender as Canvas;
                 draggableControl.CaptureMouse();
-                IsCanvasCaptured = true;
+                //IsCanvasCaptured = true;
                 return;
             }
 
@@ -429,7 +489,7 @@ namespace UClib
             Canvas canvas = sender as Canvas;
             canvas.ReleaseMouseCapture();
             this.SelectedItem = null;
-            this.IsCanvasCaptured = false;
+            //this.IsCanvasCaptured = false;
         }
 
     }

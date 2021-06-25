@@ -709,7 +709,7 @@ namespace VisionTool.Service
 
                 var targetConfigPath = this.settingConfigService.TempDiagramPackagePath + _diagramName + ".json";
                 string jsonString = JsonConvert.SerializeObject(config, Formatting.Indented);
-                 File.WriteAllText(targetConfigPath, jsonString, Encoding.UTF8);
+                File.WriteAllText(targetConfigPath, jsonString, Encoding.UTF8);
 
 
                 var targetZipPath = this.settingConfigService.ApplicationSetting.DiagramPath + _diagramName + ".diagram";

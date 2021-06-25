@@ -7,9 +7,7 @@
         mc:Ignorable="d"
         Title="{Binding Title}" Height="200" Width="600"
         xmlns:converter="clr-namespace:VisionTool.Converter">
-    <Window.Resources>
-        <converter:ProgressValueToString x:Key="ProgressValueToString"></converter:ProgressValueToString>
-    </Window.Resources>
+ 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="15"></RowDefinition>

@@ -18,6 +18,7 @@ namespace hv::v1 {
 	private:
 		std::string _name;
 		std::string _type;
+		std::string _stack_name;
 		
 		object() = delete;
 
@@ -31,6 +32,8 @@ namespace hv::v1 {
 		object(std::string name, std::string type);
 		std::string name();
 		std::string type();
+		std::string stack_name();
+		void set_stack_name(std::string name);
 		virtual std::string to_string();
 
 

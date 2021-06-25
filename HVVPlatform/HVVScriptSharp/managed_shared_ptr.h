@@ -36,11 +36,19 @@ namespace HV {
             }
 
             !mananged_shared_ptr() {
-                delete pPtr;
+                if (pPtr != nullptr) {
+                    delete pPtr;
+                    pPtr = nullptr;
+                }
+
             }
 
             ~mananged_shared_ptr() {
-                delete pPtr;
+                if (pPtr != nullptr) {
+                    delete pPtr;
+                    pPtr = nullptr;
+                }
+                    
             }
 
             operator std::shared_ptr<T>() {
@@ -64,6 +72,8 @@ namespace HV {
             void reset() {
                 pPtr->reset();
             }
+
+     
 
             std::shared_ptr<T>& get() {
                 return *pPtr;

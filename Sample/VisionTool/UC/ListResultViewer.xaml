@@ -27,12 +27,14 @@
         <dx:DXTabControl.ItemTemplate>
             <ItemContainerTemplate>
                 <ItemContainerTemplate.Resources>
-                    <DataTemplate DataType="{x:Type script:Image}">
-                        <local:ROICanvasViewer Image="{Binding Path=., Converter={StaticResource HVObjectBitmapImageConverter}, UpdateSourceTrigger=PropertyChanged}"
-                                               Background="Red">
-                        </local:ROICanvasViewer>
+                    <DataTemplate DataType="{x:Type model:ImageResultObject}">
+                        <local:ImageCanvasViewer Image="{Binding Path=BitmapImage}">
+                        </local:ImageCanvasViewer>
                     </DataTemplate>
-                    <DataTemplate DataType="{x:Type script:String}">
+                    <DataTemplate DataType="{x:Type model:ResultObject}">
+                        <TextBlock Text="{Binding Path=Data.ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </DataTemplate>
+                    <!--<DataTemplate DataType="{x:Type script:String}">
                         <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type script:Boolean}">
@@ -43,9 +45,10 @@
                     </DataTemplate>
                     <DataTemplate DataType="{x:Type script:RectROI}">
                         <TextBlock Text="{Binding Path=ToString}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-                    </DataTemplate>
+                    </DataTemplate>-->
                 </ItemContainerTemplate.Resources>
-                <ContentPresenter Content="{Binding Path=Data}"></ContentPresenter>
+                
+                <ContentPresenter Content="{Binding Path=.}"></ContentPresenter>
 
             </ItemContainerTemplate>
         </dx:DXTabControl.ItemTemplate>

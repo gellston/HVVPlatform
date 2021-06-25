@@ -29,7 +29,7 @@ HV::V1::LineFitROI::LineFitROI(hv::v1::object* object) : HV::V1::Object(object) 
 }
 
 HV::V1::LineFitROI::~LineFitROI() {
-
+	this->!LineFitROI();
 }
 
 HV::V1::LineFitROI::!LineFitROI() {

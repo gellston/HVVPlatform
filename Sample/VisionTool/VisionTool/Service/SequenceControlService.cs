@@ -161,6 +161,7 @@ namespace VisionTool.Service
         public void ClearSequence() {
 
             this.FunctionCollection.Clear();
+            this.FunctionCollection.Clear();
             this.InputSnapSpotCollection.Clear();
             this.OutputSnapSpotCollection.Clear();
             this.ConnectorCollection.Clear();

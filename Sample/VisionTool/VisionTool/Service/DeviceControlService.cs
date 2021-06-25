@@ -34,7 +34,7 @@ namespace VisionTool.Service
             this.settingConfigService = _settingConfigService;
 
 
-            this.UpdateDeviceInfo();
+            ///this.UpdateDeviceInfo();
         }
 
         public void SetCallbackCurrentDeviceVersion(Action<int> check)

@@ -148,6 +148,7 @@ namespace VisionTool.ViewModel
             get => new RelayCommand(() =>
             {
                 this.scriptControlService.ClearNativeModules();
+                this.scriptControlService.ClearResultObject();
                 this.moduleControlService.UpdateModuleInfo();
             });
         }

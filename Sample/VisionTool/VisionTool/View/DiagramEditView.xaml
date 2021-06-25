@@ -15,10 +15,18 @@
              xmlns:ucLib="clr-namespace:UClib;assembly=UC"
              xmlns:converter="clr-namespace:VisionTool.Converter"
              xmlns:dxdo="http://schemas.devexpress.com/winfx/2008/xaml/docking"
-             xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm">
+             xmlns:mvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
+             xmlns:syntaxEditor="http://schemas.actiprosoftware.com/winfx/xaml/syntaxeditor"
+             xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+             xmlns:logger="clr-namespace:Logger;assembly=Logger">
 
     <mvvm:Interaction.Behaviors>
-        <mvvm:KeyToCommand KeyGesture="Delete" Command="{Binding DeleteDiagramCommand}" CommandParameter="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="Delete" Command="{Binding DeleteDiagramCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="Ctrl+S" Command="{Binding SaveDiagramSequenceCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="F6" Command="{Binding StopScriptCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="F8" Command="{Binding ContinusStartRunScriptCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="F7" Command="{Binding StepRunScriptCommand}"></mvvm:KeyToCommand>
+        <mvvm:KeyToCommand KeyGesture="F5" Command="{Binding StartRunScriptCommand}"></mvvm:KeyToCommand>
     </mvvm:Interaction.Behaviors>
     
     
@@ -50,7 +58,13 @@
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/save as.svg'}"></Image>
             </Button>
-            
+
+            <Button ToolTip="이미지 열기"
+                    Width="40"
+                    Command="{Binding OpenImageCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/LoadImage.svg'}"></Image>
+            </Button>
+
             <dx:SimpleButton IsChecked="{Binding ElementName=FunctionDiagramViewer, Path=IsNoAction, Mode=TwoWay}" ToolTip="커서" ButtonKind="Toggle" Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/pointer.svg'}"></Image>
             </dx:SimpleButton>
@@ -58,7 +72,6 @@
 
             <Button ToolTip="다이어그램 삭제"
                     Command="{Binding DeleteDiagramCommand}"
-                     CommandParameter="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}"
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/Dashboards/Delete.svg'}"></Image>
             </Button>
@@ -84,11 +97,17 @@
                 <Image Source="{dx:DXImage 'SvgImages/RichEdit/ViewMergedData.svg'}"></Image>
             </dx:SimpleButton>
 
-            <Button Command="{Binding ElementName=FunctionDiagramViewer, Path=RefreshLayoutCommand}" 
-                    ToolTip="레이아웃 정리" 
+            <Button ToolTip="레이아웃 정리" 
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/DiagramIcons/ReLayoutParts.svg'}"></Image>
             </Button>
+
+            <Button ToolTip="전체 레이아웃 컴파일" 
+                    Width="40"
+                    Command="{Binding CompileDiagramCommand}">
+                <Image Source="{dx:DXImage 'SvgImages/RichEdit/ShowAllFieldCodes.svg'}"></Image>
+            </Button>
+
 
             <Button Command="{Binding StartRunScriptCommand}" Width="40" ToolTip="스크립트 실행">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Start.svg'}"></Image>
@@ -110,6 +129,55 @@
                     Width="40">
                 <Image Source="{dx:DXImage 'SvgImages/XAF/Action_Debug_Breakpoint_Toggle.svg'}"></Image>
             </Button>
+            <dxe:FontEdit Width="40"
+                          EditValue="Consolas"
+                          Name="editFont"
+                          ToolTip="스크립트 폰트"></dxe:FontEdit>
+            <dxe:ComboBoxEdit SelectedItem="18"
+                              Name="editFontSize"
+                              Width="40"
+                              ToolTip="스크립트 폰트 사이즈">
+                <dxe:ComboBoxEditItem>10</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>11</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>12</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>13</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>14</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>15</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>16</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>17</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>18</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>19</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>20</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>21</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>22</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>23</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>24</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>25</dxe:ComboBoxEditItem>
+                <dxe:ComboBoxEditItem>26</dxe:ComboBoxEditItem>
+            </dxe:ComboBoxEdit>
+            <dxe:PopupColorEdit Name="fontColor" 
+                                ToolTip="스크립트 폰트 컬러" 
+                                Width="40"
+                                Color="Black"/>
+
+            <dx:SimpleButton ToolTip="흑백으로 로드"
+                             ButtonKind="Toggle" 
+                             IsChecked="{Binding IsImageLoadGray}" 
+                             Width="40">
+                <Image Source="/Image/icons8_grayscale_48px.png"></Image>
+            </dx:SimpleButton>
+            <dx:SimpleButton ToolTip="이미지 파일 리스트에서 로드"
+                             ButtonKind="Toggle" 
+                             IsChecked="{Binding IsImageLoadFromDisk}" 
+                             Width="40">
+                <Image Source="/Image/icons8_image_96px.png"></Image>
+            </dx:SimpleButton>
+            <dx:SimpleButton ToolTip="카메라로부터 이미지 로드"
+                             ButtonKind="Toggle" 
+                             IsChecked="{Binding IsImageLoadFromCamera}" 
+                             Width="40">
+                <Image Source="/Image/icons8_lens_96px.png"></Image>
+            </dx:SimpleButton>
 
         </dx:UniformStackPanel>
 
@@ -124,7 +192,8 @@
         </dxb:BarContainerControl>
 
 
-        <dxdo:DockLayoutManager FloatingMode="Desktop">
+        <dxdo:DockLayoutManager FloatingMode="Desktop"
+                                >
             <dxdo:LayoutGroup Orientation="Horizontal"
                               AllowClose="False">
                 <dxdo:LayoutGroup Name="EditPlanel"
@@ -185,6 +254,69 @@
                             
                             </dxdo:LayoutPanel>
 
+                            <dxdo:LayoutPanel Caption="컴파일된 코드"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <syntaxEditor:SyntaxEditor Margin="5"
+                                                           Text="{Binding Path=CompileScriptCode, UpdateSourceTrigger=PropertyChanged}"
+                                                           IsLineNumberMarginVisible="True"
+                                                           IsDefaultContextMenuEnabled="True"
+                                                           IsDelimiterAutoCompleteEnabled="True"
+                                                           IsDelimiterHighlightingEnabled="True"
+                                                           IsCurrentLineHighlightingEnabled="True"
+                                                           IsCollapsibleRegionHighlightingEnabled="True"
+                                                           IsTextDataBindingEnabled="True"
+                                                           HasHorizontalSplit="False"
+                                                           CanSplitHorizontally="False"
+                                                           ZoomModesAllowed="Mouse"
+                                                           FontSize="{Binding ElementName=editFontSize, Path=EditValue}"
+                                                           FontFamily="{Binding ElementName=editFont, Path=EditValue}"
+                                                           IsSearchResultHighlightingEnabled="True"
+                                                           SelectionCollapsesToAnchor="True"
+                                                           SelectionCollapsesOnCopy="True"
+                                                           x:Name="CodeEditor"
+                                                           >
+                                    <syntaxEditor:SyntaxEditor.Foreground>
+                                        <SolidColorBrush Color="{Binding ElementName=fontColor, Path=EditValue}"></SolidColorBrush>
+                                    </syntaxEditor:SyntaxEditor.Foreground>
+                                    <syntaxEditor:EditorDocument>
+                                        <syntaxEditor:EditorDocument.Language>
+                                            <syntaxEditor:JavaScriptSyntaxLanguage></syntaxEditor:JavaScriptSyntaxLanguage>
+                                        </syntaxEditor:EditorDocument.Language>
+                                    </syntaxEditor:EditorDocument>
+                                </syntaxEditor:SyntaxEditor>
+
+                            </dxdo:LayoutPanel>
+                            <dxdo:LayoutPanel Caption="선택된 카메라 영상"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                                <ucLib:ImageCanvasViewer Image="{Binding CurrentCameraImage, Mode=OneWay}"
+                                                         Zoom="1"
+                                                         ZoomMin="0.2"
+                                                         ZoomMax="5"
+                                                         ZoomStep="0.5"></ucLib:ImageCanvasViewer>
+                            </dxdo:LayoutPanel>
+                            <dxdo:LayoutPanel Caption="선택된 파일 이미지"
+                                              ItemHeight="*"
+                                              ItemWidth="*"
+                                              AllowClose="False"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden">
+
+                                <ucLib:ImageCanvasViewer Image="{Binding CurrentFileImage, Mode=OneWay}"
+                                                         Zoom="1"
+                                                         ZoomMin="0.2"
+                                                         ZoomMax="5"
+                                                         ZoomStep="0.5"></ucLib:ImageCanvasViewer>
+
+                            </dxdo:LayoutPanel>
+
                         </dxdo:TabbedGroup>
                     </dxdo:LayoutGroup>
 
@@ -192,7 +324,7 @@
                                       ItemHeight="300"
                                       AllowClose="False">
                         <dx:DXTabControl Margin="0,5,0,0">
-                            <dx:DXTabItem Header="에러">
+                            <dx:DXTabItem Header="스크립트 로그">
                                 <dxg:GridControl EnableSmartColumnsGeneration="False"
                                                  SelectionMode="Row"
                                                  AutoGenerateColumns="None"
@@ -203,6 +335,35 @@
                                         <dxg:GridColumn FieldName="종류" IsSmart="False" Binding="{Binding Path=Type}"/>
                                         <dxg:GridColumn FieldName="로그 내용" IsSmart="False" Width="*" Binding="{Binding Path=Content}"/>
                                     </dxg:GridControl.Columns>
+                                    <dxg:GridControl.View>
+                                        <dxg:TableView AllowPerPixelScrolling="True" 
+                                                       ShowTotalSummary="False"
+                                                       AllowGrouping="True"
+                                                       AllowScrollToFocusedRow="False">
+                                        </dxg:TableView>
+
+                                    </dxg:GridControl.View>
+                                </dxg:GridControl>
+                            </dx:DXTabItem>
+                            <dx:DXTabItem Header="전체 시스템 로그">
+                                <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                                 SelectionMode="Row"
+                                                 AutoGenerateColumns="None"
+                                                 ShowAllTableValuesInFilterPopup="True"
+                                                 ItemsSource="{Binding Source={x:Static Member=logger:Logger.LogCollection}}"
+                                                 >
+                                    <dxg:GridControl.Columns>
+                                        <dxg:GridColumn FieldName="시간" IsSmart="False" Width="100" Binding="{Binding Path=TimeStamp}" SortOrder="Descending">
+                                            <dxg:GridColumn.EditSettings>
+                                                <dxe:TextEditSettings DisplayFormat="yyyy-MM-dd HH:mm:ss:fff"/>
+                                            </dxg:GridColumn.EditSettings>
+                                        </dxg:GridColumn>
+                                        <dxg:GridColumn FieldName="파일 위치" IsSmart="False" Width="100" Binding="{Binding Path=SourceFilePath }"/>
+                                        <dxg:GridColumn FieldName="함수 이름" IsSmart="False" Width="100" Binding="{Binding Path=MemberFunctionName }"/>
+                                        <dxg:GridColumn FieldName="에러 라인" IsSmart="False" Width="100" Binding="{Binding Path=SourceLineNumber  }"/>
+                                        <dxg:GridColumn FieldName="에러 내용" IsSmart="False" Width="*" Binding="{Binding Path=Context}"/>
+                                    </dxg:GridControl.Columns>
+
                                     <dxg:GridControl.View>
                                         <dxg:TableView AllowPerPixelScrolling="True" 
                                                        ShowTotalSummary="False"
@@ -229,6 +390,7 @@
                                          ShowAllTableValuesInFilterPopup="False"
                                          ItemsSource="{Binding GlobalCollection, UpdateSourceTrigger=PropertyChanged}">
                             <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="스텍이름" IsSmart="False" Binding="{Binding Path=StackName}"/>
                                 <dxg:GridColumn FieldName="이름" IsSmart="False" Binding="{Binding Path=Name}"/>
                                 <dxg:GridColumn FieldName="타입" IsSmart="False" Width="*" Binding="{Binding Path=Type}"/>
                                 <dxg:GridColumn FieldName="값" IsSmart="False" Width="*" Binding="{Binding Path=ToString}"/>
@@ -322,7 +484,29 @@
                         </dxg:GridControl>
                     </dxdo:LayoutPanel>
 
+                    <dxdo:LayoutPanel Caption="디바이스"
+                                      ItemWidth="300"
+                                      AllowClose="False">
 
+                        <ucLib:DeviceMiniListView DeviceObservableCollection="{Binding DeviceObservableCollection}"
+                                                  SelectedDevice="{Binding SelectedDevice, Mode=TwoWay}"></ucLib:DeviceMiniListView>
+                    </dxdo:LayoutPanel>
+                    <dxdo:LayoutPanel Caption="이미지"
+                                      ItemWidth="300"
+                                      AllowClose="False">
+                        <dxg:GridControl EnableSmartColumnsGeneration="False"
+                                         SelectionMode="Row"
+                                         AutoGenerateColumns="None"
+                                         ShowAllTableValuesInFilterPopup="False"
+                                         ItemsSource="{Binding ImageFileCollection}"
+                                         SelectedItem="{Binding SelectedImageFile, UpdateSourceTrigger=PropertyChanged}">
+                            <dxg:GridControl.Columns>
+                                <dxg:GridColumn FieldName="이름" IsSmart="False" Width="*" Binding="{Binding Path=FileName}"/>
+                                <dxg:GridColumn FieldName="경로" IsSmart="False" Width="*" Binding="{Binding Path=FilePath}"/>
+                            </dxg:GridControl.Columns>
+
+                        </dxg:GridControl>
+                    </dxdo:LayoutPanel>
                 </dxdo:TabbedGroup>
             </dxdo:LayoutGroup>
         </dxdo:DockLayoutManager>

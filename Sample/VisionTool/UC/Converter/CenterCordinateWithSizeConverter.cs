@@ -4,15 +4,27 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace VisionTool.Converter
+namespace Converter
 {
-    public class ProgressValueToString : IValueConverter
+    public class CenterCordinateWithSizeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double percentValue = (double)value;
-            string percentString = percentValue.ToString("F2") + "%";
-            return percentString;
+
+            try
+            {
+                double _value = (double)value / 2;
+
+
+
+                return _value;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.WriteLine(e.Message);
+                return 0;
+            }
+
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

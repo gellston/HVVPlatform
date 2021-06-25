@@ -1,5 +1,10 @@
 #pragma once
 
+#ifndef HV_INTERPRETER_MANAGED
+#define HV_INTERPRETER_MANAGED
+
+
+
 #include "macro.h"
 
 #include <string>
@@ -11,10 +16,18 @@
 #include "object.h"
 #include "native_module.hpp"
 
+//namespace hv::v1 {
+//	
+//};
+
 namespace hv::v1{
 	class pimpl_interpreter;
+
+
+
 	class HVAPI_EXPORT interpreter_managed {
 	private:
+		
 		std::shared_ptr<pimpl_interpreter> _pimpl;
 	public:
 
@@ -53,3 +66,5 @@ namespace hv::v1{
 
 	};
 }
+
+#endif // !1

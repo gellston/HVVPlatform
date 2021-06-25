@@ -4,16 +4,16 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace VisionTool.Converter
+namespace Converter
 {
-    public class RadiusCordinateConverter : IMultiValueConverter
+    public class CenterCordinateConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
 
             double centerValue = (double)values[0];
-            double radiusValue = (double)values[1];
-            double finalCordinate = centerValue - radiusValue;
+            double distance = (double)values[1];
+            double finalCordinate = centerValue - distance / 2;
 
             return finalCordinate;
         }

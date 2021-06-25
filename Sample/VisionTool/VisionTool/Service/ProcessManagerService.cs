@@ -24,7 +24,9 @@ namespace VisionTool.Service
         {
             this.settingConfigService = _settingConfigService;
 
-            this.ShutDownAllChildProcess();
+            //this.ShutDownAllChildProcess();
+            //this.LoadDevice();
+            //this.RunAllChildProcess();
    
         }
 
@@ -35,26 +37,117 @@ namespace VisionTool.Service
             
             var deviceNames = Directory.GetFiles(this.settingConfigService.ApplicationSetting.DevicePath);
 
+            try
+            {
+                foreach(var process in this.Processese)
+                {
+                    try
+                    {
+                        process.Value.Kill();
+                        process.Value.Dispose();
+
+                    }catch(Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.Message);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+            finally
+            {
+                this.Processese.Clear();
+            }
+
+
             foreach (var device in deviceNames)
             {
+                var deviceName = Path.GetFileNameWithoutExtension(device);
+                var processes = Process.GetProcessesByName(deviceName);
                 try
                 {
-                    var deviceName = Path.GetFileNameWithoutExtension(device);
-                    var processes = Process.GetProcessesByName(deviceName);
+                    
+                    
                     foreach (var process in processes)
                     {
                         var env = process.ReadEnvironmentVariables();
-                        if(env["VisionParentUniqueID"] == this.settingConfigService.ApplicationSetting.ProgramUniqueID)
+                        if (env["VisionParentUniqueID"] == this.settingConfigService.ApplicationSetting.ProgramUniqueID)
                         {
                             process.Kill();
                             process.WaitForExit(2000);
+
                         }
                     }
+
                 }
                 catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
+                finally
+                {
+                    foreach (var process in processes)
+                        process.Dispose();
+                    processes = null;
+                }
+            }
+
+        }
+
+        public void RunChildProcess(Device.Device device)
+        {
+
+            try
+            {
+                var process = this.Processese[device.Uid];
+
+                process.Kill();
+                process.Exited -= this.ProcessManagerService_Exited;
+                process.Dispose();
+
+                this.Processese.Remove(device.Uid);
+                
+
+            }catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+
+            }
+
+            try
+            {
+                string filePath = this.settingConfigService.ApplicationSetting.DeviceMainPath;
+                filePath = filePath + Path.DirectorySeparatorChar + device.DeviceName + Path.DirectorySeparatorChar + device.DeviceName + ".exe";
+
+                ProcessStartInfo info = new ProcessStartInfo();
+                info.FileName = filePath;
+                info.UseShellExecute = false;
+                info.Arguments = device.Uid;
+                info.CreateNoWindow = true;
+                info.EnvironmentVariables["VisionParentUniqueID"] = this.settingConfigService.ApplicationSetting.ProgramUniqueID;
+
+
+
+                this.Processese[device.Uid] = Process.Start(info);
+
+                device.IsAlive = true;
+                device.Pid = this.Processese[device.Uid].Id.ToString();
+                this.Processese[device.Uid].EnableRaisingEvents = true;
+                this.Processese[device.Uid].Exited += ProcessManagerService_Exited;
+
+                System.Diagnostics.Debug.WriteLine("Original affinity: " + this.Processese[device.Uid].ProcessorAffinity);
+                this.Processese[device.Uid].ProcessorAffinity = (IntPtr)((1 << Environment.ProcessorCount) - 1);
+                System.Diagnostics.Debug.WriteLine("After affinity: " + this.Processese[device.Uid].ProcessorAffinity);
+                bool defaultSetup = device.DefaultSetup();
+                if (defaultSetup == false)
+                    System.Diagnostics.Debug.WriteLine("Default setup failed" + device.Uid);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
             }
         }
 
@@ -83,11 +176,14 @@ namespace VisionTool.Service
                     device.IsAlive = true;
                     device.Pid = this.Processese[device.Uid].Id.ToString();
                     this.Processese[device.Uid].EnableRaisingEvents = true;
-
-
                     this.Processese[device.Uid].Exited += ProcessManagerService_Exited;
-
-
+       
+                    System.Diagnostics.Debug.WriteLine("Original affinity: " + this.Processese[device.Uid].ProcessorAffinity);
+                    this.Processese[device.Uid].ProcessorAffinity = (IntPtr)((1 << Environment.ProcessorCount) - 1);
+                    System.Diagnostics.Debug.WriteLine("After affinity: " + this.Processese[device.Uid].ProcessorAffinity);
+                    bool defaultSetup = device.DefaultSetup();
+                    if (defaultSetup == false)
+                        System.Diagnostics.Debug.WriteLine("Default setup failed" + device.Uid);
                 }
                 catch(Exception e)
                 {
@@ -95,6 +191,8 @@ namespace VisionTool.Service
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
             }
+
+
 
 
             if (hasError)
@@ -134,7 +232,23 @@ namespace VisionTool.Service
 
         public void ClearDevice()
         {
-            this.DeviceCollection.Clear();
+            try
+            {
+                this.ShutDownAllChildProcess();
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+            try
+            {
+                this.DeviceCollection.Clear();
+            }
+            catch(Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+            
         }
 
 
@@ -165,6 +279,10 @@ namespace VisionTool.Service
                 var targetSettingPath = this.settingConfigService.ApplicationSetting.DeviceSettingPath + "Setting.devset";
                 var jsonContent = File.ReadAllText(targetSettingPath);
                 var setting = JsonConvert.DeserializeObject<Device.DeviceSetting>(jsonContent);
+                foreach(var device in this.DeviceCollection)
+                {
+                    device.Dispose();
+                }
                 this.DeviceCollection.Clear();
                 this.DeviceCollection.AddRange(setting.DeviceCollection);
 
@@ -205,6 +323,10 @@ namespace VisionTool.Service
             var targetSettingPath = DialogHelper.OpenFile("device setting file (.devset)|*.devset");
             var jsonContent = File.ReadAllText(targetSettingPath);
             var setting = JsonConvert.DeserializeObject<Device.DeviceSetting>(jsonContent);
+            foreach (var device in this.DeviceCollection)
+            {
+                device.Dispose();
+            }
             this.DeviceCollection.Clear();
             this.DeviceCollection.AddRange(setting.DeviceCollection);
         }
@@ -228,6 +350,11 @@ namespace VisionTool.Service
             try
             {
                 this.DeviceCollection.Remove(device);
+                device.Dispose();
+                this.Processese[device.Uid].Kill();
+                this.Processese[device.Uid].Exited -= ProcessManagerService_Exited;
+                this.Processese[device.Uid].Dispose();
+                this.Processese.Remove(device.Uid);
             }catch(Exception e)
             {
                 System.Diagnostics.Debug.WriteLine(e.Message);
@@ -244,7 +371,7 @@ namespace VisionTool.Service
                 throw new Exception("Config is not valid");
 
 
-            if (config.DeviceType.Length == null)
+            if (config.DeviceType.Length == 0)
                 throw new Exception("Config is not valid");
 
             try

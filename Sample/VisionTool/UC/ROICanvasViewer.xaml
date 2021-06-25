@@ -17,9 +17,9 @@
 
         <converter:DiagramPropertyToStringConverter x:Key="DiagramPropertyToStringConverter"></converter:DiagramPropertyToStringConverter>
         <converter:DiagramPropertyToBoolConverter x:Key="DiagramPropertyToBoolConverter"></converter:DiagramPropertyToBoolConverter>
+        <converter:RatioToSizeConverter x:Key="RatioToSizeConverter"></converter:RatioToSizeConverter>
         <converter:CenterCordinateConverter x:Key="CenterCordinateConverter"></converter:CenterCordinateConverter>
         <converter:CenterCordinateWithSizeConverter x:Key="CenterCordinateWithSizeConverter"></converter:CenterCordinateWithSizeConverter>
-        <converter:RatioToSizeConverter x:Key="RatioToSizeConverter"></converter:RatioToSizeConverter>
 
     </UserControl.Resources>
     
@@ -27,6 +27,19 @@
                   VerticalScrollBarVisibility="Auto"
                   Name="OutScrollViewer"
                   PreviewMouseWheel="OutScrollViewer_PreviewMouseWheel">
+        <ScrollViewer.Background>
+            <VisualBrush TileMode="Tile"
+                         Viewport="0,0,50,50" ViewportUnits="Absolute" 
+                         Viewbox="0,0,50,50" ViewboxUnits="Absolute">
+                <VisualBrush.Visual>
+                    <Rectangle Stroke="White" 
+                               StrokeThickness="1" 
+                               Height="50" 
+                               Width="50"
+                               StrokeDashArray="1 1"/>
+                </VisualBrush.Visual>
+            </VisualBrush>
+        </ScrollViewer.Background>
         <ItemsControl ItemsSource="{Binding ElementName=view, Path=SelectedFunction.Input}">
             <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type model:InputSnapSpot}">

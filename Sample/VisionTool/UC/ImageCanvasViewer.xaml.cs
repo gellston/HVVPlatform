@@ -49,6 +49,21 @@ namespace UClib
             //this.Zoom = 1;
 
 
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+
+
+        }
+
+        ~ImageCanvasViewer()
+        {
+            CompositionTarget.Rendering -= CompositionTarget_Rendering;
+
+        }
+
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+            this.InvalidateVisual();
+
         }
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ImageCanvasViewer), new PropertyMetadata(OnCustomerChangedCallBack));
@@ -228,7 +243,7 @@ namespace UClib
 
         private Point CanvasStart;
         private Point CanvasOrigin;
-        private bool IsCanvasCaptured = false;
+        //private bool IsCanvasCaptured = false;
         private void OutScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             e.Handled = true;
@@ -238,7 +253,7 @@ namespace UClib
 
             if (e.Delta > 0)
             {
-                this.Zoom -= ((this.ZoomMax - this.ZoomMin)/100);
+                this.Zoom -= ((this.ZoomMax - this.ZoomMin) / 100);
                 if (this.Zoom <= this.ZoomMin)
                     this.Zoom = this.ZoomMin;
             }
@@ -247,8 +262,8 @@ namespace UClib
                 this.Zoom += ((this.ZoomMax - this.ZoomMin) / 100);
                 if (this.Zoom >= this.ZoomMax)
                     this.Zoom = this.ZoomMax;
-
             }
+
             OutScrollViewer.ScrollToVerticalOffset(OutScrollViewer.ScrollableHeight / 2);
             OutScrollViewer.ScrollToHorizontalOffset(OutScrollViewer.ScrollableWidth / 2);
         }
@@ -288,7 +303,7 @@ namespace UClib
 
                 var draggableControl = sender as Canvas;
                 draggableControl.CaptureMouse();
-                IsCanvasCaptured = true;
+                //IsCanvasCaptured = true;
                 return;
             }
 
@@ -299,7 +314,7 @@ namespace UClib
             Canvas canvas = sender as Canvas;
             canvas.ReleaseMouseCapture();
             //this.SelectedItem = null;
-            this.IsCanvasCaptured = false;
+            //this.IsCanvasCaptured = false;
         }
 
     }

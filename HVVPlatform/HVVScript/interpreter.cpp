@@ -313,7 +313,9 @@ void interpreter::_loop() {
 			.auto_wrap_objects(true)
 			.set("to_string", &hv::v1::object::to_string)
 			.set("name", &hv::v1::object::name)
-			.set("type", &hv::v1::object::type);
+			.set("type", &hv::v1::object::type)
+			.set("stack_name", &hv::v1::object::stack_name)
+			.set("set_stack_name", &hv::v1::object::set_stack_name);
 
 		v8pp::module object_module(isolate->_instance);
 		object_module.set("object", object_class);
@@ -433,6 +435,7 @@ void interpreter::_loop() {
 						auto data = v8pp::from_v8<std::shared_ptr<object>>(isolate->_instance, val_local);
 						if (data != nullptr) {
 							(*this->_global_hash_map)[key] = data;
+							data->set_stack_name(key);
 							this->_global_names.push_back(key);
 						}
 
@@ -444,18 +447,21 @@ void interpreter::_loop() {
 					auto value = v8pp::from_v8<double>(isolate->_instance, val_local);
 					this->_global_names.push_back(key);
 					std::shared_ptr<hv::v1::number> object(new hv::v1::number(key, value));
+					object->set_stack_name(key);
 					(*this->_global_hash_map)[key] = object;
 				}
 				else if (val_local->IsBoolean()) {
 					auto value = v8pp::from_v8<bool>(isolate->_instance, val_local);
 					this->_global_names.push_back(key);
 					std::shared_ptr<hv::v1::boolean> object(new hv::v1::boolean(key, value));
+					object->set_stack_name(key);
 					(*this->_global_hash_map)[key] = object;
 				}
 				else if (val_local->IsString()) {
 					auto value = v8pp::from_v8<std::string>(isolate->_instance, val_local);
 					this->_global_names.push_back(key);
 					std::shared_ptr<hv::v1::string> object(new hv::v1::string(key, value));
+					object->set_stack_name(key);
 					(*this->_global_hash_map)[key] = object;
 				}
 

@@ -5,6 +5,7 @@
 #include "exception.h"
 
 namespace hv::v1 {
+	class pimpl_interpreter;
 	class pimpl_interpreter {
 	public:
 		pimpl_interpreter() {
@@ -23,7 +24,7 @@ namespace hv::v1 {
 
 
 hv::v1::interpreter_managed::interpreter_managed(){
-	std::shared_ptr<pimpl_interpreter> pimpl_interpreter(new pimpl_interpreter());
+	std::shared_ptr<hv::v1::pimpl_interpreter> pimpl_interpreter(new hv::v1::pimpl_interpreter());
 	this->_pimpl = pimpl_interpreter;
 }
 hv::v1::interpreter_managed::~interpreter_managed() {

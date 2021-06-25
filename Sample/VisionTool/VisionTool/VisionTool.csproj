@@ -14,6 +14,14 @@
     <ApplicationIcon>icons8_web_camera.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Behaviour\**" />
     <EmbeddedResource Remove="Behaviour\**" />
@@ -27,6 +35,9 @@
     <None Remove="Icon\icons8_web_camera_32.png" />
     <None Remove="Icon\icons8_web_camera_48.png" />
     <None Remove="Icon\icons8_web_camera_64.png" />
+    <None Remove="Image\icons8_grayscale_48px.png" />
+    <None Remove="Image\icons8_image_96px.png" />
+    <None Remove="Image\icons8_lens_96px.png" />
     <None Remove="Image\test.jfif" />
   </ItemGroup>
 
@@ -39,6 +50,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Image\icons8_grayscale_48px.png" />
+    <Resource Include="Image\icons8_image_96px.png" />
+    <Resource Include="Image\icons8_lens_96px.png" />
     <Resource Include="Image\test.jfif" />
   </ItemGroup>
   <ItemGroup>
@@ -51,6 +65,13 @@
     <PackageReference Include="Notifications.Wpf.Core" Version="1.3.2" />
     <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.1.20210210" />
     <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+    <PackageReference Include="WriteableBitmapEx" Version="1.6.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Device\Device.csproj" />
+    <ProjectReference Include="..\Logger\Logger.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\UC\UC.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ActiproSoftware.Shared.Wpf">
@@ -77,17 +98,8 @@
     <Reference Include="DevExpress.Xpf.Themes.VS2019Dark.v20.2">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\DevExpress 20.2\.NET Core Desktop Libraries\Bin\NetCore\DevExpress.Xpf.Themes.VS2019Dark.v20.2.dll</HintPath>
     </Reference>
-    <Reference Include="Device">
-      <HintPath>..\Device\bin\x64\Debug\netcoreapp3.1\Device.dll</HintPath>
-    </Reference>
     <Reference Include="HVVScriptSharp">
       <HintPath>..\..\..\HVVPlatform\x64\Debug\HVVScriptSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Model">
-      <HintPath>..\UC\bin\netcoreapp3.1\Model.dll</HintPath>
-    </Reference>
-    <Reference Include="UC">
-      <HintPath>..\UC\bin\netcoreapp3.1\UC.dll</HintPath>
     </Reference>
   </ItemGroup>    
 </Project>

@@ -31,7 +31,7 @@ namespace HV {
 			Object(std::shared_ptr<hv::v1::object>& object);
 			Object(System::String^ Name, System::String^ Type);
 			Object(HV::V1::Object^ object);
-			~Object();
+			virtual ~Object();
 			!Object();
 
 
@@ -41,6 +41,12 @@ namespace HV {
 			property System::String^ Type {
 				System::String^ get();
 			}
+
+			property System::String^ StackName {
+				System::String^ get();
+			}
+
+			void SetStackName(System::String^ name);
 
 			property virtual System::String^ ToString {
 				System::String^ get();

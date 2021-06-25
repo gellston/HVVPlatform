@@ -31,13 +31,9 @@ HV::V1::Interpreter::Interpreter() : _instance(new hv::v1::interpreter_managed()
 
 }
 
-HV::V1::Interpreter::~Interpreter() {
-	if (this->Handle.IsAllocated) {
-		this->Handle.Free();
-	}
-	this->EventTraceCallback = nullptr;
-	this->HandlePtr = IntPtr::Zero;
-	this->_instance->reset_trace_callback();
+HV::V1::Interpreter::~Interpreter() { // Dispose
+
+	this->!Interpreter();
 }
 
 HV::V1::Interpreter::!Interpreter() {
@@ -123,18 +119,17 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects
 	auto globals = this->_instance->global_objects();
 
 
-	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
 
-	for (it = globals->begin(); it != globals->end(); it++)
-	{
-		std::string key = it->first;
-		auto native_object = it->second;
 
-		if (native_object->type().length() <= 0) continue;
-		
-		std::string upperTypeName = native_object->type();
+	auto globalNames = this->_instance->global_names();
+	
+	for (auto& key : globalNames) {
+		auto hvObject = (*globals)[key];
+		if (hvObject->type().length() <= 0) continue;
+
+		std::string upperTypeName = hvObject->type();
 		upperTypeName[0] = toupper(upperTypeName[0]);
-		
+
 		std::string namespaceName = "HV.V1.";
 		std::string fullNamespaceName = namespaceName + upperTypeName;
 
@@ -143,17 +138,49 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::GlobalObjects
 
 			Type^ object_type = Type::GetType(managedTypeName);
 
-			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(hvObject);
 			HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
 			global_object->Add(gcnew System::String(key.c_str()), createdObject);
 		}
 		catch (Exception^ e) {
 			Debug::WriteLine(e->Message);
-			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(hvObject);
 			global_object->Add(gcnew System::String(key.c_str()), managedObject);
 		}
-		
+
 	}
+
+	//std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
+	// 
+	//for (it = globals->begin(); it != globals->end(); it++)
+	//{
+	//	std::string key = it->first;
+	//	auto native_object = it->second;
+
+	//	if (native_object->type().length() <= 0) continue;
+	//	
+	//	std::string upperTypeName = native_object->type();
+	//	upperTypeName[0] = toupper(upperTypeName[0]);
+	//	
+	//	std::string namespaceName = "HV.V1.";
+	//	std::string fullNamespaceName = namespaceName + upperTypeName;
+
+	//	try {
+	//		System::String^ managedTypeName = gcnew System::String(fullNamespaceName.c_str());
+
+	//		Type^ object_type = Type::GetType(managedTypeName);
+
+	//		HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+	//		HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
+	//		global_object->Add(gcnew System::String(key.c_str()), createdObject);
+	//	}
+	//	catch (Exception^ e) {
+	//		Debug::WriteLine(e->Message);
+	//		HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+	//		global_object->Add(gcnew System::String(key.c_str()), managedObject);
+	//	}
+	//	
+	//}
 	return global_object;
 }
 
@@ -169,17 +196,12 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 	auto external_object = gcnew Dictionary<System::String^, HV::V1::Object^>();
 
 	auto externals = this->_instance->external_objects();
+	auto externalNames = this->_instance->external_names();
+	for (auto& key : externalNames) {
+		auto hvObject = (*externals)[key];
+		if (hvObject->type().length() <= 0) continue;
 
-	std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
-
-	for (it = externals->begin(); it != externals->end(); it++)
-	{
-		std::string key = it->first;
-		auto native_object = it->second;
-
-		if (native_object->type().length() <= 0) continue;
-
-		std::string upperTypeName = native_object->type();
+		std::string upperTypeName = hvObject->type();
 		upperTypeName[0] = toupper(upperTypeName[0]);
 
 		std::string namespaceName = "HV.V1.";
@@ -190,17 +212,48 @@ Dictionary<System::String^, HV::V1::Object^>^ HV::V1::Interpreter::ExternalObjec
 
 			Type^ object_type = Type::GetType(managedTypeName);
 
-			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(hvObject);
 			HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
 			external_object->Add(gcnew System::String(key.c_str()), createdObject);
 		}
 		catch (Exception^ e) {
 			Debug::WriteLine(e->Message);
-			HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+			HV::V1::Object^ managedObject = gcnew HV::V1::Object(hvObject);
 			external_object->Add(gcnew System::String(key.c_str()), managedObject);
 		}
 
 	}
+
+	//std::map<std::string, std::shared_ptr<hv::v1::object>>::iterator it;
+	//for (it = externals->begin(); it != externals->end(); it++)
+	//{
+	//	std::string key = it->first;
+	//	auto native_object = it->second;
+
+	//	if (native_object->type().length() <= 0) continue;
+
+	//	std::string upperTypeName = native_object->type();
+	//	upperTypeName[0] = toupper(upperTypeName[0]);
+
+	//	std::string namespaceName = "HV.V1.";
+	//	std::string fullNamespaceName = namespaceName + upperTypeName;
+
+	//	try {
+	//		System::String^ managedTypeName = gcnew System::String(fullNamespaceName.c_str());
+
+	//		Type^ object_type = Type::GetType(managedTypeName);
+
+	//		HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+	//		HV::V1::Object^ createdObject = (HV::V1::Object^)Activator::CreateInstance(object_type, managedObject);
+	//		external_object->Add(gcnew System::String(key.c_str()), createdObject);
+	//	}
+	//	catch (Exception^ e) {
+	//		Debug::WriteLine(e->Message);
+	//		HV::V1::Object^ managedObject = gcnew HV::V1::Object(native_object);
+	//		external_object->Add(gcnew System::String(key.c_str()), managedObject);
+	//	}
+
+	//}
 
 	return external_object;
 }

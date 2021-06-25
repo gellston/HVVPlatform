@@ -28,7 +28,7 @@ HV::V1::Point::Point(hv::v1::object* object) : HV::V1::Object(object) {
 }
 
 HV::V1::Point::~Point() {
-
+	this->!Point();
 }
 
 HV::V1::Point::!Point() {

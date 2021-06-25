@@ -31,11 +31,13 @@ HV::V1::Object::Object(hv::v1::object* object) : _instance(object){
 }
 
 HV::V1::Object::~Object() {
-
+	System::Diagnostics::Debug::WriteLine("Dispose Call");
+	this->!Object();
 }
 
 HV::V1::Object::!Object() {
-
+	
+	this->_instance.~mananged_shared_ptr();
 }
 
 String^ HV::V1::Object::Name::get() {
@@ -47,6 +49,16 @@ String^ HV::V1::Object::Type::get() {
 
 	return gcnew String(this->_instance->type().c_str());
 }
+
+System::String^ HV::V1::Object::StackName::get() {
+	return gcnew System::String(this->_instance->stack_name().c_str());
+}
+
+void  HV::V1::Object::SetStackName(System::String^ name) {
+	std::string std_name = msclr::interop::marshal_as<std::string>(name);
+	this->_instance->set_stack_name(std_name);
+}
+
 
 String^ HV::V1::Object::ToString::get() {
 

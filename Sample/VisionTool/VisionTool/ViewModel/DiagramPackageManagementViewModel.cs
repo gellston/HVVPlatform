@@ -177,7 +177,8 @@ namespace VisionTool.ViewModel
                 }
                 catch(Exception e)
                 {
-
+                    DialogHelper.ShowToastErrorMessage("다이어그램 삭제 실패", "다이어그램 삭제에 실패 했습니다.");
+                    Logger.Logger.Write(Logger.TYPE.UI, e.Message);
                 }
                 
             });

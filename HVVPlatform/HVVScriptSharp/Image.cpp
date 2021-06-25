@@ -47,7 +47,7 @@ HV::V1::Image::Image(hv::v1::object* object) : HV::V1::Object(object) {
 }
 
 HV::V1::Image::~Image() {
-
+	this->!Image();
 }
 
 HV::V1::Image::!Image() {

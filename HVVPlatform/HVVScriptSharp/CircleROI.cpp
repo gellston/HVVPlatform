@@ -29,7 +29,7 @@ HV::V1::CircleROI::CircleROI(hv::v1::object* object) : HV::V1::Object(object) {
 }
 
 HV::V1::CircleROI::~CircleROI() {
-
+	this->!CircleROI();
 }
 
 HV::V1::CircleROI::!CircleROI() {

@@ -5,14 +5,29 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MvvmLightStd10" Version="5.4.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Logger\Logger.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="PresentationCore">
       <HintPath>..\..\..\..\..\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.1.0\ref\netcoreapp3.1\PresentationCore.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <HintPath>..\..\..\..\..\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\3.1.0\ref\netcoreapp3.1\PresentationFramework.dll</HintPath>
     </Reference>
     <Reference Include="SpiderSharp">
       <HintPath>..\SpiderSharp-x64-NetCore3.1-windows10\Debug\SpiderSharp.dll</HintPath>

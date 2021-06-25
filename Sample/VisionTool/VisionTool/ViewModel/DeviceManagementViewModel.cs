@@ -15,13 +15,16 @@ namespace VisionTool.ViewModel
     {
         private readonly DeviceControlService deviceControlService;
         private readonly SettingConfigService settingConfigService;
+        private readonly ProcessManagerService processManagerService;
 
         public DeviceManagementViewModel(DeviceControlService _deviceControlService,
-                                         SettingConfigService _settingConfigService)
+                                         SettingConfigService _settingConfigService,
+                                         ProcessManagerService _processManagerService)
         {
 
             this.deviceControlService = _deviceControlService;
             this.settingConfigService = _settingConfigService;
+            this.processManagerService = _processManagerService;
 
 
             this.DeviceCollection = this.deviceControlService.DeviceCollection;
@@ -158,8 +161,16 @@ namespace VisionTool.ViewModel
         {
             get => new RelayCommand(() =>
             {
-              
-                this.deviceControlService.UpdateDeviceInfo();
+                try
+                {
+                    this.processManagerService.ShutDownAllChildProcess();
+                    this.deviceControlService.UpdateDeviceInfo();
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+
             });
         }
 

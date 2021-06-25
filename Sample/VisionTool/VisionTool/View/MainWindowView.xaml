@@ -10,7 +10,8 @@
     xmlns:viewModel="clr-namespace:VisionTool.ViewModel"
     xmlns:view="clr-namespace:VisionTool.View"
     xmlns:model="clr-namespace:Model;assembly=Model"
-    Closed="ThemedWindow_Closed">
+    Closed="ThemedWindow_Closed"
+    xmlns:helper="clr-namespace:VisionTool.Helper">
     <DockPanel>
 
         <!--<Grid DockPanel.Dock="Top"
@@ -35,25 +36,25 @@
                 <ContentPresenter Content="{Binding CurrentContentViewModel}">
                     <ContentPresenter.Resources>
                         <DataTemplate DataType="{x:Type viewModel:ScriptEditViewModel}">
-                            <view:ScriptEditView></view:ScriptEditView>
+                            <helper:CacheContentControl ContentType="{x:Type view:ScriptEditView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:ModulePackageManagementViewModel}">
-                            <view:ModulePackageManagementView></view:ModulePackageManagementView>
+                            <helper:CacheContentControl ContentType="{x:Type view:ModulePackageManagementView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:ApplicationSettingViewModel}">
-                            <view:ApplicationSettingView></view:ApplicationSettingView>
+                            <helper:CacheContentControl ContentType="{x:Type view:ApplicationSettingView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:DiagramEditViewModel}">
-                            <view:DiagramEditView></view:DiagramEditView>
+                            <helper:CacheContentControl ContentType="{x:Type view:DiagramEditView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:DiagramPackageManagementViewModel}">
-                            <view:DiagramPackageManagementView></view:DiagramPackageManagementView>
+                            <helper:CacheContentControl ContentType="{x:Type view:DiagramPackageManagementView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:DeviceManagementViewModel}">
-                            <view:DeviceManagementView></view:DeviceManagementView>
+                            <helper:CacheContentControl ContentType="{x:Type view:DeviceManagementView}"></helper:CacheContentControl>
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type viewModel:DeviceEditViewModel}">
-                            <view:DeviceEditView></view:DeviceEditView>
+                            <helper:CacheContentControl ContentType="{x:Type view:DeviceEditView}"></helper:CacheContentControl>
                         </DataTemplate>
                     </ContentPresenter.Resources>
                 </ContentPresenter>

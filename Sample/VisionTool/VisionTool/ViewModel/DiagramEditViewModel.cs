@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -23,16 +24,18 @@ namespace VisionTool.ViewModel
         private DiagramControlService diagramControlService;
         private SequenceControlService sequenceControlService;
         private ScriptControlService scriptControlService;
+        private ProcessManagerService processManagerService;
        
 
         public DiagramEditViewModel(DiagramControlService _diagramControlService,
                                     SequenceControlService _sequenceControlService,
-                                    ScriptControlService _scriptControlService)
+                                    ScriptControlService _scriptControlService,
+                                    ProcessManagerService _processManagerService)
         {
 
             this.diagramControlService = _diagramControlService;
             this.sequenceControlService = _sequenceControlService;
-            
+            this.processManagerService = _processManagerService;
             this.scriptControlService = _scriptControlService;
             
 
@@ -51,6 +54,8 @@ namespace VisionTool.ViewModel
             this.GlobalNames = this.scriptControlService.GlobalNames;
             this.NativeModuleCollection = this.scriptControlService.NativeModuleCollection;
             this.ResultObjectCollection = this.scriptControlService.ResultObjectCollection;
+            this.ImageFileCollection = this.scriptControlService.ImageFileCollection;
+            this.DeviceObservableCollection = this.processManagerService.DeviceCollection;
 
 
             this.FunctionCollection = this.sequenceControlService.FunctionCollection;
@@ -169,13 +174,13 @@ namespace VisionTool.ViewModel
 
         public ICommand DeleteDiagramCommand
         {
-            get => new RelayCommand<ICommand>((command) =>
+            get => new RelayCommand(() =>
             {
                 var diagram = this.SelectedDiagramObject;
 
                 this.sequenceControlService.DeleteDiagram(diagram);
 
-                command.Execute(null);
+                //command.Execute(null);
                 
             });
         }
@@ -190,11 +195,16 @@ namespace VisionTool.ViewModel
             {
                 try
                 {
+                    if (this.SelectedImageFile == null && this.IsImageLoadFromDisk == true) return;
                     this.sequenceControlService.ScriptGeneration();
                     this.FullScript = this.sequenceControlService.FullScriptContent;
-                    this.scriptControlService.RunScript(this.FullScript);
-                    
-                }catch(Exception e)
+                    if (this.IsImageLoadFromCamera == true)
+                        this.scriptControlService.RunScript(this.FullScript, this.SelectedDevice, this.IsImageLoadGray);
+                    else if (this.IsImageLoadFromDisk == true)
+                        this.scriptControlService.RunScript(this.FullScript, this.SelectedImageFile.FilePath, this.IsImageLoadGray);
+
+                }
+                catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
                    
@@ -205,6 +215,51 @@ namespace VisionTool.ViewModel
             });
         }
 
+        private string _CompileScriptCode = "";
+        public string CompileScriptCode
+        {
+            get => _CompileScriptCode;
+            set => Set(ref _CompileScriptCode, value);
+        }
+
+        public ICommand CompileDiagramCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                try
+                {
+
+                    this.sequenceControlService.ScriptGeneration();
+                    this.CompileScriptCode = this.sequenceControlService.FullScriptContent;
+
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                    DialogHelper.ShowToastErrorMessage("컴파일 에러", e.Message);
+                }
+            });
+        }
+
+        //public ICommand StepCompileDiagramCommand
+        //{
+        //    get => new RelayCommand(() =>
+        //    {
+        //        try
+        //        {
+
+        //            this.sequenceControlService.StepScriptGeneration(this.SelectedFunction);
+        //            this.FullScript = this.sequenceControlService.FullScriptContent;
+
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            System.Diagnostics.Debug.WriteLine(e.Message);
+        //            DialogHelper.ShowToastErrorMessage("컴파일 에러", e.Message);
+        //        }
+        //    });
+        //}
+
 
         public ICommand ContinusStartRunScriptCommand
         {
@@ -213,9 +268,14 @@ namespace VisionTool.ViewModel
 
                 try
                 {
+                    if (this.SelectedImageFile == null && this.IsImageLoadFromDisk == true) return;
+
                     this.sequenceControlService.ScriptGeneration();
                     this.FullScript = this.sequenceControlService.FullScriptContent;
-                    this.scriptControlService.ContinuousRunScript(this.FullScript);
+                    if(this.IsImageLoadFromCamera == true)
+                        this.scriptControlService.ContinuousRunScript(this.FullScript, this.SelectedDevice, this.IsImageLoadGray);
+                    else if(this.IsImageLoadFromDisk == true)
+                        this.scriptControlService.ContinuousRunScript(this.FullScript, this.SelectedImageFile.FilePath, this.IsImageLoadGray);
                 }
                 catch(Exception e)
                 {
@@ -234,9 +294,13 @@ namespace VisionTool.ViewModel
 
                 try
                 {
-                    this.sequenceControlService.ScriptGeneration();
+                    if (this.SelectedImageFile == null && this.IsImageLoadFromDisk == true) return;
+
                     this.FullScript = this.sequenceControlService.StepScriptGeneration(this.SelectedFunction);
-                    this.scriptControlService.RunScript(this.FullScript);
+                    if (this.IsImageLoadFromCamera == true)
+                        this.scriptControlService.RunScript(this.FullScript, this.SelectedDevice, this.IsImageLoadGray);
+                    else if (this.IsImageLoadFromDisk == true)
+                        this.scriptControlService.RunScript(this.FullScript, this.SelectedImageFile.FilePath, this.IsImageLoadGray);
                 }
                 catch (Exception e)
                 {
@@ -262,6 +326,21 @@ namespace VisionTool.ViewModel
                 string data = sender.Data.GetData(typeof(string)) as string;
                 if (data == null) return;
                 this.scriptControlService.AddResultObject(data);
+            });
+        }
+
+        public ICommand OpenImageCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                try
+                {
+                    this.scriptControlService.LoadImageFileFromFolder();
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             });
         }
 
@@ -379,6 +458,116 @@ namespace VisionTool.ViewModel
 
 
 
+        private bool _IsImageLoadGray = true;
+        public bool IsImageLoadGray
+        {
+            get => _IsImageLoadGray;
+            set => Set(ref _IsImageLoadGray, value);
+        }
 
+
+
+
+
+        private bool _IsImageLoadFromDisk = true;
+        public bool IsImageLoadFromDisk
+        {
+            get => _IsImageLoadFromDisk;
+            set
+            {
+                if (value == true)
+                {
+                    _IsImageLoadFromCamera = false;
+                    RaisePropertyChanged(nameof(IsImageLoadFromCamera));
+                }
+                Set(ref _IsImageLoadFromDisk, value);
+            }
+        }
+
+
+        private bool _IsImageLoadFromCamera = false;
+        public bool IsImageLoadFromCamera
+        {
+            get => _IsImageLoadFromCamera;
+            set
+            {
+                if (value == true)
+                {
+                    _IsImageLoadFromDisk = false;
+                    RaisePropertyChanged(nameof(IsImageLoadFromDisk));
+                }
+                Set(ref _IsImageLoadFromCamera, value);
+            }
+        }
+
+
+        private ObservableCollection<Device.Device> _DeviceObservableCollection = null;
+        public ObservableCollection<Device.Device> DeviceObservableCollection
+        {
+            get => _DeviceObservableCollection;
+            set => Set(ref _DeviceObservableCollection, value);
+        }
+
+
+        private Device.Device _SelectedDevice = null;
+        public Device.Device SelectedDevice
+        {
+            get => _SelectedDevice;
+            set
+            {
+                if (value != null)
+                {
+                    if (value.GetType() == typeof(Device.GigECamera))
+                    {
+                        Device.GigECamera camera = value as Device.GigECamera;
+
+                        this.CurrentCameraImage = camera.ImageBuffer;
+                    }
+                }
+                Set(ref _SelectedDevice, value);
+            }
+        }
+
+        private ObservableCollection<Model.ImageFile> _ImageFileCollection = null;
+        public ObservableCollection<Model.ImageFile> ImageFileCollection
+        {
+            get => _ImageFileCollection;
+            set => Set(ref _ImageFileCollection, value);
+        }
+
+
+        private Model.ImageFile _SelectedImageFile = null;
+        public Model.ImageFile SelectedImageFile
+        {
+            get => _SelectedImageFile;
+            set
+            {
+                Set(ref _SelectedImageFile, value);
+                if (_SelectedImageFile == null) return;
+                try
+                {
+                    WriteableBitmap writeableBmp = Helper.ImageHelper.LoadImageFromPath(_SelectedImageFile.FilePath);
+                    this.CurrentFileImage = writeableBmp;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
+            }
+        }
+
+        private WriteableBitmap _CurrentCameraImage = null;
+        public WriteableBitmap CurrentCameraImage
+        {
+            set => Set<WriteableBitmap>(nameof(CurrentCameraImage), ref _CurrentCameraImage, value);
+            get => _CurrentCameraImage;
+        }
+
+        private WriteableBitmap _CurrentFileImage = null;
+        public WriteableBitmap CurrentFileImage
+        {
+            set => Set<WriteableBitmap>(nameof(CurrentFileImage), ref _CurrentFileImage, value);
+            get => _CurrentFileImage;
+        }
     }
 }

@@ -23,16 +23,12 @@ namespace Converter
                 {
                     case "RectROIDiagramProperty":
                         return true;
-                        break;
                     case "LineFitROIDiagramProperty":
                         return true;
-                        break;
                     case "CircleFitROIDiagramProperty":
                         return true;
-                        break;
                     case "CircleROIDiagramProperty":
                         return true;
-                        break;
 
                 }
 

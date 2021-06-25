@@ -27,6 +27,7 @@ namespace Model
             this.Location.GridStep = 10;
 
             this.UpdateValueChangeAction();
+            
         }
 
         

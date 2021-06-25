@@ -12,11 +12,14 @@ namespace HV {
 	namespace V1 {
 		public enum class ImageDataType
 		{
-	
-			u8Image = 1,
-			u16Image = 2,
-			u32Image = 4,
-			u64Image = 8,
+			u8c1_image = 1,
+			u8c3_image,
+			u16c1_image,
+			u16c3_image,
+			u32c1_image,
+			u32c3_image,
+			u64c1_image,
+			u64c3_image
 		};
 	}
 

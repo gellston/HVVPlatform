@@ -29,7 +29,7 @@ HV::V1::CircleFitROI::CircleFitROI(hv::v1::object* object) : HV::V1::Object(obje
 }
 
 HV::V1::CircleFitROI::~CircleFitROI() {
-
+	this->!CircleFitROI();
 }
 
 HV::V1::CircleFitROI::!CircleFitROI() {

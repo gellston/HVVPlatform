@@ -19,6 +19,7 @@ namespace Model
             this.FunctionInfo = null;
             this.InputSnapSpotCollection = new List<InputSnapSpot>();
             this.OutputSnapSpotCollection = new List<OutputSnapSpot>();
+            
 
         }
 

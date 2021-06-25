@@ -32,7 +32,7 @@ HV::V1::String::String(hv::v1::object* object) : HV::V1::Object(object) {
 }
 
 HV::V1::String::~String() {
-
+	this->!String();
 }
 
 HV::V1::String::!String() {

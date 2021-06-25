@@ -12,6 +12,7 @@ namespace Model
         {
 
             this.Color = Color.FromRgb(255, 255, 255);
+            
         }
 
         

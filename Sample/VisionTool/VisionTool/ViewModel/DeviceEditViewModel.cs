@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using VisionTool.Service;
 
 namespace VisionTool.ViewModel
@@ -29,7 +30,8 @@ namespace VisionTool.ViewModel
             this.DeviceConfigCollection = this.deviceControlService.DeviceConfigCollection;
             this.DeviceCollection = this.processManagerService.DeviceCollection;
 
-            this.processManagerService.LoadDevice();
+            
+           
         }
 
 
@@ -75,7 +77,7 @@ namespace VisionTool.ViewModel
         }
 
 
-        public ICommand ProcessExecutionCommand
+        public ICommand ProcessAllExecutionCommand
         {
             get => new RelayCommand(() =>
             {
@@ -90,6 +92,21 @@ namespace VisionTool.ViewModel
                     System.Diagnostics.Debug.WriteLine(e.Message);
                 }
 
+            });
+        }
+
+        public ICommand ProcessExecutionCommand
+        {
+            get => new RelayCommand(() =>
+            {
+                try
+                {
+                    this.processManagerService.RunChildProcess(this.SelectedDevice);
+
+                }catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e.Message);
+                }
             });
         }
 
@@ -204,5 +221,12 @@ namespace VisionTool.ViewModel
             get => _ItemsHeight;
             set => Set(ref _ItemsHeight, value);
         }
+
+
+
+
+
+
+
     }
 }

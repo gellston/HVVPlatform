@@ -8,7 +8,8 @@
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="view"
              xmlns:device="clr-namespace:Device;assembly=Device"
-             xmlns:lc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol">
+             xmlns:lc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol"
+             xmlns:converter="clr-namespace:Converter">
 
     <ListView ItemsSource="{Binding ElementName=view, Path=DeviceObservableCollection, Mode=OneWay}"
               ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -16,6 +17,9 @@
               HorizontalContentAlignment="Stretch"
               VerticalContentAlignment="Stretch"
               SelectedItem="{Binding ElementName=view, Path=SelectedDevice, Mode=TwoWay}">
+        <ListView.Resources>
+            <converter:InverseBooleanConverter x:Key="InverseBooleanConverter"></converter:InverseBooleanConverter>
+        </ListView.Resources>
 
         <ListView.ItemsPanel>
             <ItemsPanelTemplate>
@@ -26,10 +30,10 @@
         </ListView.ItemsPanel>
         <ListView.ItemTemplate>
             <DataTemplate>
-                <Grid>
+                <Grid ToolTip="{Binding ErrorText}">
                     <Border Panel.ZIndex="0"
                             Name="DeviceItem"
-                            BorderThickness="3"
+                            BorderThickness="6"
                             BorderBrush="Green"></Border>
                     <DockPanel Margin="10"
                                Panel.ZIndex="1">
@@ -45,8 +49,9 @@
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
                                 <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
                             </Grid.RowDefinitions>
-                            <!--디바이스 타입-->
+                            <!--디바이스 타입--><!--
                             <TextBox Grid.Column="0"
                                  Grid.Row="0"
                                  Grid.ColumnSpan="2"
@@ -54,16 +59,16 @@
                                  IsReadOnly="True"
                                  IsEnabled="False"
                                  HorizontalContentAlignment="Center"
-                                 TextAlignment="Center"></TextBox>
+                                 TextAlignment="Center"></TextBox>-->
 
                             <!--디바이스 이름-->
                             <TextBox Grid.Column="0"
-                                 Grid.Row="1"
+                                 Grid.Row="0"
                                  Text="Device Name : "
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
                             <TextBox Grid.Column="1"
-                                 Grid.Row="1"
+                                 Grid.Row="0"
                                  Text="{Binding DeviceName, Mode=OneWay}"
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
@@ -71,43 +76,54 @@
 
                             <!-- 이름-->
                             <TextBox Grid.Column="0"
-                                 Grid.Row="2"
+                                 Grid.Row="1"
                                  Text="Name : "
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
                             <TextBox Grid.Column="1"
-                                 Grid.Row="2"
+                                 Grid.Row="1"
                                  Text="{Binding Name, Mode=TwoWay}"></TextBox>
 
 
                             <!--UID-->
                             <TextBox Grid.Column="0"
-                                 Grid.Row="3"
+                                 Grid.Row="2"
                                  Text="UID : "
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
                             <TextBox Grid.Column="1"
-                                 Grid.Row="3"
+                                 Grid.Row="2"
                                  Text="{Binding Uid, Mode=OneWay}"
                                  IsReadOnly="True"
                                  IsEnabled="True"></TextBox>
 
                             <!--PID-->
                             <TextBox Grid.Column="0"
-                                 Grid.Row="4"
+                                 Grid.Row="3"
                                  Text="PID : "
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
                             <TextBox Grid.Column="1"
-                                 Grid.Row="4"
+                                 Grid.Row="3"
                                  Text="{Binding Pid, Mode=TwoWay}"
                                  IsReadOnly="True"
                                  IsEnabled="False"></TextBox>
 
                             <Button Grid.Column="0" 
+                                Grid.Row="4" 
+                                Grid.ColumnSpan="2"
+                                Content="Check Alive" Command="{Binding CheckAliveCommand}"></Button>
+
+                            <Button Grid.Column="0" 
                                 Grid.Row="5" 
                                 Grid.ColumnSpan="2"
-                                Content="CheckAlive" Command="{Binding CheckAliveCommand}"></Button>
+                                Content="Default Setup" Command="{Binding DefaultSetupCommand}"></Button>
+                            
+                            <Button Grid.Column="0" 
+                                Grid.Row="6" 
+                                Grid.ColumnSpan="2"
+                                Content="Clear Error" Command="{Binding ClearErrorMessageCommand}"></Button>
+
 
                         </Grid>
                         <ContentPresenter Content="{Binding Path=.}">
@@ -116,6 +132,8 @@
                                     <DockPanel>
                                         <Grid DockPanel.Dock="Bottom">
                                             <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
                                                 <RowDefinition Height="*"></RowDefinition>
@@ -143,24 +161,127 @@
                                                      Grid.Row="1"
                                                      Text="{Binding ImageWidth, Mode=OneWay}"
                                                      IsReadOnly="True"
-                                                     IsEnabled="False"></TextBox>
+                                                     IsEnabled="False"
+                                                     ToolTip="Image Width"></TextBox>
                                             <TextBox Grid.Column="1"
                                                      Grid.Row="1"
                                                      Text="{Binding ImageHeight, Mode=OneWay}"
                                                      IsReadOnly="True"
+                                                     IsEnabled="False"
+                                                     ToolTip="Image Height"></TextBox>
+
+                                            <TextBox Grid.Column="0"
+                                                     Grid.Row="2"
+                                                     Text="FPS : "
+                                                     IsReadOnly="True"
+                                                     IsEnabled="False"></TextBox>
+                                            <TextBox Grid.Column="1"
+                                                     Grid.Row="2"
+                                                     Text="{Binding FPS, Mode=TwoWay}"
+                                                     IsReadOnly="False"
                                                      IsEnabled="False"></TextBox>
 
-                                            <Button Grid.Row="2" Grid.Column="0" Content="Open" Command="{Binding OpenCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="2" Grid.Column="1" Content="Close" Command="{Binding CloseCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="3" Grid.Column="0" Content="Acq Start" Command="{Binding AcquisitionStartCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="3" Grid.Column="1" Content="Acq Stop" Command="{Binding AcquisitionStopCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="4" Grid.Column="0" Content="Grab" Command="{Binding GrabCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="4" Grid.Column="1" Content="GetInfo" Command="{Binding GetImageInfoCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
-                                            <Button Grid.Row="5" Grid.Column="0" Content="SoftwareTrigger" Command="{Binding ConfigureSoftwareTriggerCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+
+                                            <Button Grid.Row="3" Grid.Column="0" Content="Open" IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding OpenCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="3" Grid.Column="1" Content="Close"  IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding CloseCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="4" Grid.Column="0" Content="Acq Start"  IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding AcquisitionStartCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="4" Grid.Column="1" Content="Acq Stop"  IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding AcquisitionStopCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="5" Grid.Column="0" Content="Live Start"  IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding LiveStartCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="5" Grid.Column="1" Content="Live Stop"  IsEnabled="{Binding IsLiveStart}" Command="{Binding LiveStopCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="6" Grid.Column="0" Content="Grab" IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding GrabCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="6" Grid.Column="1" Content="GetInfo" IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding GetImageInfoCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="7" Grid.Column="0" Content="SoftwareTrigger" IsEnabled="{Binding IsLiveStart, Converter={StaticResource InverseBooleanConverter}}" Command="{Binding ConfigureSoftwareTriggerCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
                                         </Grid>
-                                        <local:ImageCanvasViewer DockPanel.Dock="Top" 
-                                                                 Image="{Binding ImageBuffer}"
-                                                                 Background="Black"></local:ImageCanvasViewer>
+                                        <Image DockPanel.Dock="Top" 
+                                               Source="{Binding ImageBuffer}"
+                                               Stretch="Uniform"></Image>
+                                    </DockPanel>
+
+                                </DataTemplate>
+
+
+                                <DataTemplate DataType="{x:Type device:SerialLight}">
+                                    <DockPanel>
+                                        <Grid DockPanel.Dock="Bottom">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                                <RowDefinition Height="*"></RowDefinition>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                                     Grid.Row="0"
+                                                     Text="COM : "
+                                                     IsReadOnly="True"
+                                                     IsEnabled="False"></TextBox>
+
+                                            <ComboBox ItemsSource="{Binding PortCollection}"
+                                                      HorizontalContentAlignment="Center"
+                                                      VerticalContentAlignment="Center"
+                                                      SelectedItem="{Binding Comport,Mode=TwoWay}"
+                                                      Grid.Row="0"
+                                                      Grid.Column="1">
+                                                
+                                            </ComboBox>
+
+                                            <TextBox Grid.Column="0"
+                                                     Grid.Row="1"
+                                                     Text="Channel : "
+                                                     IsReadOnly="True"
+                                                     IsEnabled="False"></TextBox>
+                                            <ComboBox ItemsSource="{Binding ChannelCollection}"
+                                                      HorizontalContentAlignment="Center"
+                                                      VerticalContentAlignment="Center"
+                                                      SelectedItem="{Binding Channel,Mode=TwoWay}"
+                                                      Grid.Row="1"
+                                                      Grid.Column="1">
+                                            </ComboBox>
+
+                                            <TextBox Grid.Column="0"
+                                                    Grid.Row="2"
+                                                    Text="Baurate : "
+                                                    IsReadOnly="True"
+                                                    IsEnabled="False"></TextBox>
+                                            <ComboBox ItemsSource="{Binding BaudCollection}"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    SelectedItem="{Binding Baurate,Mode=TwoWay}"
+                                                    Grid.Row="2"
+                                                    Grid.Column="1">
+                                            </ComboBox>
+
+
+                                            <TextBox Grid.Column="0"
+                                                     Grid.Row="3"
+                                                     Text="{Binding Value, Mode=TwoWay}"
+                                                     ></TextBox>
+                                            <Slider Grid.Column="1"
+                                                    Grid.Row="3"
+                                                    Minimum="0"
+                                                    Maximum="255"
+                                                    Value="{Binding Value}"
+                                                    ToolTip="{Binding Value}"
+                                                    TickFrequency="1"></Slider>
+
+
+                                            <Button Grid.Row="4" Grid.Column="0" Content="Open" Command="{Binding OpenCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="4" Grid.Column="1" Content="Close" Command="{Binding CloseCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="5" Grid.Column="0" Content="On" Command="{Binding OnCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+                                            <Button Grid.Row="5" Grid.Column="1" Content="Get Light" Command="{Binding GetLightValueCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></Button>
+
+                                        </Grid>
+                                        <TextBlock Text="Serial Light"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontSize="30"></TextBlock>
+
                                     </DockPanel>
 
                                 </DataTemplate>
@@ -169,21 +290,40 @@
                     </DockPanel>
                 </Grid>
                 <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding IsAlive}" Value="false">
-                        <Setter TargetName="DeviceItem" Property="BorderBrush" Value="Red"></Setter>
-                        <DataTrigger.EnterActions>
-                            <BeginStoryboard x:Name="AnimationBeginStoryboard">
+                    <MultiDataTrigger>
+                        <Setter TargetName="DeviceItem" Property="BorderBrush" Value="#d0021b"></Setter>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsAlive}" Value="true"></Condition>
+                            <Condition Binding="{Binding HasError}" Value="true"></Condition>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.EnterActions>
+                            <BeginStoryboard x:Name="Animation2BeginStoryboard">
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="1" To="0.5" Duration="0:0:0.8" BeginTime="0:0:0" />
-                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="0.5" To="1" Duration="0:0:0.8" BeginTime="0:0:0.8" />
+                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="1" To="0.2" Duration="0:0:0.8" BeginTime="0:0:0" />
+                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="0.2" To="1" Duration="0:0:0.8" BeginTime="0:0:0.8" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </MultiDataTrigger.EnterActions>
+                        <MultiDataTrigger.ExitActions>
+                            <RemoveStoryboard BeginStoryboardName="Animation2BeginStoryboard"></RemoveStoryboard>
+                        </MultiDataTrigger.ExitActions>
+                    </MultiDataTrigger>
+                    <DataTrigger Binding="{Binding IsAlive}" Value="false">
+                        <Setter TargetName="DeviceItem" Property="BorderBrush" Value="#096dd9"></Setter>
+                        <DataTrigger.EnterActions>
+                            <BeginStoryboard x:Name="Animation1BeginStoryboard">
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="1" To="0.2" Duration="0:0:0.8" BeginTime="0:0:0" />
+                                    <DoubleAnimation Storyboard.TargetName="DeviceItem" Storyboard.TargetProperty="Opacity" From="0.2" To="1" Duration="0:0:0.8" BeginTime="0:0:0.8" />
                                 </Storyboard>
                             </BeginStoryboard>
                         </DataTrigger.EnterActions>
                         <DataTrigger.ExitActions>
-                            <RemoveStoryboard BeginStoryboardName="AnimationBeginStoryboard"></RemoveStoryboard>
+                            <RemoveStoryboard BeginStoryboardName="Animation1BeginStoryboard"></RemoveStoryboard>
                         </DataTrigger.ExitActions>
-                    </DataTrigger>  
+                    </DataTrigger>
                 </DataTemplate.Triggers>
+                
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>

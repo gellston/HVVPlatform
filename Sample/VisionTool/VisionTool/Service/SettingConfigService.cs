@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using Model;
 using Newtonsoft.Json;
+using Logger;
 
 namespace VisionTool.Service
 {
@@ -55,6 +56,8 @@ namespace VisionTool.Service
                 catch (Exception e)
                 {
                     DialogHelper.ShowToastErrorMessage("설정 저장", "설정 저장이 실패했습니다.");
+                    Logger.Logger.Write(Logger.TYPE.UI, e.Message);
+
                 }
             }
             else
@@ -94,6 +97,7 @@ namespace VisionTool.Service
                 catch(Exception e)
                 {
                     DialogHelper.ShowToastErrorMessage("설정 저장", "설정 저장이 실패했습니다.");
+                    Logger.Logger.Write(Logger.TYPE.UI, e.Message);
                 }
             }
         }
@@ -111,6 +115,7 @@ namespace VisionTool.Service
                 catch (Exception e)
                 {
                     DialogHelper.ShowToastErrorMessage("설정 초기화", "설정 초기화가 실패했습니다.");
+                    Logger.Logger.Write(Logger.TYPE.UI, e.Message);
                 }
             }
         }

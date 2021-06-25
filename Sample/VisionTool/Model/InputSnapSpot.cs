@@ -15,7 +15,7 @@ namespace Model
             
             this.Name = _Name;
             this.DataType = _DataType;
-       
+            
         }
 
         private string _DataType;

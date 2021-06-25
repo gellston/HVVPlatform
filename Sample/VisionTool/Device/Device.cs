@@ -1,10 +1,11 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using System;
 using System.Windows.Input;
+using Logger;
 
 namespace Device
 {
-    public class Device : PropertyChangedBase, ICloneable
+    public class Device : PropertyChangedBase, ICloneable, IDisposable
     {
 
         private readonly SPIDER.Function AliveCheckFunction;
@@ -15,13 +16,13 @@ namespace Device
             try
             {
                 this.AliveCheckFunction = new SPIDER.Function(this.Uid + "_alive");
-                this.AliveCheckFunction.Delay(100)
+                this.AliveCheckFunction.Delay(1000)
                                        .Returns()
                                        .Ret<bool>("isalive")
                                        .Complete();
 
                 this.ExitFunction = new SPIDER.Function(this.Uid + "_exit");
-                this.ExitFunction.Delay(100)
+                this.ExitFunction.Delay(1000)
                                  .Returns()
                                  .Ret<bool>("isexit")
                                  .Complete();
@@ -49,10 +50,38 @@ namespace Device
                 DeviceName = this.DeviceName,
                 Name = this.Name,
             };
-            
+
             return newCopy;
         }
 
+
+        ~Device()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+
+            if (disposing)
+            {
+                this.AliveCheckFunction?.Dispose();
+                this.ExitFunction?.Dispose();
+            }
+
+        }
+
+        public virtual bool DefaultSetup()
+        {
+            return false;
+        }
 
         private string _ErrorText = "";
         [Newtonsoft.Json.JsonIgnore]
@@ -123,28 +152,48 @@ namespace Device
         }
 
 
+        public void CheckAlive()
+        {
+            try
+            {
+                this.AliveCheckFunction.Call();
+
+                bool isAlive = false;
+                this.AliveCheckFunction.Returns()
+                                       .Get<bool>("isalive", out isAlive);
+
+                this.IsAlive = isAlive;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                this.HasError = true;
+                this.ErrorText = e.Message;
+                Logger.Logger.Write(TYPE.DEVICE, e.Message);
+            }
+        }
+
+
         [Newtonsoft.Json.JsonIgnore]
         public ICommand CheckAliveCommand
         {
             get => new RelayCommand(() =>
             {
 
-                try
-                {
-                    this.AliveCheckFunction.Call();
+                this.CheckAlive();
 
-                    bool isAlive = false;
-                    this.AliveCheckFunction.Returns()
-                                           .Get<bool>("isalive", out isAlive);
 
-                    this.IsAlive = isAlive;
-                }
-                catch (Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e.Message);
-                    this.HasError = true;
-                    this.ErrorText = e.Message;
-                }
+            });
+        }
+
+        [Newtonsoft.Json.JsonIgnore]
+        public ICommand ClearErrorMessageCommand
+        {
+            get => new RelayCommand(() =>
+            {
+
+                this.HasError = false;
+                this.ErrorText = "";
 
             });
         }
@@ -172,6 +221,26 @@ namespace Device
                     System.Diagnostics.Debug.WriteLine(e.Message);
                     this.HasError = true;
                     this.ErrorText = e.Message;
+                    Logger.Logger.Write(TYPE.DEVICE, e.Message);
+                }
+
+            });
+        }
+
+
+        [Newtonsoft.Json.JsonIgnore]
+        public ICommand DefaultSetupCommand
+        {
+            get => new RelayCommand(() =>
+            {
+
+
+                bool check = this.DefaultSetup();
+                if(check == false)
+                {
+                    this.HasError = true;
+                    this.ErrorText = "Initlal setup failed";
+                    Logger.Logger.Write(TYPE.DEVICE, this.ErrorText);
                 }
 
             });

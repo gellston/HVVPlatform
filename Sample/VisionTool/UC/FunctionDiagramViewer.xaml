@@ -24,7 +24,6 @@
                 </Point.Y>
             </Point>
             <Color x:Key="emptyColor"></Color>
-            <converter:DiagramOjbectToFunctionConverter x:Key="DiagramOjbectToFunctionConverter"></converter:DiagramOjbectToFunctionConverter>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"></BooleanToVisibilityConverter>
             <converter:FunctionDiagramTypeCheckConverter x:Key="FunctionDiagramTypeCheckConverter"></converter:FunctionDiagramTypeCheckConverter>
             <CompositeCollection x:Key="compositeCollection">

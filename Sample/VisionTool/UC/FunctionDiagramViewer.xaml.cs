@@ -85,20 +85,20 @@ namespace UClib
 
 
 
-        private ICommand _RefreshLayoutCommand = null;
-        public ICommand RefreshLayoutCommand
-        {
-            get
-            {
-                _RefreshLayoutCommand ??= new RelayCommand(() =>
-                {
-                    this.UpdateConnectorDiagramLayout();
-                    this.UpdateFunctionDiagramLayout();
-                });
+        //private ICommand _RefreshLayoutCommand = null;
+        //public ICommand RefreshLayoutCommand
+        //{
+        //    get
+        //    {
+        //        _RefreshLayoutCommand ??= new RelayCommand(() =>
+        //        {
+        //            this.UpdateConnectorDiagramLayout();
+        //            this.UpdateFunctionDiagramLayout();
+        //        });
 
-                return _RefreshLayoutCommand;
-            }
-        }
+        //        return _RefreshLayoutCommand;
+        //    }
+        //}
 
 
         private ICommand _AddNewFunctionCommand = null;
@@ -574,7 +574,7 @@ namespace UClib
             }
         }
 
-        public static readonly DependencyProperty FunctionCollectionProperty = DependencyProperty.Register("FunctionCollection", typeof(ObservableCollection<Function>), typeof(FunctionDiagramViewer));
+        public static readonly DependencyProperty FunctionCollectionProperty = DependencyProperty.Register("FunctionCollection", typeof(ObservableCollection<Function>), typeof(FunctionDiagramViewer), new FrameworkPropertyMetadata(null, OnFunctionCollectionChanged));
         public ObservableCollection<Function> FunctionCollection
         {
             get
@@ -587,6 +587,39 @@ namespace UClib
                 SetValue(FunctionCollectionProperty, value);
             }
         }
+
+        private static void OnFunctionCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var userControl = d as FunctionDiagramViewer;
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= userControl.OnFunctionCollectionChangedEvent;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<Function>)e.NewValue;
+
+                coll.CollectionChanged += userControl.OnFunctionCollectionChangedEvent;
+
+            }
+        }
+        private void OnFunctionCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Here I'd like to update my ObservableCollection - ItemsSource
+            System.Diagnostics.Debug.WriteLine(e);
+
+
+            this.UpdateFunctionDiagramLayout();
+            this.UpdateConnectorDiagramLayout();
+            
+        }
+
+
+
+
+
 
         public static readonly DependencyProperty SelectedDiagramProperty = DependencyProperty.Register("SelectedDiagram", typeof(DiagramObject), typeof(FunctionDiagramViewer), new PropertyMetadata(OnSelectedDiagramChanged));
         public DiagramObject SelectedDiagram
@@ -672,7 +705,7 @@ namespace UClib
         }
 
 
-        public static readonly DependencyProperty InputSnapSpotCollectionProperty = DependencyProperty.Register("InputSnapSpotCollection", typeof(ObservableCollection<InputSnapSpot>), typeof(FunctionDiagramViewer));
+        public static readonly DependencyProperty InputSnapSpotCollectionProperty = DependencyProperty.Register("InputSnapSpotCollection", typeof(ObservableCollection<InputSnapSpot>), typeof(FunctionDiagramViewer), new FrameworkPropertyMetadata(null, OnInputSnapSpotCollectionChanged));
         public ObservableCollection<InputSnapSpot> InputSnapSpotCollection
         {
             get
@@ -685,8 +718,33 @@ namespace UClib
                 SetValue(InputSnapSpotCollectionProperty, value);
             }
         }
+        private static void OnInputSnapSpotCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var userControl = d as FunctionDiagramViewer;
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= userControl.OnInputSnapSpotCollectionChangedEvent;
+            }
 
-        public static readonly DependencyProperty OutputSnapSpotCollectionProperty = DependencyProperty.Register("OutputSnapSpotCollection", typeof(ObservableCollection<OutputSnapSpot>), typeof(FunctionDiagramViewer));
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<InputSnapSpot>)e.NewValue;
+
+                coll.CollectionChanged += userControl.OnInputSnapSpotCollectionChangedEvent;
+                
+            }
+        }
+        private void OnInputSnapSpotCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Here I'd like to update my ObservableCollection - ItemsSource
+            System.Diagnostics.Debug.WriteLine(e);
+            this.UpdateFunctionDiagramLayout();
+            this.UpdateConnectorDiagramLayout();
+        }
+
+
+        public static readonly DependencyProperty OutputSnapSpotCollectionProperty = DependencyProperty.Register("OutputSnapSpotCollection", typeof(ObservableCollection<OutputSnapSpot>), typeof(FunctionDiagramViewer), new FrameworkPropertyMetadata(null, OnOutputSnapSpotCollectionChanged));
         public ObservableCollection<OutputSnapSpot> OutputSnapSpotCollection
         {
             get
@@ -699,9 +757,33 @@ namespace UClib
                 SetValue(OutputSnapSpotCollectionProperty, value);
             }
         }
+        private static void OnOutputSnapSpotCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var userControl = d as FunctionDiagramViewer;
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= userControl.OnOutputSnapSpotCollectionChangedEvent;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<OutputSnapSpot>)e.NewValue;
+
+                coll.CollectionChanged += userControl.OnOutputSnapSpotCollectionChangedEvent;
+
+            }
+        }
+        private void OnOutputSnapSpotCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //this.UpdateConnectorDiagramLayout();
+            //this.UpdateFunctionDiagramLayout();
+            this.UpdateFunctionDiagramLayout();
+            this.UpdateConnectorDiagramLayout();
+        }
 
 
-        public static readonly DependencyProperty ConnectorCollectionProperty = DependencyProperty.Register("ConnectorCollection", typeof(ObservableCollection<Connector>), typeof(FunctionDiagramViewer));
+        public static readonly DependencyProperty ConnectorCollectionProperty = DependencyProperty.Register("ConnectorCollection", typeof(ObservableCollection<Connector>), typeof(FunctionDiagramViewer), new FrameworkPropertyMetadata(null, OnConnectorSpotCollectionChanged));
         public ObservableCollection<Connector> ConnectorCollection
         {
             get
@@ -713,6 +795,30 @@ namespace UClib
             {
                 SetValue(ConnectorCollectionProperty, value);
             }
+        }
+        private static void OnConnectorSpotCollectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var userControl = d as FunctionDiagramViewer;
+            if (e.OldValue != null)
+            {
+                var coll = (INotifyCollectionChanged)e.OldValue;
+                coll.CollectionChanged -= userControl.OnConnectorSpotCollectionChangedEvent;
+            }
+
+            if (e.NewValue != null)
+            {
+                var coll = (ObservableCollection<Connector>)e.NewValue;
+
+                coll.CollectionChanged += userControl.OnConnectorSpotCollectionChangedEvent;
+
+            }
+        }
+        private void OnConnectorSpotCollectionChangedEvent(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //this.UpdateConnectorDiagramLayout();
+            //this.UpdateFunctionDiagramLayout();
+            this.UpdateFunctionDiagramLayout();
+            this.UpdateConnectorDiagramLayout();
         }
 
 
@@ -1068,7 +1174,7 @@ namespace UClib
 
 
 
-        private bool _IsOutputSnapPressed = false;
+        //private bool _IsOutputSnapPressed = false;
         private void outputSnapSpot_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //Di.Console.WriteLine(sender);
@@ -1082,14 +1188,14 @@ namespace UClib
                 DataObject dataObject = new DataObject();
                 dataObject.SetText(snapSpot.Hash);
                 DragDrop.DoDragDrop((Thumb)sender, dataObject, DragDropEffects.Copy);
-                _IsOutputSnapPressed = true;
+                //_IsOutputSnapPressed = true;
             }
 
         }
 
         private void outputSnapSpot_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
-            _IsOutputSnapPressed = false;
+            //_IsOutputSnapPressed = false;
         }
     }
 }
